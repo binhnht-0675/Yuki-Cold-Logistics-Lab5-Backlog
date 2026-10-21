@@ -1,0 +1,160 @@
+{
+ "takenAt": "2030-01-10T18:00:00+09:00",
+ "owner": "example-org",
+ "project": 9,
+ "projectId": "PVT_fake",
+ "title": "サンプル（架空）",
+ "items": [
+  {
+   "itemId": "PVTI_1",
+   "nodeId": "I_1",
+   "number": 1,
+   "repo": "example-org/sample-repo",
+   "key": "E01",
+   "title": "図書の貸出（架空サンプル）",
+   "state": "OPEN",
+   "closedAt": null,
+   "parentNumber": null,
+   "labels": [],
+   "fields": {
+    "Status": "進行中",
+    "SWP": 21,
+    "見積時間(h)": 33,
+    "担当（仮）": "PM"
+   }
+  },
+  {
+   "itemId": "PVTI_2",
+   "nodeId": "I_2",
+   "number": 2,
+   "repo": "example-org/sample-repo",
+   "key": "E01-I01",
+   "title": "貸出登録画面",
+   "state": "OPEN",
+   "closedAt": null,
+   "parentNumber": 1,
+   "labels": [],
+   "fields": {
+    "Status": "進行中",
+    "SWP": 11,
+    "見積時間(h)": 18,
+    "担当（仮）": "BrSE"
+   }
+  },
+  {
+   "itemId": "PVTI_3",
+   "nodeId": "I_3",
+   "number": 3,
+   "repo": "example-org/sample-repo",
+   "key": "E01-I02",
+   "title": "返却処理",
+   "state": "OPEN",
+   "closedAt": null,
+   "parentNumber": 1,
+   "labels": [],
+   "fields": {
+    "Status": "進行中",
+    "SWP": 10,
+    "見積時間(h)": 15,
+    "担当（仮）": "BrSE"
+   }
+  },
+  {
+   "itemId": "PVTI_4",
+   "nodeId": "I_4",
+   "number": 4,
+   "repo": "example-org/sample-repo",
+   "key": "E01-I01-S01",
+   "title": "貸出テーブルを追加",
+   "state": "CLOSED",
+   "closedAt": "2030-01-03T09:00:00Z",
+   "parentNumber": 2,
+   "labels": [],
+   "fields": {
+    "Status": "完了",
+    "SWP": 5,
+    "見積時間(h)": 8,
+    "担当（仮）": "BE-1",
+    "スプリント": "スプリント 1"
+   }
+  },
+  {
+   "itemId": "PVTI_5",
+   "nodeId": "I_5",
+   "number": 5,
+   "repo": "example-org/sample-repo",
+   "key": "E01-I01-S02",
+   "title": "貸出登録 API",
+   "state": "CLOSED",
+   "closedAt": "2030-01-07T09:00:00Z",
+   "parentNumber": 2,
+   "labels": [],
+   "fields": {
+    "Status": "完了",
+    "SWP": 3,
+    "見積時間(h)": 5,
+    "担当（仮）": "BE-2",
+    "スプリント": "スプリント 1"
+   }
+  },
+  {
+   "itemId": "PVTI_6",
+   "nodeId": "I_6",
+   "number": 6,
+   "repo": "example-org/sample-repo",
+   "key": "E01-I01-S03",
+   "title": "貸出登録画面の実装",
+   "state": "OPEN",
+   "closedAt": null,
+   "parentNumber": 2,
+   "labels": [
+    "持ち越し"
+   ],
+   "fields": {
+    "Status": "未着手",
+    "SWP": 3,
+    "見積時間(h)": 5,
+    "担当（仮）": "FE-1",
+    "スプリント": "スプリント 2"
+   }
+  },
+  {
+   "itemId": "PVTI_7",
+   "nodeId": "I_7",
+   "number": 7,
+   "repo": "example-org/sample-repo",
+   "key": "E01-I02-S01",
+   "title": "返却 API",
+   "state": "OPEN",
+   "closedAt": null,
+   "parentNumber": 3,
+   "labels": [],
+   "fields": {
+    "Status": "ブロック中",
+    "SWP": 8,
+    "見積時間(h)": 12,
+    "担当（仮）": "BE-1",
+    "スプリント": "スプリント 1"
+   }
+  },
+  {
+   "itemId": "PVTI_8",
+   "nodeId": "I_8",
+   "number": 8,
+   "repo": "example-org/sample-repo",
+   "key": "E01-I02-S02",
+   "title": "返却の結合テスト",
+   "state": "OPEN",
+   "closedAt": null,
+   "parentNumber": 3,
+   "labels": [],
+   "fields": {
+    "Status": "進行中",
+    "SWP": 2,
+    "見積時間(h)": 3,
+    "担当（仮）": "QA-1",
+    "スプリント": "スプリント 1"
+   }
+  }
+ ]
+}

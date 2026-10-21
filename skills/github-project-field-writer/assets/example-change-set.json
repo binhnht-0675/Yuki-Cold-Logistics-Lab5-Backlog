@@ -1,0 +1,12 @@
+{
+ "schema": "change-set/1",
+ "source": {"kind": "manual", "createdAt": "2030-01-01T09:00:00+09:00", "note": "架空の例（形式の説明用。manual では derived / children を付けない）"},
+ "changes": [
+  {"key": "E01-I01-S01", "fields": {"SWP": 5, "見積時間(h)": 7.5}},
+  {"key": "E01-I01", "fields": {"SWP": 11, "見積時間(h)": 16.5}},
+  {"key": "E01-I02-S01", "fields": {"Status": "ブロック中", "スプリント": "スプリント 1"},
+   "comment": "（模擬）顧客の確認待ち。"},
+  {"key": "E01-I01-S03", "fields": {"スプリント": "スプリント 2"}, "addLabels": ["持ち越し"]},
+  {"key": "E01-I02-S02", "fields": {"Status": "完了"}, "close": true}
+ ]
+}

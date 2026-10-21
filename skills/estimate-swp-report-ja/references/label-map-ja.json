@@ -1,0 +1,22 @@
+{
+ "_note": "estimate-swp の埋め込みデータの列挙値 → 日本語表示。キーは英語の列挙値そのもの。未登録の値は原文のまま表示し、check で検出する（表示する列挙値すべて。表示しない state は対象外。difficulty は SWP の上限と名前の表）。",
+ "discipline": {"UI": "UI", "API": "API", "DB": "DB", "Migration": "移行", "Deploy": "デプロイ", "QA": "QA",
+                "Infra": "インフラ", "Bugfix": "不具合修正", "Integration": "連携", "Unknown": "不明"},
+ "workType": {"feature": "機能開発", "bugfix": "不具合修正", "refactor": "リファクタリング", "migration": "移行",
+              "deployment": "デプロイ", "infrastructure": "インフラ", "test-design": "テスト設計",
+              "test-execution": "テスト実施", "investigation": "調査", "documentation": "ドキュメント", "other": "その他"},
+ "confidence": {"high": "高", "medium": "中", "low": "低"},
+ "evidenceStatus": {"EXTRACTED": "本文から抽出", "INFERRED": "推定", "AMBIGUOUS": "あいまい"},
+ "runCalibration": {"pending": "未校正", "accepted": "承認済み", "calibrated": "校正済み", "skipped": "省略"},
+ "issueCalibration": {"unchanged": "変更なし", "approved": "代表として承認", "issue-specific": "個別に修正",
+                      "propagated": "類似の issue へ適用", "skipped": "省略"},
+ "aggregationStatus": {"derived": "子の合計", "needs-breakdown": "分解が必要"},
+ "processingLevel": {"low": "低", "medium": "中", "high": "高", "max": "最大"},
+ "issueType": {"task": "タスク", "bug": "バグ", "other": "その他", "epic": "エピック", "user-story": "ストーリー"},
+ "state": {"open": "オープン", "closed": "クローズ", "unknown": "不明"},
+ "selectionReason": {"all-issues": "全件", "minimum": "最小の issue", "lower-median": "中央値付近",
+                     "maximum": "最大の issue", "split-boundary": "分割の境目", "outlier": "外れ値",
+                     "lowest-confidence": "確信度が最も低い", "coverage-fill": "分野の補完",
+                     "assessor-disagreement": "評価者間で不一致"},
+ "difficulty": [[2, "とても易しい"], [5, "易しい"], [12, "普通"], [25, "難しい"], [1000000, "とても難しい"]]
+}

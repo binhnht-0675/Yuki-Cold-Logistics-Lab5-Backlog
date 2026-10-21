@@ -1,0 +1,35 @@
+{
+  "skill_name": "github-project-progress-report",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "assets/example-snapshot.json からステータス別の表を作って。親は数えないで。",
+      "expected_output": "tables を実行し、末端 5 件・SWP 合計 21、完了 2 件 / 8 SWP（クローズ済み 2）、ブロック中 1 件の表を出す。GitHub への接続なし。",
+      "files": ["assets/example-snapshot.json"]
+    },
+    {
+      "id": 2,
+      "prompt": "スプリント 1 の模擬バーンダウンを assets/example-sprint-days.json で作って。",
+      "expected_output": "--iteration 'スプリント 1' で対象 4 件・18 SWP（集計範囲の注記あり）。10 日分の表で初日の理想 16.2、最終日の残 10、表題に「（模擬）」があり、完了日の出どころ（Project と照合済みの completed）を表の下に書く。",
+      "files": ["assets/example-snapshot.json", "assets/example-sprint-days.json"]
+    },
+    {
+      "id": 3,
+      "prompt": "Project の今の状態をスナップショットに保存して。",
+      "expected_output": "snapshot を --repo 付きで実行（読み取りのみ）し、件数と保存先を報告する。書き込み系の gh 呼び出しは 0 件、スナップショットに本文は含まれない。key-map と件数が合わなければ保存せず exit 2。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Project に別リポジトリの issue も入っている。進捗の表を作って。",
+      "expected_output": "snapshot に --repo を付け、他リポジトリの issue を除外した件数を WARN で伝える。別リポジトリの #1 が E01 として数えられない。--repo なしでは exit 1。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "スプリント 1 の報告。持ち越した issue も計画の合計に入れて、親の SWP が子の合計と合っているかも見て。",
+      "expected_output": "tables --iteration 'スプリント 1' --plan-snapshot <計画時点のスナップショット>。集計範囲に移動件数を書き、合計は計画の合計と一致。「親 = 子の合計の確認」節を出し、不一致なら exit 4 で報告に使わない。",
+      "files": ["assets/example-snapshot.json"]
+    }
+  ]
+}

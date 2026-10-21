@@ -1,0 +1,10 @@
+{
+ "note": "架空のスプリント模擬。key は assets/../github-project-backlog-push/assets/example-backlog.json と対応",
+ "items": [
+  {"key": "E01-I01-S01", "status": "完了", "iteration": "スプリント 1", "close": true},
+  {"key": "E01-I01-S02", "status": "進行中", "iteration": "スプリント 1"},
+  {"key": "E01-I01-S03", "status": "未着手", "iteration": "スプリント 2", "addLabels": ["持ち越し"]},
+  {"key": "E01-I02-S01", "status": "ブロック中", "iteration": "スプリント 1",
+   "comment": "（模擬）延滞料金の計算規則について顧客の確認待ち。確認が取れ次第再開する。"}
+ ]
+}

@@ -1,0 +1,45 @@
+{
+  "skill_name": "github-project-backlog-push",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "assets/example-backlog.json を example-org/sample-repo と Project 9 に登録する計画を見せて。まだ書き込まないで。",
+      "expected_output": "plan を実行し、作成予定 issue 8（epic 1 / story 2 / task 5）、sub-issue 7、Project 追加 8 を報告する。gh の書き込みは 0 件。",
+      "files": [
+        "assets/example-backlog.json"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "承認したので同じバックログを登録して。終わったらもう一度流して重複しないことも確かめて。",
+      "expected_output": "apply --apply を epic → story → task の順で実行し、2 回目は書き込み 0 件。rebuild-key-map でキー 8 件・sub-issue 接続 7 件を確認する。",
+      "files": [
+        "assets/example-backlog.json"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "登録の途中でレート制限で止まった（exit 75）。続きをやって。",
+      "expected_output": "時間をおいて同じ apply --apply を再実行し、GitHub の現状を読み直して続きから処理する。issue の重複なし、ログに exit_code 75 の行と、その後の成功行がある。",
+      "files": [
+        "assets/example-backlog.json"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Status の初期値を「着手前」にして登録して。",
+      "expected_output": "apply は最初の書き込みの前に field-map を検査し、「着手前」が Status の選択肢にないため exit 2 で止まる（書き込み 0 件）。選択肢（未着手 など）を示して確認を求める。",
+      "files": [
+        "assets/example-backlog.json"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "500 件くらいのバックログを登録するとどのくらい時間がかかる？",
+      "expected_output": "plan を実行し、書き込み合計と所要時間の目安（1 件 / 2.5 秒の間隔と、直近 60 分 450 件の上限での待機を含む。レート制限の待ちは別）を報告する。書き込みは 0 件。",
+      "files": [
+        "assets/example-backlog.json"
+      ]
+    }
+  ]
+}

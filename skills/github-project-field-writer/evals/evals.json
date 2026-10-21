@@ -1,0 +1,35 @@
+{
+  "skill_name": "github-project-field-writer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "架空の estimate-swp レポート（_shared/tests/fixtures/example-estimate-swp-original.html）と assets/example-hour-rule.json から、SWP と見積時間の change-set を作って差分を見せて。代表 issue のレビューは reviewer-a が 2030-01-03 に済ませた。書き込みはまだ。",
+      "expected_output": "build-from-estimate-swp（--reviewed-by reviewer-a --reviewed-at 2030-01-03）→ diff。末端 5 件 + 親 3 件 = 8 キー、16 行が「変更」。E01 は SWP 21・時間 31.5（子の合計）。GitHub への書き込み 0 件。",
+      "files": ["../_shared/tests/fixtures/example-estimate-swp-original.html", "assets/example-hour-rule.json"]
+    },
+    {
+      "id": 2,
+      "prompt": "差分を確認した。書き込んで、そのあと元に戻せることも確認して。",
+      "expected_output": "apply --apply で 16 件書き込み、その実行のログ（state/write-logs/…）に書き込み 16 件（pending + done の 32 行）+ #run 行 1 行。再実行は変更 0。revert-from-log --from-log <そのログ> --apply で値が空に戻る。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "assets/example-sprint-plan.json のスプリント模擬を Project に反映して。",
+      "expected_output": "build-from-sprint-plan → diff（コメントは revert-from-log で削除できる旨の INFO）→ 承認後 apply --apply。1 件クローズ、1 件に持ち越しラベル、1 件ブロック中 + コメント 1 回。再実行でコメントは増えない。",
+      "files": ["assets/example-sprint-plan.json"]
+    },
+    {
+      "id": 4,
+      "prompt": "レビュー前の estimate-swp レポートだけど、とりあえず SWP を Project に書いて。",
+      "expected_output": "build は WARN と blockingErrors を記録し、apply --apply は exit 2・書き込み 0 件で止まる（calibrationStatus が accepted / calibrated でない、またはレビュー者の記録がない）。代表 issue のレビューを先に終えるよう伝える。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "スプリント模擬の書き込みだけ元に戻して。見積もりの SWP はそのまま残して。",
+      "expected_output": "スプリント模擬の実行ログを --from-log に渡して revert-from-log --apply。Status・イテレーション・クローズ・持ち越しラベルだけが戻り、SWP / 見積時間は変わらない。投稿したコメントもログの id で削除される（id がなく同じ内容のコメントが複数ある場合だけ手で削除）。",
+      "files": []
+    }
+  ]
+}

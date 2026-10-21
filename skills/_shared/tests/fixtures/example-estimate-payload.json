@@ -1,0 +1,446 @@
+{
+ "schemaVersion": "2.0",
+ "scoringModel": "standard-work-point",
+ "scoringModelVersion": "swp-matrix-v2",
+ "run": {
+  "sourceFamily": "github",
+  "sourceLabel": "example-org project 9",
+  "sourceUrl": "https://github.com/users/example-org/projects/9",
+  "project": "9",
+  "period": null,
+  "generatedAt": "2030-01-02T03:04:05Z",
+  "calibrationStatus": "accepted",
+  "processingLevel": "low"
+ },
+ "issues": [
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#4",
+   "url": "https://github.com/example-org/sample-repo/issues/4",
+   "title": "貸出テーブルを追加",
+   "labels": [
+    "種別:タスク"
+   ],
+   "issueType": "task",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "functionRef": "LEND",
+   "activityType": "implement",
+   "project": "9",
+   "period": null,
+   "parentRef": "example-org/sample-repo#2",
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "body",
+     "labels",
+     "title",
+     "url"
+    ],
+    "notes": []
+   },
+   "primaryDiscipline": "DB",
+   "workType": "feature",
+   "scopeSignature": [
+    "single-component"
+   ],
+   "complexitySignature": [
+    "routine"
+   ],
+   "initialScope": 3,
+   "initialComplexity": 2,
+   "initialSWP": 5,
+   "finalScope": 3,
+   "finalComplexity": 2,
+   "finalSWP": 5,
+   "confidence": "high",
+   "evidenceStatus": "EXTRACTED",
+   "rationale": "M\u1ed9t b\u1ea3ng m\u1edbi v\u00e0 hai r\u00e0ng bu\u1ed9c duy nh\u1ea5t.",
+   "assumptions": [],
+   "gaps": [],
+   "supportingEvidence": [],
+   "splitRecommended": false,
+   "splitReason": null,
+   "calibration": {
+    "isRepresentative": false,
+    "selectionReasons": [],
+    "approvedScope": null,
+    "approvedComplexity": null,
+    "issueSpecific": false,
+    "matchedRuleId": null,
+    "scopeBandDelta": 0,
+    "complexityBandDelta": 0,
+    "saturated": false,
+    "status": "unchanged"
+   }
+  },
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#5",
+   "url": "https://github.com/example-org/sample-repo/issues/5",
+   "title": "貸出登録 API <script>",
+   "labels": [
+    "種別:タスク"
+   ],
+   "issueType": "task",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "functionRef": "LEND",
+   "activityType": "implement",
+   "project": "9",
+   "period": null,
+   "parentRef": "example-org/sample-repo#2",
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "body",
+     "labels",
+     "title",
+     "url"
+    ],
+    "notes": []
+   },
+   "primaryDiscipline": "API",
+   "workType": "feature",
+   "scopeSignature": [
+    "single-component"
+   ],
+   "complexitySignature": [
+    "routine"
+   ],
+   "initialScope": 2,
+   "initialComplexity": 1,
+   "initialSWP": 3,
+   "finalScope": 2,
+   "finalComplexity": 1,
+   "finalSWP": 3,
+   "confidence": "medium",
+   "evidenceStatus": "EXTRACTED",
+   "rationale": "一つの API と三種類のエラー。",
+   "assumptions": [],
+   "gaps": [],
+   "supportingEvidence": [],
+   "splitRecommended": false,
+   "splitReason": null,
+   "calibration": {
+    "isRepresentative": true,
+    "selectionReasons": [
+     "lower-median"
+    ],
+    "approvedScope": null,
+    "approvedComplexity": null,
+    "issueSpecific": false,
+    "matchedRuleId": null,
+    "scopeBandDelta": 0,
+    "complexityBandDelta": 0,
+    "saturated": false,
+    "status": "unchanged"
+   }
+  },
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#6",
+   "url": "https://github.com/example-org/sample-repo/issues/6",
+   "title": "貸出登録画面の実装",
+   "labels": [
+    "種別:タスク"
+   ],
+   "issueType": "task",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "functionRef": "LEND",
+   "activityType": "implement",
+   "project": "9",
+   "period": null,
+   "parentRef": "example-org/sample-repo#2",
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "body",
+     "labels",
+     "title",
+     "url"
+    ],
+    "notes": []
+   },
+   "primaryDiscipline": "UI",
+   "workType": "feature",
+   "scopeSignature": [
+    "single-component"
+   ],
+   "complexitySignature": [
+    "routine"
+   ],
+   "initialScope": 3,
+   "initialComplexity": 0,
+   "initialSWP": 3,
+   "finalScope": 3,
+   "finalComplexity": 0,
+   "finalSWP": 3,
+   "confidence": "medium",
+   "evidenceStatus": "EXTRACTED",
+   "rationale": "M\u1ed9t m\u00e0n h\u00ecnh, ba tr\u1ea1ng th\u00e1i.",
+   "assumptions": [],
+   "gaps": [],
+   "supportingEvidence": [],
+   "splitRecommended": false,
+   "splitReason": null,
+   "calibration": {
+    "isRepresentative": false,
+    "selectionReasons": [],
+    "approvedScope": null,
+    "approvedComplexity": null,
+    "issueSpecific": false,
+    "matchedRuleId": null,
+    "scopeBandDelta": 0,
+    "complexityBandDelta": 0,
+    "saturated": false,
+    "status": "unchanged"
+   }
+  },
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#7",
+   "url": "https://github.com/example-org/sample-repo/issues/7",
+   "title": "返却 API",
+   "labels": [
+    "種別:タスク"
+   ],
+   "issueType": "task",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "functionRef": "LEND",
+   "activityType": "implement",
+   "project": "9",
+   "period": null,
+   "parentRef": "example-org/sample-repo#3",
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "body",
+     "labels",
+     "title",
+     "url"
+    ],
+    "notes": []
+   },
+   "primaryDiscipline": "API",
+   "workType": "feature",
+   "scopeSignature": [
+    "single-component"
+   ],
+   "complexitySignature": [
+    "routine"
+   ],
+   "initialScope": 5,
+   "initialComplexity": 2,
+   "initialSWP": 8,
+   "finalScope": 5,
+   "finalComplexity": 2,
+   "finalSWP": 8,
+   "confidence": "low",
+   "evidenceStatus": "EXTRACTED",
+   "rationale": "T\u00ednh ph\u00ed tr\u1ec5 h\u1ea1n c\u00f3 nhi\u1ec1u \u0111i\u1ec1u ki\u1ec7n bi\u00ean.",
+   "assumptions": [],
+   "gaps": [],
+   "supportingEvidence": [],
+   "splitRecommended": false,
+   "splitReason": null,
+   "calibration": {
+    "isRepresentative": false,
+    "selectionReasons": [],
+    "approvedScope": null,
+    "approvedComplexity": null,
+    "issueSpecific": false,
+    "matchedRuleId": null,
+    "scopeBandDelta": 0,
+    "complexityBandDelta": 0,
+    "saturated": false,
+    "status": "unchanged"
+   }
+  },
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#8",
+   "url": "https://github.com/example-org/sample-repo/issues/8",
+   "title": "返却の結合テスト",
+   "labels": [
+    "種別:タスク"
+   ],
+   "issueType": "task",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "functionRef": "LEND",
+   "activityType": "implement",
+   "project": "9",
+   "period": null,
+   "parentRef": "example-org/sample-repo#3",
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "body",
+     "labels",
+     "title",
+     "url"
+    ],
+    "notes": []
+   },
+   "primaryDiscipline": "QA",
+   "workType": "test-execution",
+   "scopeSignature": [
+    "single-component"
+   ],
+   "complexitySignature": [
+    "routine"
+   ],
+   "initialScope": 2,
+   "initialComplexity": 0,
+   "initialSWP": 2,
+   "finalScope": 2,
+   "finalComplexity": 0,
+   "finalSWP": 2,
+   "confidence": "high",
+   "evidenceStatus": "EXTRACTED",
+   "rationale": "六つのケースを通しで確認。",
+   "assumptions": [],
+   "gaps": [],
+   "supportingEvidence": [],
+   "splitRecommended": false,
+   "splitReason": null,
+   "calibration": {
+    "isRepresentative": false,
+    "selectionReasons": [],
+    "approvedScope": null,
+    "approvedComplexity": null,
+    "issueSpecific": false,
+    "matchedRuleId": null,
+    "scopeBandDelta": 0,
+    "complexityBandDelta": 0,
+    "saturated": false,
+    "status": "unchanged"
+   }
+  }
+ ],
+ "parents": [
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#1",
+   "url": "https://github.com/example-org/sample-repo/issues/1",
+   "title": "図書の貸出（架空サンプル）",
+   "labels": [],
+   "issueType": "epic",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "project": "9",
+   "period": null,
+   "parentRef": null,
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "title"
+    ],
+    "notes": []
+   },
+   "aggregationStatus": "derived",
+   "childRefs": [
+    "example-org/sample-repo#2",
+    "example-org/sample-repo#3"
+   ],
+   "initialSWP": 21,
+   "finalSWP": 21
+  },
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#2",
+   "url": "https://github.com/example-org/sample-repo/issues/2",
+   "title": "貸出登録画面",
+   "labels": [],
+   "issueType": "user-story",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "project": "9",
+   "period": null,
+   "parentRef": "example-org/sample-repo#1",
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "title"
+    ],
+    "notes": []
+   },
+   "aggregationStatus": "derived",
+   "childRefs": [
+    "example-org/sample-repo#4",
+    "example-org/sample-repo#5",
+    "example-org/sample-repo#6"
+   ],
+   "initialSWP": 11,
+   "finalSWP": 11
+  },
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#3",
+   "url": "https://github.com/example-org/sample-repo/issues/3",
+   "title": "返却処理",
+   "labels": [],
+   "issueType": "user-story",
+   "state": "open",
+   "status": "未着手",
+   "sprints": [],
+   "milestones": [],
+   "project": "9",
+   "period": null,
+   "parentRef": "example-org/sample-repo#1",
+   "provenance": {
+    "retrievedVia": "gh",
+    "detailStatus": "full",
+    "fields": [
+     "title"
+    ],
+    "notes": []
+   },
+   "aggregationStatus": "derived",
+   "childRefs": [
+    "example-org/sample-repo#7",
+    "example-org/sample-repo#8"
+   ],
+   "initialSWP": 10,
+   "finalSWP": 10
+  }
+ ],
+ "representatives": [
+  {
+   "sourceType": "github",
+   "issueRef": "example-org/sample-repo#5",
+   "selectionReasons": [
+    "lower-median"
+   ]
+  }
+ ],
+ "corrections": [],
+ "calibrationRules": [],
+ "caveats": [
+  "M\u1ee9c low: ch\u1ec9 d\u00f9ng n\u1ed9i dung issue."
+ ]
+}

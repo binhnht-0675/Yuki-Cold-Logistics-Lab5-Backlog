@@ -1,0 +1,41 @@
+{
+  "skill_name": "estimate-swp-report-ja",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "架空の estimate-swp レポート（../_shared/tests/fixtures/example-estimate-swp-original.html）の日本語版を作って、照合表も出して。",
+      "expected_output": "render → check。全検査が合格（lang=ja、ベトナム語 0 文字、数値の不一致 0、全 issue 5・全親 3 を網羅、印のない数値 0、sha256 一致、外部読み込みなし）。照合表に原本と日本語版の sha256、版、コマンドがある。原本 HTML は変更されない。",
+      "files": [
+        "../_shared/tests/fixtures/example-estimate-swp-original.html"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "根拠の欄がベトナム語で省略されている。訳を付けて作り直して。",
+      "expected_output": "原文 → 日本語訳の JSON を作り、render と check の両方に同じ --translations を渡す。省略件数が減り、check は合格のまま。訳文にベトナム語（NFC / NFD とも）が残っていれば exit 2。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "日本語版の SWP を一箇所手で直してしまった。提出して大丈夫？",
+      "expected_output": "check を実行し、数値の不一致を検出して不合格（exit 1）。render で作り直すよう案内する。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "代表 issue について、スキルの評価と担当者の確定、調整の理由を日本語版で見せて。",
+      "expected_output": "日本語版の「校正（代表 issue の確認）」表に issue・選定理由・スキルの評価（Scope × Complexity → SWP）・担当者の確定（同）・調整の理由が並ぶ。確定や理由が埋め込みデータにない場合は「—」で、照合表の代表 issue 表にも同じ内容が出る。全数値に data-v があり check は合格。",
+      "files": [
+        "../_shared/tests/fixtures/example-estimate-swp-original.html"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "代表 issue のレビューがまだ終わっていない estimate-swp レポートだけど、日本語版と照合表を作って提出用にして。",
+      "expected_output": "render は日本語版を作るが、check は「校正済み」が不合格（calibrationStatus が accepted / calibrated でない）で RESULT FAIL・exit 1。代表 issue のレビューを終えて原本を作り直してから render・check をやり直すよう伝える。",
+      "files": [
+        "../_shared/tests/fixtures/example-estimate-swp-original.html"
+      ]
+    }
+  ]
+}
