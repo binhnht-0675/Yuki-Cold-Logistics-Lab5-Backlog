@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCR-23 温度アラート — ワイヤーフレーム（2026-10-19 改訂）| Yuki Cold Logistics</title><meta name="robots" content="noindex">
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#111;--ink2:#3d3d3d;--ink3:#6b6b6b;--line:#1a1a1a;--line2:#b9b9b9;--line3:#dcdcdc;--paper:#fff;--bg:#e8e8e8;--fill:#efefef;--fill2:#dedede;--fill3:#c9c9c9;--mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--ink);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #111;outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#111;color:#fff;padding:8px 14px;z-index:99}
+.skip:focus{left:8px;top:8px}
+h1,h2,h3,h4{line-height:1.35;margin:0}
+code,.mono{font-family:var(--mono);font-size:.92em}
+/* ---- page chrome ---- */
+.top{background:#111;color:#fff;padding:18px 24px 20px}
+.top .tin{max-width:1280px;margin:0 auto}
+.top .crumb{font-size:12px;opacity:.8;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.top .crumb a{color:#fff}
+.top h1{font-size:28px;margin-top:8px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.top h1 .code{font-family:var(--mono);font-size:18px;border:1.5px solid #fff;border-radius:4px;padding:1px 10px}
+.top .lead{margin:6px 0 0;font-size:13px;opacity:.88;max-width:980px}
+.page{max-width:1280px;margin:0 auto;padding:18px 24px 80px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:0 0 14px;padding:0}
+.meta div{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:8px 12px}
+.meta dt{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.04em}
+.meta dd{margin:2px 0 0;font-size:13px;font-weight:500;word-break:break-word}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.toc a{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:12px;text-decoration:none;background:var(--paper);min-height:28px}
+.toc a:hover{background:#111;color:#fff}
+.pintoggle{margin-left:auto;font-size:12px;display:flex;gap:6px;align-items:center}
+body:has(#hidepins:checked) .pin{display:none}
+.legend{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;margin:0 0 18px;padding:0}
+.legend>summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px}
+.legend .lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 18px;padding:2px 14px 14px}
+.legend .lg div{display:flex;gap:10px;align-items:flex-start;font-size:12px}
+.legend .sw{flex:0 0 74px;min-height:26px;font-size:11px;padding:3px 6px;display:flex;align-items:center;justify-content:center;text-align:center}
+section.blk{margin:0 0 30px}
+section.blk>h2{font-size:20px;display:flex;gap:10px;align-items:center;margin:0 0 6px;padding-bottom:6px;border-bottom:3px solid var(--line)}
+section.blk>h2 .n{background:#111;color:#fff;font-size:13px;border-radius:4px;padding:1px 8px}
+section.blk>.sub{margin:4px 0 12px;color:var(--ink2);font-size:13px;max-width:1000px}
+h3.h3{font-size:15px;margin:20px 0 8px;display:flex;gap:8px;align-items:center}
+h3.h3 small{font-weight:400;color:var(--ink3);font-size:12px}
+.ov{overflow-x:auto;padding-bottom:4px}
+/* ---- tables (docs) ---- */
+table.doc{border-collapse:collapse;width:100%;background:var(--paper);font-size:12.5px;border:1.5px solid var(--line)}
+table.doc th{background:var(--fill3);text-align:left;padding:6px 9px;border:1px solid var(--line2);font-size:12px;white-space:nowrap}
+table.doc td{padding:6px 9px;border:1px solid var(--line3);vertical-align:top}
+table.doc tr:nth-child(even) td{background:#fafafa}
+table.doc td.c{text-align:center;white-space:nowrap}
+table.doc td.mono,table.doc td code{font-family:var(--mono);font-size:11.5px}
+.pinc{width:34px;text-align:center}
+/* ---- pins ---- */
+.pin{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#111;color:#fff;font:700 10.5px/1 var(--mono);margin-left:5px;vertical-align:middle;flex:0 0 auto}
+.col>.pin,.card>.pin,.body>.pin,form>.pin,.phb>.pin{align-self:flex-start}
+.pin.lg{min-width:22px;height:22px;font-size:12px}
+/* ---- wire frames ---- */
+.fig{margin:0 0 18px}
+.fig>figcaption{font-size:12px;font-weight:700;margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fig>figcaption .tag{background:#111;color:#fff;border-radius:3px;padding:0 7px;font-size:11px}
+.fig>figcaption .rt{font-weight:400;color:var(--ink3)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;align-items:start}
+.grid-ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(375px,375px));gap:22px;align-items:start}
+.wf{background:var(--paper);border:2px solid var(--line);border-radius:6px;font-size:12.5px;line-height:1.5;overflow:hidden;position:relative}
+.wf.pcw{min-width:1020px}
+.wf .url{background:var(--fill3);border-bottom:2px solid var(--line);padding:4px 10px;font:11px var(--mono);display:flex;gap:8px;align-items:center}
+.wf .url i{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line)}
+.wf .url b{font-weight:500;background:#fff;border:1px solid var(--line2);border-radius:3px;padding:0 8px;flex:1}
+.shell{display:flex;min-height:420px}
+.shell>.side{flex:0 0 190px;border-right:2px solid var(--line);background:var(--fill);padding:10px 8px;display:flex;flex-direction:column;gap:10px}
+.shell>.side .g{font-size:10.5px;color:var(--ink3);font-weight:700;padding:0 6px}
+.shell>.side a,.shell>.side span.mi{display:block;padding:5px 10px;border-radius:5px;font-size:12px;text-decoration:none;color:var(--ink)}
+.shell>.side .cur{background:#111;color:#fff;font-weight:700}
+.shell>.side .ghost{color:var(--ink3);font-size:11px;border:1px dashed var(--line2);border-radius:5px;padding:4px 8px}
+.shell>.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.hdr{display:flex;gap:16px;align-items:center;padding:6px 12px;border-bottom:2px solid var(--line);background:var(--paper);flex-wrap:wrap}
+.hdr .sys{font-weight:700;font-size:13px}
+.hdr .bc{flex:1;color:var(--ink2);font-size:12px;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.hdr .who{font-size:12px}
+.body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;background:#fff}
+.body h1.pt{font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.body h2.st{font-size:14px;display:flex;gap:6px;align-items:center}
+.body .sp{flex:1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.top{align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:8px}
+.cols{display:grid;gap:14px;align-items:start}
+.cols.c23{grid-template-columns:2fr 3fr}.cols.c32{grid-template-columns:3fr 2fr}.cols.c11{grid-template-columns:1fr 1fr}.cols.c3{grid-template-columns:repeat(3,1fr)}.cols.c2{grid-template-columns:1fr 1fr}.cols.c1{grid-template-columns:1fr}
+.card{border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.card.thick{border-width:3px}
+.card h3{font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:0;font-size:12px}
+.dl dt{color:var(--ink3)}.dl dd{margin:0}
+.dl.two{grid-template-columns:auto 1fr auto 1fr}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f>label,.f>.lb{font-size:12px;font-weight:700;display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.f .rq{font-weight:700}
+.in{border:1.5px solid var(--line);border-radius:4px;background:#fff;min-height:30px;padding:4px 8px;color:var(--ink3);font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.in.val{color:var(--ink)}
+.in.mono,.mono .in{font-family:var(--mono)}
+.in.dis{background:var(--fill);border-style:dashed}
+.in.ta{min-height:58px;align-items:flex-start}
+.in.err{border-width:2.5px}
+.in .car{color:var(--ink);font-size:11px}
+.hint{font-size:11px;color:var(--ink3)}
+.fe{display:flex;gap:5px;align-items:flex-start;font-size:11.5px;font-weight:700;border-left:4px solid #111;padding:1px 0 1px 6px;background:var(--fill)}
+.chk{display:flex;gap:7px;align-items:center;font-size:12px;min-height:26px}
+.chk .bx{width:15px;height:15px;border:1.5px solid var(--line);border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;line-height:1;flex:0 0 auto;background:#fff}
+.chk .bx.on{background:#111;color:#fff}
+.chk .rd{width:15px;height:15px;border:1.5px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:#fff}
+.chk .rd.on::after{content:"";width:7px;height:7px;border-radius:50%;background:#111}
+.chk.dis{color:var(--ink3)}
+.fgrid{display:grid;gap:9px 12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fgrid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.fgrid.g1{grid-template-columns:1fr}
+.fgrid .span2{grid-column:span 2}
+.fset{border:1.5px solid var(--line2);border-radius:5px;padding:8px 10px 10px;margin:0}
+.fset>legend{font-size:12px;font-weight:700;padding:0 6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:4px 14px;border-radius:5px;border:2px solid var(--line);font:700 12px var(--mono);font-family:inherit;background:#fff;color:#111;white-space:nowrap}
+.btn.pri{background:#111;color:#fff}
+.btn.dng{background:#111;color:#fff;outline:2px solid #111;outline-offset:2px}
+.btn.ghost{border-color:var(--line2);font-weight:500}
+.btn.dis{background:var(--fill2);color:var(--ink3);border-style:dashed;border-color:var(--ink3)}
+.btn.lg{min-height:40px;width:100%}
+.btn.t48{min-height:48px}
+.btn.xs{min-height:24px;padding:1px 8px;font-size:11px}
+.btn.tog{font-weight:500}
+.btn .pin{background:#fff;color:#111;border:1.5px solid #111}
+.btn:not(.pri):not(.dng) .pin{background:#111;color:#fff}
+svg.i{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;vertical-align:-2px}
+svg.i.l{width:18px;height:18px}
+/* tones: never colour only -> pattern + icon + text */
+.t-danger{border:2.5px solid #111!important;background:repeating-linear-gradient(135deg,#f6f6f6 0 7px,#e6e6e6 7px 9px)}
+.t-warn{border:2px dashed #111!important;background:#f4f4f4}
+.t-ok{border:1.5px solid #555!important;background:#fafafa}
+.t-info{border:2px dotted #333!important;background:#fff}
+.t-neutral{border:1.5px solid #9a9a9a!important;background:var(--fill)}
+.ban{display:flex;gap:9px;align-items:flex-start;border-radius:5px;padding:7px 10px;font-size:12px}
+.ban .tt{font-weight:700;font-size:12.5px}
+.ban .ds{font-size:12px}
+.ban ul{margin:3px 0 0;padding-left:16px}
+.bd{display:inline-flex;gap:4px;align-items:center;border-radius:999px;padding:0 8px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bd.t-danger,.bd.t-warn,.bd.t-ok,.bd.t-info,.bd.t-neutral{border-width:1.5px!important}
+.bd.strike{text-decoration:line-through}
+.tb-chip{display:inline-flex;gap:4px;align-items:center;border:1.5px solid #111;border-radius:4px;padding:0 7px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.tb-amb{background:#fff}.tb-chl{background:var(--fill2)}.tb-frz{background:var(--fill3)}
+.tbl{border-collapse:collapse;width:100%;font-size:12px;border:1.5px solid var(--line)}
+.tbl th{background:var(--fill3);text-align:left;padding:5px 8px;border-bottom:2px solid var(--line);font-size:11.5px;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:1px solid var(--line3);vertical-align:top}
+.tbl tr.sel td{background:var(--fill2)}
+.tbl td.num,.tbl th.num{text-align:right}
+.tbl td.mono{font-family:var(--mono)}
+.tbl .lnk{text-decoration:underline;font-family:var(--mono)}
+.listbtn{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line2);border-radius:5px;min-height:38px;padding:5px 10px;background:#fff;font-size:12px}
+.listbtn.sel{border:2.5px solid #111;background:var(--fill2)}
+.listbtn .sp{flex:1}
+.tabs{display:flex;gap:0;border-bottom:2px solid #111}
+.tabs span{padding:6px 16px;border:1.5px solid var(--line2);border-bottom:0;border-radius:5px 5px 0 0;font-size:12px;margin-right:3px;background:#fff}
+.tabs span.on{background:#111;color:#fff;font-weight:700;border-color:#111}
+.tabs.seg{border:0;gap:0}
+.tabs.seg span{border:1.5px solid #111;border-radius:0;margin:0}
+.tabs.seg span:first-child{border-radius:5px 0 0 5px}.tabs.seg span:last-child{border-radius:0 5px 5px 0}
+.hatch{background:repeating-linear-gradient(45deg,#f3f3f3 0 8px,#e3e3e3 8px 10px);border:1.5px dashed #777;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:11px;text-align:center;border-radius:4px}
+.thumb{width:62px;height:46px}
+/* mock notice: double rule + tag */
+.mock{border:3px double #111;border-radius:6px;background:repeating-linear-gradient(135deg,#fafafa 0 10px,#f0f0f0 10px 12px);padding:7px 10px;font-size:11.5px;position:relative}
+.mock .mt{display:inline-flex;gap:4px;align-items:center;background:#111;color:#fff;border-radius:999px;padding:0 9px;font-weight:700;font-size:11px;min-height:20px}
+.mock dl{margin:6px 0 0;display:grid;gap:4px}
+.mock dt{font-weight:700}.mock dd{margin:0}
+.mock .mk{position:absolute;right:6px;top:4px;font-size:10px;color:var(--ink3)}
+.dim{position:relative;background:#cfcfcf}
+.dim .bgp{opacity:.35;padding:14px;pointer-events:none;min-height:90px;font-size:11px;color:#444}
+.dlg{width:min(430px,92%);margin:0 auto;background:#fff;border:3px solid #111;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12px;box-shadow:6px 6px 0 #111}
+.dim>.dlg{position:relative;margin:-84px auto 18px}
+.dlg h4{font-size:15px;display:flex;gap:8px;align-items:center}
+.dlg .vals{background:var(--fill);border:1px solid var(--line2);border-radius:4px;padding:6px 9px}
+.dlg .vals dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+.dlg .vals dt{color:var(--ink3)}.dlg .vals dd{margin:0;font-family:var(--mono);word-break:break-all}
+.dlg .ft{display:flex;gap:8px;justify-content:flex-end}
+.dlg .nx{font-size:12px}
+/* phone */
+.ph{width:375px;background:#fff;border:3px solid #111;border-radius:26px;overflow:hidden;font-size:13px;line-height:1.5;position:relative;display:flex;flex-direction:column}
+.ph.tall{min-height:640px}
+.ph .notch{height:16px;background:#111;position:relative}
+.ph .notch::after{content:"";position:absolute;left:50%;top:5px;width:70px;height:6px;border-radius:99px;background:#444;transform:translateX(-50%)}
+.ph .phh{height:48px;display:flex;gap:8px;align-items:center;padding:0 12px;border-bottom:2px solid #111;background:#fff}
+.ph .phh .sys{font-weight:700;font-size:13px;flex:1}
+.ph .phh .who{font-size:11.5px}
+.ph .phb{flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:13px}
+.ph .fix{position:sticky;bottom:0;background:#fff;border-top:2px solid #111;padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.ph .ptabs{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #111}
+.ph .ptabs span{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;text-align:center;border-right:1.5px solid var(--line2);padding:2px 6px}
+.ph .ptabs span:last-child{border-right:0}
+.ph .ptabs span.on{background:#111;color:#fff;font-weight:700}
+.ph .f>label{font-size:13px}
+.ph .in{min-height:44px;font-size:14px}
+.ph .btn{font-size:14px}
+.ph .chk{min-height:48px;font-size:13px}
+.ph .chk .bx,.ph .chk .rd{width:20px;height:20px}
+.ph .dlg{width:92%;margin:0 auto}
+.ph .dim>.dlg{margin:-70px auto 14px}
+.ph .tbl{font-size:11.5px}
+.ph .listbtn{min-height:48px}
+/* diagrams */
+.flow{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap}
+.flow .nd{border:2px solid #111;border-radius:6px;padding:5px 10px;background:#fff;font-size:12px;min-width:92px;text-align:center}
+.flow .nd.ghost{border-style:dashed;color:var(--ink3)}
+.flow .ar{align-self:center;font-weight:700;font-size:13px}
+.flow .ar small{display:block;font-size:10px;font-weight:400;color:var(--ink3);max-width:130px;text-align:center}
+.axis{position:relative;height:96px;margin:8px 6px 0;border-top:3px solid #111}
+.axis .tk{position:absolute;top:-3px;width:0;height:12px;border-left:2px solid #111}
+.axis .tl{position:absolute;top:14px;transform:translateX(-50%);font:11px var(--mono);white-space:nowrap}
+.axis .ev{position:absolute;top:36px;transform:translateX(-50%);border:2px solid #111;border-radius:5px;padding:2px 7px;background:#fff;font-size:11px;white-space:nowrap}
+.axis .ev.x{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#ddd 6px 8px);border-width:2.5px}
+.axis .ev.ok{border-style:solid}
+.tl-bar{display:flex;height:34px;border:2px solid #111;border-radius:5px;overflow:hidden;font-size:10.5px}
+.tl-bar span{display:flex;align-items:center;justify-content:center;border-right:1.5px solid #111;white-space:nowrap;overflow:hidden}
+.tl-bar .dr{background:var(--fill2)}.tl-bar .sv{background:#fff}.tl-bar .bk{background:repeating-linear-gradient(45deg,#fff 0 4px,#d9d9d9 4px 6px)}
+.tl-bar .vi{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#bbb 6px 8px);font-weight:700}
+.note{border-left:5px solid #111;background:var(--paper);padding:8px 12px;font-size:12.5px;margin:8px 0}
+.note.warn{border-left-style:double}
+footer.src{margin-top:30px;border-top:3px solid #111;padding-top:12px;font-size:12px;color:var(--ink2)}
+@media (max-width:760px){.page{padding:12px}.top{padding:14px}.grid2,.grid3{grid-template-columns:1fr}}
+@media print{.top{-webkit-print-color-adjust:exact;print-color-adjust:exact}.toc,.pintoggle{display:none}body{background:#fff}.ov{overflow:visible}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* ---- 2026-10-19 改訂: 項目 ID のピン・必須 / 任意・本番版で追加 ---- */
+.rq,.op{display:inline-flex;align-items:center;border-radius:3px;padding:0 5px;font-size:10.5px;font-weight:700;min-height:17px;margin-left:4px;white-space:nowrap;line-height:1.2}
+.rq{background:#111;color:#fff}
+.op{border:1px solid #777;color:#3d3d3d;font-weight:500;background:#fff}
+.ps-box{border:2px dashed #111;border-radius:6px;padding:6px 8px;position:relative;background:#fff;display:flex;flex-direction:column;gap:6px}
+.ps-tag{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;border:1.5px dashed #111;border-radius:999px;padding:0 8px;font-size:10.5px;font-weight:700;background:#fff;white-space:nowrap}
+.pin.ps{background:#fff;color:#111;border:1.5px dashed #111}
+.hid{border:1.5px dotted #777;border-radius:4px;padding:3px 8px;font-size:11px;color:#3d3d3d;background:#fafafa}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+<symbol id="i-open" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017-2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L5 19a1 1 0 001 1h12a1 1 0 001-1l-5-10V3"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.5"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+<symbol id="i-pkg" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+<symbol id="i-off" viewBox="0 0 24 24"><path d="M3 3l18 18M5 12a10 10 0 015-2.7M9 16a5 5 0 016-.9M12 20v.5M2 8.5a15 15 0 015-3"/></symbol>
+<symbol id="i-therm" viewBox="0 0 24 24"><path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/></symbol>
+<symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M4 17L20 7"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></symbol>
+<symbol id="i-load" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+<symbol id="i-hour" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3c0 6 5 6 5 9s-5 3-5 9M17 3c0 6-5 6-5 9s5 3 5 9"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></symbol>
+</defs></svg>
+<a class="skip" href="#s-wire">本文へ移動</a>
+<header class="top"><div class="tin"><div class="crumb"><span>ワイヤーフレーム（2026-10-19 改訂）</span><span>›</span><span>SCR-23</span></div>
+<h1><span class="code">SCR-23</span>温度アラート</h1><p class="lead">ロガーの取込で生まれた温度アラームを、品質管理が確認の期限までに確認する画面。一覧は確認の期限が早い順で、期限を過ぎたアラームが先頭に来る。確認すると一覧から消え、逸脱管理（SCR-24）のケースへ進める。LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR23_TEMPERATURE_ALERT_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></div></header><div class="page"><dl class="meta"><div><dt>画面コード</dt><dd>SCR-23</dd></div><div><dt>画面名（日本語）</dt><dd>温度アラート</dd></div><div><dt>試作版での実装</dt><dd>実装済み（実データ・模擬なし。FT-069 は一部）</dd></div><div><dt>端末 · 幅</dt><dd>PC（左 2 : 右 3）。狭い幅では縦に並ぶ</dd></div><div><dt>表示対象ロール</dt><dd>ROLE-003 品質管理 のみ</dd></div><div><dt>ルート</dt><dd><code>/temperature/alarms</code></dd></div><div><dt>関連 FT / US</dt><dd>FT-068・FT-069（一部）/ US-031</dd></div><div><dt>模擬の表示</dt><dd>なし</dd></div><div><dt>一覧の並び順</dt><dd>確認の期限が早い順（同じ期限は ID 順）。期限を過ぎた行が先頭</dd></div></dl>
+<div class="bar"><ul class="toc" aria-label="この画面の目次"><li><a href="#s-wire">ワイヤーフレーム</a></li><li><a href="#s-notes">注釈</a></li><li><a href="#s-states">状態</a></li><li><a href="#s-blocked">遮断される分岐</a></li><li><a href="#s-roles">ロール別表示</a></li><li><a href="#s-mock">模擬</a></li><li><a href="#s-src">出典・照合</a></li></ul><label class="pintoggle"><input type="checkbox" id="hidepins"> 項目 ID のピンを隠す</label></div>
+<details class="legend" open><summary>凡例（グレースケールのワイヤー。色ではなく線種・柄・文字・アイコンで意味を示す）</summary><div class="lg">
+<div><span class="sw t-danger">危険・ブロック</span><span>太い実線 + 斜線の柄 + アイコン「×」。期限超過・エラー・隔離など。</span></div>
+<div><span class="sw t-warn">警告</span><span>破線。期限が 5 分以内・業務確認待ちなど。</span></div>
+<div><span class="sw t-ok">成功・正常</span><span>細い実線 + チェックのアイコン。確認済みにしたあとの案内など。</span></div>
+<div><span class="sw t-info">情報</span><span>点線。補足の案内など。</span></div>
+<div><span class="sw t-neutral">中立</span><span>灰色の枠。期限まで 5 分より長い残り時間など。</span></div>
+<div><span class="sw"><b class="pin" style="margin:0">A-1</b></span><span>項目 ID のピン（画面仕様 4.1 の ID）。「注釈」の表の同じ ID と対応</span></div>
+<div><span class="sw"><span class="rq">必須</span></span><span>画面仕様 4.1 の Required が「必須」の入力（この画面にはない）</span></div>
+<div><span class="sw"><span class="op">任意</span></span><span>Required が「任意」の入力（この画面にはない）</span></div>
+<div><span class="sw"><span class="ps-tag">本番版で追加</span></span><span>画面仕様（本文）にはなく、PREMISE（P-Sxx）または設計補遺で足す部分。破線の枠で示す</span></div>
+<div><span class="sw hid">画面に出ない</span><span>点線の枠は、画面に見えない要素（読み上げだけの文など）。</span></div>
+<div><span class="sw" style="font-size:12px">例: 2026/10/05</span><span>画面に出ている値はすべてワイヤー用の仮の値（実データではない）。日付は YYYY/MM/DD、時刻は HH:MM（JST）。</span></div>
+</div></details>
+<section class="blk" id="s-wire" aria-labelledby="s-wire-h"><h2 id="s-wire-h"><span class="n">1</span>ワイヤーフレーム（主画面と状態）</h2><p class="sub">左 = 確認待ちのアラームの一覧（確認の期限が早い順。期限を過ぎた行が先頭）、右 = 選んだアラームの詳細 +「確認済みにする」。最初は先頭の行を選ぶ。確認すると一覧から消え、上部の案内から SCR-24 のケースへ進める。</p>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">PC</span>主画面 A — 一覧 + 詳細 /temperature/alarms（先頭の行を選んだ状態）<span class="rt">並び順: ① 期限超過 +18分 → ② 残り 4:10 → ③ 残り 12:10（確認の期限 2026/10/05 10:15 → 10:38 → 10:46 JST）</span></figcaption><div class="ov"><div class="wf pcw"><div class="url"><i></i><i></i><i></i><b>/temperature/alarms</b></div><div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">温度・HACCP <span>›</span> 温度アラート</nav><span class="who">氏名 · 品質管理</span><span class="btn xs">ログアウト</span></div><div class="shell"><nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">在庫・ロット</div><a>ロット状態管理</a></div><div class="gp"><div class="g">温度・HACCP</div><a>温度データインポート</a><a class="cur" aria-current="page">温度アラート</a><a>逸脱管理</a><a>HACCP 完全性</a></div></nav><main class="main"><div class="body">
+<h1 class="pt" data-item="A-1">温度アラート<b class="pin">A-1</b></h1>
+<div class="hid" data-item="A-6">画面に出ない: 超過の知らせ（画面に 1 つだけの role="status" の文）「期限を過ぎたアラームが 1 件あります」。期限を過ぎた件数が変わったときだけ文が変わる（0 件は空の文）<b class="pin">A-6</b></div>
+<div class="cols c23">
+<div class="col" data-item="A-3"><h2 class="st">確認待ちのアラーム（期限が近い順）<b class="pin">A-3</b></h2>
+<div class="listbtn sel" data-item="B-8" style="flex-direction:column;align-items:stretch;gap:5px"><span class="row" style="gap:6px"><span class="hint" data-item="B-1">ゾーン <b class="mono">C</b><b class="pin">B-1</b></span><span data-item="B-2"><span class="tb-chip tb-chl"><svg class="i" aria-hidden="true"><use href="#i-therm"/></svg>冷蔵 <span class="mono">0〜5 °C</span></span><b class="pin">B-2</b></span><span class="mono" data-item="B-3">DL-C01<b class="pin">B-3</b></span><span data-item="B-4"><span class="bd t-warn"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg>中</span><b class="pin">B-4</b></span><span data-item="B-5"><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>期限超過 +18分</span><b class="pin">B-5</b></span></span><span class="hint" data-item="B-6">2026/10/05 06:15 〜 06:30 JST　最も外れた温度 <span class="mono">6.2 °C</span><b class="pin">B-6</b></span><span data-item="B-7">隔離したロット 2 件<b class="pin">B-7</b></span><b class="pin" style="align-self:flex-start;margin-left:0">B-8</b></div>
+<div class="listbtn" style="flex-direction:column;align-items:stretch;gap:5px"><span class="row" style="gap:6px"><span class="hint">ゾーン <b class="mono">F</b></span><span class="tb-chip tb-frz"><svg class="i" aria-hidden="true"><use href="#i-snow"/></svg>冷凍 <span class="mono">−18 °C 以下</span></span><span class="mono">DL-F01</span><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>高</span><span class="bd t-warn"><svg class="i" aria-hidden="true"><use href="#i-hour"/></svg>残り 4:10</span></span><span class="hint">2026/10/05 09:45 〜 10:00 JST　最も外れた温度 <span class="mono">−16.8 °C</span></span><span>隔離したロット 1 件</span></div>
+<div class="listbtn" style="flex-direction:column;align-items:stretch;gap:5px"><span class="row" style="gap:6px"><span class="hint">ゾーン <b class="mono">C</b></span><span class="tb-chip tb-chl"><svg class="i" aria-hidden="true"><use href="#i-therm"/></svg>冷蔵 <span class="mono">0〜5 °C</span></span><span class="mono">DL-C02</span><span class="bd t-info"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>低</span><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>残り 12:10</span></span><span class="hint">2026/10/05 10:00 〜 10:15 JST　最も外れた温度 <span class="mono">5.4 °C</span></span><span>隔離したロット 0 件</span></div>
+<p class="hint">並び順は確認の期限が早い順（同じ期限は ID 順）。期限を過ぎた行が先頭に来る。期限の日時は行に出さず、詳細に出す。</p>
+</div>
+<section class="card" data-item="A-4"><h3>アラームの内容 <span class="mono">DL-C01</span> <span class="bd t-warn"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg>中</span> <span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>期限超過 +18分</span><b class="pin">A-4</b></h3>
+<div class="ban t-danger" data-item="C-9"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg><span class="tt">期限超過</span><b class="pin">C-9</b></div>
+<dl class="dl two"><dt>適用した温度の基準</dt><dd data-item="C-1">バージョン 1　0.0 °C 〜 5.0 °C（境界の値は範囲内）<b class="pin">C-1</b></dd><dt>逸脱の時間</dt><dd data-item="C-2">2026/10/05 06:15 〜 06:30 JST<b class="pin">C-2</b></dd><dt>最も外れた温度</dt><dd data-item="C-3"><span class="mono">6.2 °C</span><b class="pin">C-3</b></dd><dt>継続</dt><dd data-item="C-4">30 分<b class="pin">C-4</b></dd><dt>測定（最初の逸脱）</dt><dd data-item="C-5">2026/10/05 06:15 JST<b class="pin">C-5</b></dd><dt>取込</dt><dd data-item="C-6">2026/10/05 10:00 JST<b class="pin">C-6</b></dd><dt>測定から取込まで</dt><dd data-item="C-7">3 時間 45 分<b class="pin">C-7</b></dd><dt>確認の期限</dt><dd data-item="C-8">2026/10/05 10:15 JST<b class="pin">C-8</b></dd></dl>
+<div class="col" data-item="D-1"><h3>対象のロット<b class="pin">D-1</b></h3><table class="tbl"><thead><tr><th>ロット <span class="ps-tag">本番版で変更（P-S16）</span></th><th>品目</th><th>仕入先ロット</th><th>ロットの状態</th></tr></thead><tbody><tr><td class="mono">L-20261004-0102</td><td class="mono">SKU-0102</td><td class="mono">S-001</td><td><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>隔離</span></td></tr><tr><td class="mono">L-20261004-0330</td><td class="mono">SKU-0330</td><td class="mono">S-114</td><td><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>隔離</span></td></tr></tbody></table></div>
+<div class="ps-box"><span class="ps-tag">本番版で変更（P-S16）</span><div data-item="P-S16">「ロット」列は業務のロットコードを出す（上の表の値）。画面仕様（本文）6 章 S6 の試作版は、ロット ID（UUID）の先頭 8 文字（例 <span class="mono">3f2a91c0</span>）<b class="pin ps">P-S16</b></div></div>
+<div class="row"><span class="btn pri" data-item="D-3">確認済みにする<b class="pin">D-3</b></span><span class="hint">送信中は「確認中…」で無効</span></div>
+</section>
+</div>
+</div></main></div></div></div></figure>
+<div class="grid2">
+<figure class="fig" style="margin:0"><figcaption><span class="tag">PC</span>状態 B — 確認のあと（最後の 1 件を確認して一覧が空）</figcaption><div class="wf"><div class="url"><i></i><i></i><i></i><b>/temperature/alarms</b></div><div class="body"><h1 class="pt">温度アラート</h1>
+<div class="ban t-ok" data-item="A-2"><svg class="i l" aria-hidden="true"><use href="#i-ok"/></svg><div><div class="tt">確認済みにしました。続けて調査・是正処置とロットの判定を進めてください<b class="pin">A-2</b></div><div class="ds"><span class="lnk" data-item="A-7" style="text-decoration:underline">逸脱管理でケースを開く<b class="pin">A-7</b></span>（SCR-24 へ）</div></div></div>
+<div class="hatch" style="min-height:70px;flex-direction:column;gap:2px" data-item="A-5"><b style="color:#111">確認待ちのアラームはありません<b class="pin">A-5</b></b><span>ロガーのファイルを取り込むと、基準を外れた時間帯がここに出ます</span></div>
+<p class="hint">案内（A-2）は一覧が空になっても出し続ける。</p></div></div></figure>
+<figure class="fig" style="margin:0"><figcaption><span class="tag">PC</span>状態 C — 一覧の読み込みで DB に届かない（画面全体がこの表示に替わる）</figcaption><div class="wf"><div class="url"><i></i><i></i><i></i><b>/temperature/alarms</b></div><div class="body"><h1 class="pt">温度アラート</h1>
+<div class="ban t-danger"><svg class="i l" aria-hidden="true"><use href="#i-off"/></svg><div><div class="tt">システムを再起動しています。1〜2分後にもう一度お試しください</div><div class="ds">管理者の方へ: Supabase のダッシュボードでプロジェクトを再開（Resume project）してください</div><div class="row" style="margin-top:6px"><span class="btn" data-item="A-8">再試行<b class="pin">A-8</b></span></div></div></div></div></div></figure>
+<figure class="fig" style="margin:0"><figcaption><span class="tag">PC</span>状態 D — 確認に失敗したとき（詳細の下部）</figcaption><div class="wf"><div class="body"><h3 style="font-size:13px">対象のロット</h3><div class="hint">（表は主画面 A と同じ）</div>
+<div class="fe" data-item="D-2"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>逸脱ケースが見つかりません<b class="pin">D-2</b></div>
+<div class="row"><span class="btn pri">確認済みにする</span></div><p class="hint">ボタンの上に赤の 1 文。一覧は読み直さない。すでに確認済み（別の人が先に確認）のときはこの文を出さず、一覧を読み直して次のアラームへ移る。</p></div></div></figure>
+<div class="ps-box"><span class="ps-tag">設計補遺で追加（SCR23_TEMPERATURE_ALERT_DESIGN_ADDENDUM.md 4.1 E-1〜E-5）</span><div>設計補遺で追加する区画（この図の対象外）: タブ「期限超過の報告」（区画 E）。期間（開始・終了）・集計・超過アラームの表（期限超過の長い順）・「管理レポートで開く」。既定のタブは今までどおり確認待ちの一覧。確認待ちの一覧の並び順（確認の期限が早い順）は変えない。</div></div>
+</div>
+</section>
+<section class="blk" id="s-notes" aria-labelledby="s-notes-h"><h2 id="s-notes-h"><span class="n">2</span>注釈（画面仕様 4.1 の項目）</h2><p class="sub">画面仕様 4.1 の 28 項目と同じ順。Required はすべて「-」（入力を受ける項目がない — 画面仕様 4.2）。</p><div class="ov"><table class="doc"><thead><tr><th>ID</th><th>項目名（4.1 の Item Name）</th><th>種別</th><th>Required</th><th>画面での表し方・補足</th></tr></thead><tbody>
+<tr><td class="c">A-1</td><td>見出し</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>見出し「温度アラート」。品質管理以外には本文の代わりに権限なしの表示（主画面 A）</td></tr>
+<tr><td class="c">A-2</td><td>確認のあとの案内（バナー）</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>確認が成功したあと上部に出す緑の案内「確認済みにしました。続けて調査・是正処置とロットの判定を進めてください」。一覧が空になっても出し続ける（状態 B）</td></tr>
+<tr><td class="c">A-3</td><td>左: 確認待ちのアラーム（一覧）</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>見出し「確認待ちのアラーム（期限が近い順）」。<b>並び順は確認の期限が早い順、同じ期限は ID 順</b>（画面仕様 4.3・6 章「一覧の読取」）。期限を過ぎた行が先頭に来る（主画面 A の ①→②→③）。選んだ行は太い枠。PC は左 2 : 右 3</td></tr>
+<tr><td class="c">A-4</td><td>右: アラームの詳細</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>見出し「アラームの内容」+ 機器 ID・重大度・残り時間 + 概要（C）+ 対象のロット（D）+「確認済みにする」（主画面 A）</td></tr>
+<tr><td class="c">A-5</td><td>空の表示</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>0 件のとき「確認待ちのアラームはありません」+「ロガーのファイルを取り込むと、基準を外れた時間帯がここに出ます」（状態 B）</td></tr>
+<tr><td class="c">A-6</td><td>超過の知らせ（画面に見えない文）</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>画面に見えない文（role="status" が画面に 1 つ）。期限を過ぎた件数が変わったときだけ「期限を過ぎたアラームが N 件あります」に変わる。点線の枠で示した（主画面 A）</td></tr>
+<tr><td class="c">A-7</td><td>逸脱管理でケースを開く</td><td>リンク（4 値外）</td><td class="c">-</td><td>案内の中のリンク「逸脱管理でケースを開く」。SCR-24 のケースへ移る（状態 B）</td></tr>
+<tr><td class="c">A-8</td><td>再試行</td><td>Button</td><td class="c">-</td><td>一覧の読み込みで DB に届かないときの「再試行」。画面全体がこの表示に替わる（状態 C）</td></tr>
+<tr><td class="c">B-1</td><td>ゾーン</td><td>Label</td><td class="c">-</td><td>「ゾーン」+ ゾーンのコード（等幅）。ゾーンが分からないときは出さない。温度帯チップの前</td></tr>
+<tr><td class="c">B-2</td><td>温度帯チップ</td><td>表示ブロック（4 値外 — 温度帯のチップ）</td><td class="c">-</td><td>温度帯（名前 + 範囲 + アイコン）。分からないときは出さない</td></tr>
+<tr><td class="c">B-3</td><td>機器</td><td>Label</td><td class="c">-</td><td>機器 ID（等幅）</td></tr>
+<tr><td class="c">B-4</td><td>重大度</td><td>表示ブロック（4 値外 — 重大度のバッジ）</td><td class="c">-</td><td>重大度のバッジ（アイコン + 文字）: 高・中・低</td></tr>
+<tr><td class="c">B-5</td><td>確認の期限</td><td>表示ブロック（4 値外 — ReviewCountdown）</td><td class="c">-</td><td>残り時間（例「残り 4:10」）。期限を過ぎたら「期限超過 +18分」（危険）。期限の日時そのものは行に出さない</td></tr>
+<tr><td class="c">B-6</td><td>逸脱の時間・最も外れた温度</td><td>Label</td><td class="c">-</td><td>「2026/10/05 06:15 〜 06:30 JST　最も外れた温度 6.2 °C」（開始は日付つき・終了は時刻だけ）</td></tr>
+<tr><td class="c">B-7</td><td>隔離したロットの数</td><td>Label</td><td class="c">-</td><td>「隔離したロット n 件」（状態が隔離のロットだけ数える）</td></tr>
+<tr><td class="c">B-8</td><td>アラームの行（ボタン）</td><td>Button</td><td class="c">-</td><td>1 行 = 1 ボタン。押すと右の詳細がそのアラームに替わる。選んだ行は太い枠。行の高さは 48 px 以上</td></tr>
+<tr><td class="c">C-1</td><td>適用した温度の基準</td><td>Label</td><td class="c">-</td><td>「バージョン 1　0.0 °C 〜 5.0 °C（境界の値は範囲内）」。基準が特定できないときは「基準を特定できません」</td></tr>
+<tr><td class="c">C-2</td><td>逸脱の時間</td><td>Label</td><td class="c">-</td><td>「2026/10/05 06:15 〜 06:30 JST」</td></tr>
+<tr><td class="c">C-3</td><td>最も外れた温度</td><td>Label</td><td class="c">-</td><td>「6.2 °C」（等幅）</td></tr>
+<tr><td class="c">C-4</td><td>継続</td><td>Label</td><td class="c">-</td><td>「30 分」「1 時間 15 分」の形</td></tr>
+<tr><td class="c">C-5</td><td>測定（最初の逸脱）</td><td>Label</td><td class="c">-</td><td>最初の逸脱の読取の日時（JST）</td></tr>
+<tr><td class="c">C-6</td><td>取込</td><td>Label</td><td class="c">-</td><td>ファイルを取り込んだ日時（JST）</td></tr>
+<tr><td class="c">C-7</td><td>測定から取込まで</td><td>Label</td><td class="c">-</td><td>取込 − 最初の逸脱を「3 時間 45 分」の形で</td></tr>
+<tr><td class="c">C-8</td><td>確認の期限</td><td>Label</td><td class="c">-</td><td>確認の期限の日時（JST）。行には出さず、ここにだけ出す</td></tr>
+<tr><td class="c">C-9</td><td>期限超過の文</td><td>表示ブロック（4 値外 — 赤の 1 文）</td><td class="c">-</td><td>詳細の見出しの行の下の赤い 1 文「期限超過」。画面の時計で期限を過ぎているときだけ（主画面 A は先頭の行が期限超過なので出ている）</td></tr>
+<tr><td class="c">D-1</td><td>対象のロット（表）</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>見出し「対象のロット」+ 表（ロット / 品目 / 仕入先ロット / ロットの状態）。ロットがなければ「この時間帯にこのゾーンにあったロットはありません」。ロット列の値は PREMISE P-S16 の業務のロットコード</td></tr>
+<tr><td class="c">D-2</td><td>確認のエラー</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>確認に失敗したとき、ボタンの上に赤の 1 文（状態 D）。内部の規則の識別子は出さない</td></tr>
+<tr><td class="c">D-3</td><td>「確認済みにする」ボタン</td><td>Button</td><td class="c">-</td><td>ラベル「確認済みにする」。処理中は「確認中…」で無効。電話の幅では高さ 48 px</td></tr>
+<tr><td class="c">P-S16</td><td>ロット列の表示（業務のロットコード）</td><td>表の列の値</td><td class="c">-</td><td>PREMISE P-S16: ロット ID（UUID）の先頭 8 文字ではなく業務のロットコードを出す。画面仕様 6 章 S6・6.8 は試作版の表示（先頭 8 文字）。破線の枠で示した</td></tr>
+</tbody></table></div></section>
+<section class="blk" id="s-states" aria-labelledby="s-states-h"><h2 id="s-states-h"><span class="n">3</span>状態バリエーション</h2><div class="ov"><table class="doc"><thead><tr><th>状態</th><th>表示</th><th>画面仕様</th></tr></thead><tbody>
+<tr><td>読み込み中</td><td>「読み込み中…」（画面全体）</td><td>5 章 A-8</td></tr>
+<tr><td>アラームが 0 件</td><td>「確認待ちのアラームはありません」+「ロガーのファイルを取り込むと、基準を外れた時間帯がここに出ます」。確認のあとの案内はあれば残る（状態 B）</td><td>5 章 A-5</td></tr>
+<tr><td>開いたとき</td><td>先頭の 1 件（確認の期限が最も早いもの。期限を過ぎていればそれ）を選んで、右に詳細を出す（主画面 A）</td><td>5 章 A-3・A-4、4.1 補足</td></tr>
+<tr><td>行を押す</td><td>押した行が太い枠になり、右の詳細がそのアラームに替わる</td><td>5 章 B-8</td></tr>
+<tr><td>時計</td><td>1 秒ごとに残り時間が変わる。5 分より長い = 中立（時計のアイコン「残り 12:10」）、5 分以内（期限ちょうどを含む）= 警告（タイマーのアイコン）、期限を過ぎた = 危険「期限超過 +n分」（八角形の警告のアイコン）</td><td>5 章 A-6・B-5、6 章 6.4</td></tr>
+<tr><td>開いたまま期限を過ぎた</td><td>その行の残り時間が「期限超過 +n分」に変わり、詳細に赤の 1 文「期限超過」が出る。超過の知らせ（見えない文）は件数が変わったときだけ変わる</td><td>5 章 C-9・A-6・B-5</td></tr>
+<tr><td>送信中</td><td>ボタン「確認中…」・無効。二重に押しても 2 回目は走らない</td><td>5 章 D-3</td></tr>
+<tr><td>確認の成功</td><td>一覧を読み直し（そのアラームは消える）、上部に案内とリンク。選択は先頭へ移る</td><td>5 章 A-2・A-3</td></tr>
+<tr><td>すでに確認済み</td><td>一覧を読み直し、そのアラームは消えて次のアラームの詳細に替わる（エラーの文は詳細ごと消える）</td><td>5 章 D-3</td></tr>
+<tr><td>ほかの失敗</td><td>ボタンの上に赤の 1 文（状態 D）。読み直さない</td><td>5 章 D-2</td></tr>
+<tr><td>DB に届かない</td><td>一覧: 再試行つきの表示（状態 C）/ 確認: 同じ文の 1 文</td><td>5 章 A-8・D-2、共通仕様 CS-06</td></tr>
+<tr><td>権限なし</td><td>見出し +「この操作を行う権限がありません」「必要な場合は管理者にお問い合わせください」</td><td>5 章、共通仕様 CS-04</td></tr>
+</tbody></table></div></section>
+<section class="blk" id="s-blocked" aria-labelledby="s-blocked-h"><h2 id="s-blocked-h"><span class="n">4</span>遮断される分岐（失敗の表示）</h2><p class="sub">この画面は処理不可ダイアログ（共通仕様 CS-07 7.4）を使わない。失敗は 1 文で出し（共通仕様 CS-07 7.3）、内部の規則の識別子や応答のコードは画面に出さない。</p><div class="ov"><table class="doc"><thead><tr><th>事象</th><th>画面の出し方</th><th>文言（日本語の原文）</th></tr></thead><tbody>
+<tr><td>別の画面・別の人が先に確認していた</td><td>一覧を読み直す（そのアラームは消え、エラーの文も詳細ごと消える）</td><td>このケースはすでに確認済みです</td></tr>
+<tr><td>ケースが見つからない（別の端末で消えた・ID が違う）</td><td>ボタンの上の赤の 1 文（状態 D）</td><td>逸脱ケースが見つかりません</td></tr>
+<tr><td>品質管理でない人が操作を直接呼んだ</td><td>1 文</td><td>この操作を行う権限がありません ／ 逸脱ケースの操作・閲覧は品質管理だけが行えます</td></tr>
+<tr><td>送った内容の形が正しくない（通常の操作では届かない）</td><td>1 文</td><td>入力内容に誤りがあります</td></tr>
+<tr><td>DB に届かない</td><td>一覧: 再試行つきの表示（状態 C）/ 確認: 1 文</td><td>システムを再起動しています。1〜2分後にもう一度お試しください</td></tr>
+<tr><td>入荷検品・出荷前確認から起きたケース</td><td>この一覧には出ない（確認は SCR-24 で行う）</td><td>—</td></tr>
+</tbody></table></div></section>
+<section class="blk" id="s-roles" aria-labelledby="s-roles-h"><h2 id="s-roles-h"><span class="n">5</span>ロール別の表示</h2><div class="ov"><table class="doc"><thead><tr><th>ロール</th><th>表示</th></tr></thead><tbody><tr><td>ROLE-003 品質管理</td><td>全部の領域。確認できる。</td></tr><tr><td>ほかのロール</td><td>メニューに出ない。開くと見出し + 権限なしの表示。</td></tr></tbody></table></div></section>
+<section class="blk" id="s-mock" aria-labelledby="s-mock-h"><h2 id="s-mock-h"><span class="n">6</span>模擬の表示の位置</h2><p>この画面に模擬はない（画面仕様 6 章 6.3）。</p></section>
+<section class="blk" id="s-src" aria-labelledby="s-src-h"><h2 id="s-src-h"><span class="n">7</span>出典と照合</h2>
+<p>出典: 画面仕様 SCR23_TEMPERATURE_ALERT_SPEC.md（version 0.4.1）の 4.1（28 項目）・4.2・5 章・6 章（6.4「一覧の読取」・6.7 仕様との差異 S2・S3・S6・6.8 範囲外）。共通仕様 CS-04・CS-06・CS-07 7.3・CS-08。PREMISE P-S16（ロットの業務コード）・P-S04（日付の表記）。設計補遺 SCR23_TEMPERATURE_ALERT_DESIGN_ADDENDUM.md（version 0.1.0）の区画 E は対象外として枠で示した。PREMISE P-A10（期限超過の集計は管理レポートと共通）は仮定で、図には描かない。</p>
+<p>旧ワイヤーフレームからの主な変更: 一覧の並び順を画面仕様どおり確認の期限が早い順に直した（旧図は期限超過の行が最後）。注釈を画面仕様 4.1 の項目 ID にそろえた。失敗の文から内部の規則の識別子を外した。案内・空・再試行・失敗の 1 文・見えない知らせを状態の枠で示した。</p>
+<p>意図的に描かなかったもの: 期限超過の管理レポートへの掲載・通知（メール・プッシュ）・品質オーナーへのエスカレーション（画面仕様 6.8 — 未実装）。</p></section>
+</div><footer class="src"><p>LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR23_TEMPERATURE_ALERT_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></footer></body></html>

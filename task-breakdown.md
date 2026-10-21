@@ -1,0 +1,754 @@
+# task-breakdown — 分割の方針と対応表
+
+## 1. 分割の原則
+
+### 1.1 階層
+- **epic（15 件）**: 業務領域または横断の関心事ごと。10 は feature（認証、入荷・在庫、受注・引当、出荷、配送、温度管理、トレーサビリティ、マスター、クレーム、レポート・監査）、4 は横断（基盤、外部連携、データ移行、非機能・横断 UI）、1 は 2024 年運転時間規制の専用 epic。
+- **issue（86 件）**: 利用者が 1 つの機能として見るまとまり。1 つの画面、または 1 つの画面の中の連続した FT の組。画面に FT が多いときは 2〜3 件に分ける。必ず対象の FT 番号を持つ。
+- **sub-issue（397 件）**: 1 人が 2 日以内に終えられる、1 つの層の作業。層は DB・API・UI・テスト・移行・インフラ・ドキュメントのいずれか。
+- 親子は GitHub のサブ issue の機能で表す。種別（エピック・ストーリー・タスク）と層、2024 年規制はラベルで補う。
+
+### 1.2 粒度
+- 次の 4 つが揃ったら分けるのをやめる。1 人が 2 日以内で終わる。層が 1 つ。単独でマージできる。完了の定義を検証できる形で書ける。
+- 次のどれかに当たったら分ける。層が違う。担当が違う。API が 3 本以上。画面の部分が 2 つ以上。状態を変える RPC が 2 つ以上。
+- 例外として、2 つの RPC が同じトランザクションで動き分けると単独でマージ・検証できないとき、または同じ検査を複数の RPC に足すだけで新しい状態の変化を作らないときは 1 件にまとめる。その場合は備考に「分割の規則の例外」と理由を書く。
+- 逆に、同じ画面の小さな参照 API（GET）は合計 2 日以内なら 1 つにまとめる。
+- 件数を先に決めることはせず、1 件ずつ進み具合を追える小ささ（1 人・2 日以内・1 層）を優先した。FT の多い画面は issue を 2〜3 件に分けている。
+- sub-issue が 1 件だけの issue は、作業が本当に 1 つのときに限る。その場合は理由を issue の備考に書く。
+- 着手の順序の制約は本文の「依存」にだけ書く。「備考」に出てくるキーは役割の分担や関連を示す参照で、着手の順序は縛らない。
+- LAB-4（2026-10-12 提出）に対する講師講評（2026-10-19）に基づく変更は、この文書と PREMISE では出典をこの言い方で書く。issue の本文では「講評（2026-10-19）」と短く書き、全文は対応する PREMISE の行（P-xx）に置く。issue は外部の利用者も読む作業票のため、講評の出典の詳細は PREMISE にまとめる。
+
+### 1.3 本番化の扱い
+- 実装で確認済みの機能（60 件）は作り直さない。本番版はプロトタイプと同じ技術で引き上げる方針（PREMISE P-D04）なので、sub-issue は本番化の差分に絞る。差分とは、模擬の置き換え、仕様と実装の差の解消、本番水準のテスト、試作版のレビューで見つかった点の修正。
+- 設計のみの機能（65 件）は、DB・API・UI・テストを揃えて切る。
+
+### 1.4 完了の定義と規模の手がかり
+- すべての sub-issue に、検証できる形の完了の定義を 2 つ以上書く（例: 境界の入力で期待どおりの結果になる単体テスト、ロックの順序を守る確認）。
+- すべての sub-issue に「規模の手がかり」を書く。API の本数、テーブル、状態、規則の数、画面項目、境界の件数など。ストーリーポイントの評価は issue の本文だけを根拠にするため、本文の外を見に行かなくても規模が分かるようにする。
+- 参照は、設計書のファイルと章・表の行まで書く。
+- ロックを取る sub-issue は、ADR-006 §2.1 の全体表の順位（例: 3 → 5b → 6a）を完了の定義に書き、取得の順をテストかコードレビューで確かめる。
+
+### 1.5 2024 年運転時間規制
+- 規制の数値や条件に内容が依存する作業は、すべて epic `E11` に集める（理由は §3）。配送 epic（`E05`）には規制に依存しない作業だけを置く。
+
+### 1.6 担当（仮）
+- GitHub の Assignees は協力者のみ割当可能なため、担当（仮）フィールドで管理する。値は役割名（BE-1、BE-2、FE-1、FE-2、QA-1、QA-2、Infra-1、PM、BrSE）で、実在の個人ではなく計画上の割当を表す。
+
+### 1.7 抜け・矛盾の扱い
+- 設計書の抜けや矛盾を見つけたら、§4 の表に 1 行で残し、扱いを次の 4 つのどれか 1 つに決める。
+  - 設計を修正（PREMISE の行を参照）
+  - 仮定（PREMISE の行を参照）
+  - 確認用の issue を作成（issue のキー）
+  - 未解決のまま（理由）
+- 設計書そのものは変えず、変更は PREMISE に書く。各行には放置したときの影響度と、顧客側で決める役割を付ける。
+
+## 2. 仕様から issue への対応
+
+backlog から機械的に生成する。表の 1 行が 1 つの issue で、Epic の列は親の epic、sub-issue の列はその issue の子を並べる。「issue にしなかった部分」は、設計書にあるが開発作業にならない、または別の epic で扱う箇所を、理由つきで残したもの。末尾に FT から issue への逆引きを置く。
+
+<!-- BEGIN generated:spec-to-issue -->
+
+### E01 認証・権限
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR33_LOGIN_SPEC.md §3.2 関連 FT / US と実装状況 | `E01` | `E01-I01` SCR-33 ログイン（企業 SSO への切替） | FT-103 | `E01-I01-S01`、`E01-I01-S02`、`E01-I01-S04`、`E01-I01-S06`、`E01-I01-S07`（5 件） |
+| SCR34_USER_ROLE_MANAGEMENT_SPEC.md §3.1 画面情報・関連 FT / US | `E01` | `E01-I02` SCR-34 ユーザー・ロール管理 | FT-112 | `E01-I02-S01`、`E01-I02-S02`、`E01-I02-S03`、`E01-I02-S04`、`E01-I02-S05`、`E01-I02-S08`、`E01-I02-S06`、`E01-I02-S07`（8 件） |
+| SCR35_DRIVER_DEVICE_LOGIN_SPEC.md §3.1 画面情報・関連 FT / US | `E01` | `E01-I03` SCR-35 ドライバー管理端末のログイン | FT-114 | `E01-I03-S01`、`E01-I03-S02`、`E01-I03-S06`、`E01-I03-S03`、`E01-I03-S04`、`E01-I03-S05`（6 件） |
+| SCR34_USER_ROLE_MANAGEMENT_SPEC.md §6 Other Notes（その他） | `E01` | `E01-I04` 特権ロールの MFA 必須・共有アカウント禁止 | FT-113 | `E01-I04-S01`、`E01-I04-S02`、`E01-I04-S03`、`E01-I04-S04`、`E01-I04-S05`（5 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_AUTHENTICATION_DB.md、DB_AUTHENTICATION_DESIGN_DB.md | `E01-I01-S02`、`E01-I02-S06`、`E01-I03-S04`、`E01-I04-S03`、`E01-I04-S05` |
+| API 設計（BM-52） | API-001_API.md、API-002_API.md、API-D-157_API.md、API-D-158_API.md、API-D-070_API.md、API-D-071_API.md、API-D-072_API.md、API-D-073_API.md、API-D-076_API.md、API-D-077_API.md、API-D-079_API.md | `E01-I01-S02`、`E01-I01-S04`、`E01-I02-S03`、`E01-I02-S04`、`E01-I02-S05`、`E01-I02-S08`、`E01-I03-S02`、`E01-I03-S06`、`E01-I03-S03`、`E01-I04-S02` |
+| ADR | ADR-003-two-layer-authorization-route-handler-and-rls.md、ADR-006-business-rules-placement-in-production-build.md | `E01-I04-S02`、`E01-I04-S03` |
+| 設計補遺 | SCR33_LOGIN_DESIGN_ADDENDUM.md | `E01-I01-S01`、`E01-I01-S06` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| authentication/screen-specification/SCR33_LOGIN_SPEC.md §6.3 パスワード変更画面 | パスワード変更画面は、SSO 移行後は IdP 側の機能になるため本システムでは作らない。 |
+| authentication/README.md 範囲外 | IdP・MDM の製品調達と契約は開発タスクではなく、顧客側の作業。 |
+
+### E02 入荷・在庫
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR01_RECEIVING_APPOINTMENT_SPEC.md §3.1 画面情報 | `E02` | `E02-I01` SCR-01 入荷予約 | FT-001 | `E02-I01-S01`、`E02-I01-S02`、`E02-I01-S03`、`E02-I01-S04`、`E02-I01-S05`、`E02-I01-S06`、`E02-I01-S07`（7 件） |
+| SCR02_RECEIVING_INSPECTION_SPEC.md §3.2 関連 FT / US と実装状況 | `E02` | `E02-I02` SCR-02 入庫検査（検品入力・証拠写真・トレース項目） | FT-002、FT-003、FT-004、FT-124 | `E02-I02-S01`、`E02-I02-S02`、`E02-I02-S03`、`E02-I02-S05`（4 件） |
+| SCR02_RECEIVING_INSPECTION_SPEC.md §5.1 状態と遷移（states） | `E02` | `E02-I11` SCR-02 受入数量の記録・ロット作成・自動隔離 | FT-005、FT-007、FT-008、FT-009 | `E02-I11-S01`、`E02-I11-S02`、`E02-I11-S03`、`E02-I11-S04`、`E02-I11-S05`、`E02-I11-S06`（6 件） |
+| SCR02_RECEIVING_INSPECTION_DESIGN_ADDENDUM.md §3 Description（画面概要） | `E02` | `E02-I12` SCR-02 受入数量の差異承認 | FT-006 | `E02-I12-S01`、`E02-I12-S02`、`E02-I12-S04`、`E02-I12-S05`（4 件） |
+| SCR03_STOCK_MOVEMENT_SPEC.md §3.1 画面情報 | `E02` | `E02-I03` SCR-03 在庫移動 | FT-010、FT-011 | `E02-I03-S01`、`E02-I03-S02`、`E02-I03-S04`、`E02-I03-S06`（4 件） |
+| SCR04_LOCATION_MANAGEMENT_SPEC.md §3.1 画面情報 | `E02` | `E02-I04` SCR-04 ロケーション管理（参照） | FT-012 | `E02-I04-S01`、`E02-I04-S02`、`E02-I04-S03`、`E02-I04-S04`（4 件） |
+| SCR05_PUTAWAY_SPEC.md §4.1 項目一覧（Item list） | `E02` | `E02-I05` SCR-05 棚入れ | FT-013、FT-014、FT-015 | `E02-I05-S01`、`E02-I05-S02`、`E02-I05-S03`、`E02-I05-S04`、`E02-I05-S06`（5 件） |
+| SCR06_STOCK_INQUIRY_SPEC.md §3.1 画面情報 | `E02` | `E02-I06` SCR-06 在庫照会 | FT-016 | `E02-I06-S01`、`E02-I06-S02`、`E02-I06-S03`（3 件） |
+| SCR07_TEMPORARY_BAND_SPEC.md §3.1 画面情報 | `E02` | `E02-I07` SCR-07 一時温度帯の割り当て | FT-017、FT-018 | `E02-I07-S01`、`E02-I07-S02`、`E02-I07-S03`、`E02-I07-S04`、`E02-I07-S05`、`E02-I07-S06`（6 件） |
+| SCR08_STOCK_COUNT_SPEC.md §5.1 状態と遷移 | `E02` | `E02-I08` SCR-08 棚卸（ブラインド） | FT-019 | `E02-I08-S01`、`E02-I08-S02`、`E02-I08-S03`、`E02-I08-S06`、`E02-I08-S04`、`E02-I08-S05`（6 件） |
+| SCR09_STOCK_ADJUSTMENT_SPEC.md §5.1 状態と遷移 | `E02` | `E02-I09` SCR-09 在庫調整（提案と承認） | FT-020、FT-021 | `E02-I09-S01`、`E02-I09-S02`、`E02-I09-S03`、`E02-I09-S04`、`E02-I09-S05`、`E02-I09-S06`（6 件） |
+| SCR10_LOT_STATUS_SPEC.md §5.1 状態と遷移（states） | `E02` | `E02-I10` SCR-10 ロット状態管理 | FT-022、FT-023、FT-024、FT-125 | `E02-I10-S01`、`E02-I10-S02`、`E02-I10-S03`、`E02-I10-S04`、`E02-I10-S05`、`E02-I10-S06`（6 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_INBOUND_INVENTORY_DESIGN_DB.md、DB_TEMPERATURE_HACCP_DB.md | `E02-I01-S06`、`E02-I11-S03`、`E02-I11-S04`、`E02-I12-S01`、`E02-I03-S04`、`E02-I07-S05`、`E02-I08-S05`、`E02-I09-S05` |
+| API 設計（BM-52） | API-D-001_API.md、API-D-002_API.md、API-D-003_API.md、API-D-004_API.md、API-004_API.md、API-007_API.md、API-005_API.md、API-006_API.md、API-D-120_API.md、API-D-121_API.md、API-D-005_API.md、API-D-006_API.md、API-D-007_API.md、API-D-008_API.md、API-003_API.md、API-009_API.md、API-010_API.md、API-D-122_API.md、API-D-009_API.md、API-D-010_API.md、API-D-011_API.md、API-D-012_API.md、API-D-013_API.md、API-D-014_API.md、API-D-015_API.md、API-D-016_API.md、API-D-017_API.md、API-D-018_API.md、API-D-019_API.md、API-011_API.md、API-008_API.md、API-012_API.md、API-013_API.md | `E02-I01-S03`、`E02-I01-S04`、`E02-I01-S05`、`E02-I02-S03`、`E02-I11-S01`、`E02-I11-S02`、`E02-I12-S02`、`E02-I03-S02`、`E02-I04-S02`、`E02-I05-S03`、`E02-I05-S04`、`E02-I06-S02`、`E02-I07-S03`、`E02-I07-S04`、`E02-I08-S02`、`E02-I08-S03`、`E02-I08-S06`、`E02-I09-S03`、`E02-I09-S04`、`E02-I10-S02`、`E02-I10-S03`、`E02-I10-S04` |
+| 設計補遺 | SCR02_RECEIVING_INSPECTION_DESIGN_ADDENDUM.md、SCR05_PUTAWAY_DESIGN_ADDENDUM.md | `E02-I12-S01`、`E02-I12-S04`、`E02-I12-S05`、`E02-I05-S02`、`E02-I05-S04`、`E02-I05-S06` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| inbound-inventory/screen-specification/SCR10_LOT_STATUS_SPEC.md §6.6 既知の制約 | 入荷の例外を品質管理が閉じる・入荷行を保留にする処理は、現行の計画にも FT にも無いため、顧客の回答（確認用の issue E02-I10-S06）までは作業の issue にしない。 |
+| inbound-inventory/screen-specification/SCR02_RECEIVING_INSPECTION_SPEC.md §6.7 既知の制約 | 確定後に検品を訂正する画面は、FT に無いため作らない。誤りは差異承認の差戻しで扱う。 |
+| inbound-inventory/screen-specification/SCR02_RECEIVING_INSPECTION_SPEC.md §6.6 未確認事項 | 理由コードのマスター化は、顧客の指定が無いため自由入力のまま維持し、issue にしない。 |
+| inbound-inventory/screen-specification/SCR05_PUTAWAY_SPEC.md §6.5 既知の制約 | 複数ロットの一括棚入れと棚入れの取消は、FT に無いため作らない（別の移動で行う）。 |
+
+### E03 受注・引当
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR11_ORDER_ENTRY_SPEC.md §4.2 Validation（入力規則） | `E03` | `E03-I01` SCR-11 注文作成（受注登録） | FT-025、FT-026 | `E03-I01-S01`、`E03-I01-S02`、`E03-I01-S04`、`E03-I01-S05`（4 件） |
+| SCR12_ALLOCATION_RESULT_SPEC.md §4.1 項目一覧（Item list） | `E03` | `E03-I02` SCR-12 引当結果（除外規則・結果表示・一覧） | FT-027、FT-028、FT-029、FT-034 | `E03-I02-S01`、`E03-I02-S03`、`E03-I02-S04`、`E03-I02-S05`（4 件） |
+| SCR12_ALLOCATION_RESULT_SPEC.md §5.1 状態と遷移（states） | `E03` | `E03-I03` SCR-12 引当結果（納品期限ルール・FEFO・賞味期限警告） | FT-030、FT-031、FT-032、FT-122 | `E03-I03-S01`、`E03-I03-S03`、`E03-I03-S04`、`E03-I03-S05`（4 件） |
+| SCR12_ALLOCATION_RESULT_SPEC.md §5.1 状態と遷移（states） | `E03` | `E03-I04` SCR-12 引当の実行・業務確認・欠品出荷・取消 | FT-033、FT-035 | `E03-I04-S01`、`E03-I04-S02`、`E03-I04-S03`、`E03-I04-S04`、`E03-I04-S05`、`E03-I04-S06`、`E03-I04-S09`、`E03-I04-S07`、`E03-I04-S08`（9 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_ORDER_ALLOCATION_DB.md | `E03-I01-S04`、`E03-I03-S01` |
+| API 設計（BM-52） | API-015_API.md、API-016_API.md、API-014_API.md、API-017_API.md、API-018_API.md、API-019_API.md、API-020_API.md、API-021_API.md | `E03-I01-S02`、`E03-I02-S03`、`E03-I03-S03`、`E03-I04-S01`、`E03-I04-S03`、`E03-I04-S04`、`E03-I04-S05` |
+| 技術設計（TECH） | ALLOCATE_LOTS_TECH.md | `E03-I02-S04`、`E03-I03-S01`、`E03-I03-S05`、`E03-I04-S02` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| order-allocation/screen-specification/SCR11_ORDER_ENTRY_SPEC.md §6.6 既知の制約 | 受注の修正・複数明細・CSV 取込は FT に無く、試作版でも対象外のため作らない（変更は取消して登録し直す）。 |
+| order-allocation/screen-specification/SCR12_ALLOCATION_RESULT_SPEC.md §6.6 未確認事項 | 引当の温度帯判定に実測温度を使う案は、入荷時に温度ポリシーと照合済みのため作らない。 |
+
+### E04 出荷（ピッキング・積込）
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR13_PICK_LOAD_SPEC.md §5.2 遮断される分岐（blocked branches） | `E04` | `E04-I01` SCR-13 ピッキング・積載 | FT-036、FT-037 | `E04-I01-S01`、`E04-I01-S02`、`E04-I01-S03`、`E04-I01-S04`、`E04-I01-S05`、`E04-I01-S06`、`E04-I01-S07`、`E04-I01-S08`（8 件） |
+| SCR14_PRE_DISPATCH_CHECK_SPEC.md §5.1 状態と遷移（states） | `E04` | `E04-I02` SCR-14 出荷前確認 | FT-038、FT-039 | `E04-I02-S01`、`E04-I02-S02`、`E04-I02-S03`、`E04-I02-S04`、`E04-I02-S05`（5 件） |
+| SCR15_PICKING_TASKS_SPEC.md §3.1 画面情報・関連 FT / US | `E04` | `E04-I03` SCR-15 ピッキングタスクの並び替え | FT-040、FT-041 | `E04-I03-S01`、`E04-I03-S02`、`E04-I03-S04`、`E04-I03-S05`（4 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_OUTBOUND_PICKING_DESIGN_DB.md、DB_OUTBOUND_PICKING_DB.md | `E04-I01-S05`、`E04-I01-S06`、`E04-I03-S04` |
+| API 設計（BM-52） | API-022_API.md、API-023_API.md、API-024_API.md、API-025_API.md、API-026_API.md、API-027_API.md、API-028_API.md、API-D-040_API.md、API-D-041_API.md | `E04-I01-S03`、`E04-I01-S04`、`E04-I01-S05`、`E04-I02-S02`、`E04-I02-S03`、`E04-I03-S02` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| outbound-picking/screen-specification/SCR13_PICK_LOAD_SPEC.md §6.7 範囲外・既知の制約 | ピッキングのオフライン待ち行列は、現行の設計が操作を止める方針のため作らない。要否は確認用の issue（E04-I01-S08）で顧客に確かめる。 |
+| outbound-picking/screen-specification/SCR14_PRE_DISPATCH_CHECK_SPEC.md §6.7 範囲外・既知の制約 | 画面のスクリーンショット貼付は仕様書の整備であり開発作業ではない。 |
+
+### E05 配送（ルート・運行・POD）
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR16_DRIVER_ITINERARY_SPEC.md §5.1 状態と遷移（states） | `E05` | `E05-I01` SCR-16 ドライバー運行予定・出発確定 | FT-042 | `E05-I01-S01`、`E05-I01-S02`、`E05-I01-S03`、`E05-I01-S04`（4 件） |
+| SCR17_DELIVERY_POD_SPEC.md §5.1 状態と遷移（states） | `E05` | `E05-I02` SCR-17 配送証拠（POD）の記録 | FT-043、FT-044、FT-045 | `E05-I02-S01`、`E05-I02-S02`、`E05-I02-S03`、`E05-I02-S04`、`E05-I02-S07`、`E05-I02-S06`（6 件） |
+| SCR17_DELIVERY_POD_DESIGN_ADDENDUM.md §3 Description（画面概要） | `E05` | `E05-I05` SCR-17 オフライン証拠保存と同期 | FT-046、FT-047 | `E05-I05-S01`、`E05-I05-S02`、`E05-I05-S03`、`E05-I05-S08`、`E05-I05-S04`、`E05-I05-S05`、`E05-I05-S06`、`E05-I05-S07`（8 件） |
+| SCR17_DELIVERY_POD_DESIGN_ADDENDUM.md §3 Description（画面概要） | `E05` | `E05-I06` SCR-17 POD の修正と版管理 | FT-048 | `E05-I06-S01`、`E05-I06-S02`、`E05-I06-S03`、`E05-I06-S04`、`E05-I06-S05`、`E05-I06-S06`、`E05-I06-S07`（7 件） |
+| SCR19_ROUTE_PLANNING_SPEC.md §4.1 項目一覧（Item list） | `E05` | `E05-I03` SCR-19 ルート計画（作成・制約・地図） | FT-053、FT-054、FT-101 | `E05-I03-S01`、`E05-I03-S02`、`E05-I03-S03`、`E05-I03-S04`、`E05-I03-S05`、`E05-I03-S06`、`E05-I03-S07`、`E05-I03-S09`、`E05-I03-S10`（9 件） |
+| SCR19_ROUTE_PLANNING_SPEC.md §5.1 状態と遷移（states） | `E05` | `E05-I07` SCR-19 ルートの公開と版管理（変更・取消） | FT-057、FT-058 | `E05-I07-S01`、`E05-I07-S02`、`E05-I07-S03`、`E05-I07-S05`、`E05-I07-S06`（5 件） |
+| SCR20_TRANSPORT_INCIDENT_SPEC.md §4.2 Validation（入力規則） | `E05` | `E05-I04` SCR-20 輸送インシデントの記録 | FT-060 | `E05-I04-S01`、`E05-I04-S02`、`E05-I04-S03`、`E05-I04-S04`、`E05-I04-S05`（5 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_ROUTE_DELIVERY_DESIGN_DB.md | `E05-I05-S04`、`E05-I06-S01`、`E05-I03-S06`、`E05-I07-S01`、`E05-I04-S04` |
+| API 設計（BM-52） | API-035_API.md、API-036_API.md、API-037_API.md、API-038_API.md、API-039_API.md、API-040_API.md、API-D-129_API.md、API-D-131_API.md、API-D-130_API.md、API-D-134_API.md、API-D-132_API.md、API-D-133_API.md、API-D-200_API.md、API-D-201_API.md、API-029_API.md、API-031_API.md、API-030_API.md、API-032_API.md、API-034_API.md、API-D-126_API.md、API-D-127_API.md、API-D-060_API.md、API-D-061_API.md、API-D-062_API.md | `E05-I01-S02`、`E05-I01-S03`、`E05-I02-S03`、`E05-I02-S04`、`E05-I02-S07`、`E05-I05-S03`、`E05-I05-S08`、`E05-I05-S05`、`E05-I06-S02`、`E05-I06-S03`、`E05-I06-S04`、`E05-I03-S03`、`E05-I03-S04`、`E05-I03-S05`、`E05-I03-S07`、`E05-I07-S01`、`E05-I07-S02`、`E05-I07-S03`、`E05-I04-S02`、`E05-I04-S03` |
+| ADR | ADR-008-offline-pod-pwa-with-encrypted-indexeddb-queue.md | `E05-I05-S01`、`E05-I05-S06` |
+| 設計補遺 | SCR17_DELIVERY_POD_DESIGN_ADDENDUM.md、SCR19_ROUTE_PLANNING_DESIGN_ADDENDUM.md | `E05-I05-S01`、`E05-I05-S02`、`E05-I05-S04`、`E05-I05-S06`、`E05-I05-S07`、`E05-I06-S05`、`E05-I06-S06`、`E05-I06-S07`、`E05-I03-S07`、`E05-I03-S10`、`E05-I07-S05`、`E05-I07-S06` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| system-design/api-design/route-delivery/API-033_API.md §2 内容 / Description | 運転時間のチェック API（POST …/check）は運転時間規制に依存するため E11 の issue とする。 |
+| system-design/api-design/route-delivery/API-D-123_API.md §2 内容 / Description | 休止の再計算 API（rest-suggestions）は、4時間連続運転前の休憩自動挿入（FT-059）に属し、E11 の issue とする。 |
+| system-design/api-design/route-delivery/API-D-124_API.md §2 内容 / Description | 休止つきの下書き保存と、運行予定の休止表示（API-D-125）は FT-059 に属し、E11 の issue とする。 |
+| system-design/database-design/route-delivery/DB_ROUTE_DELIVERY_DESIGN_DB.md §4.3 route_stop（実装済みの表への追加） | 停車地の種別（休憩）の列追加は FT-059 のため E11 で扱う。 |
+| route-delivery/screen-specification/SCR17_DELIVERY_POD_SPEC.md §6.8 範囲外・既知の制約 | 顧客の一部受領の入力は FT に無く、本番版でも作らない。 |
+| route-delivery/screen-specification/SCR16_DRIVER_ITINERARY_SPEC.md §6.8 範囲外・既知の制約 | 出発確定の取消は設計しない（確認ダイアログで取り消せないと伝える）。 |
+
+### E06 温度管理・HACCP
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR21_TEMPERATURE_IMPORT_SPEC.md §3.4 関連 FT / US と実装状況 | `E06` | `E06-I01` SCR-21 温度データ取込 | FT-061、FT-062、FT-063、FT-064、FT-065 | `E06-I01-S01`、`E06-I01-S07`、`E06-I01-S02`、`E06-I01-S03`、`E06-I01-S04`、`E06-I01-S05`、`E06-I01-S08`、`E06-I01-S06`（8 件） |
+| SCR23_TEMPERATURE_ALERT_SPEC.md §3.4 関連 FT / US と実装状況 | `E06` | `E06-I02` SCR-23 温度アラート確認 | FT-068 | `E06-I02-S01`、`E06-I02-S02`、`E06-I02-S03`（3 件） |
+| SCR24_DEVIATION_MANAGEMENT_SPEC.md §3.4 関連 FT / US と実装状況 | `E06` | `E06-I03` SCR-24 逸脱管理 | FT-070、FT-071、FT-072、FT-073、FT-074、FT-075、FT-076 | `E06-I03-S01`、`E06-I03-S08`、`E06-I03-S02`、`E06-I03-S03`、`E06-I03-S04`、`E06-I03-S09`、`E06-I03-S05`、`E06-I03-S10`、`E06-I03-S06`、`E06-I03-S11`（10 件） |
+| SCR25_HACCP_COMPLETENESS_SPEC.md §3.4 関連 FT / US と実装状況 | `E06` | `E06-I04` SCR-25 HACCP 完全性 | FT-078、FT-079 | `E06-I04-S01`、`E06-I04-S02`、`E06-I04-S07`、`E06-I04-S03`、`E06-I04-S04`、`E06-I04-S05`、`E06-I04-S06`（7 件） |
+| SCR23_TEMPERATURE_ALERT_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E06` | `E06-I05` 期限超過アラームの報告（温度アラートのタブ「期限超過の報告」） | FT-069 | `E06-I05-S01`、`E06-I05-S02`、`E06-I05-S03`（3 件） |
+| SCR24_DEVIATION_MANAGEMENT_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E06` | `E06-I06` 判定期限超過のエスカレーション（逸脱ケースの判定期限・品質オーナーへの通知） | FT-077 | `E06-I06-S01`、`E06-I06-S05`、`E06-I06-S03`、`E06-I06-S04`（4 件） |
+| SCR25_HACCP_COMPLETENESS_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E06` | `E06-I07` HACCP 記録リズムの拡張（ロガー以外の 6 種と「不足に戻す」） | FT-078 | `E06-I07-S01`、`E06-I07-S05`、`E06-I07-S06`、`E06-I07-S02`、`E06-I07-S07`、`E06-I07-S03`、`E06-I07-S04`、`E06-I07-S08`、`E06-I07-S09`（9 件） |
+| SCR25_HACCP_COMPLETENESS_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E06` | `E06-I08` 衛生記録・来訪者とドライバーの入退記録（記録の入力と一覧） | FT-123 | `E06-I08-S01`、`E06-I08-S02`、`E06-I08-S05`、`E06-I08-S03`、`E06-I08-S04`（5 件） |
+| SCR21_TEMPERATURE_IMPORT_SPEC.md §6.4 中核 温度ポリシー（評価の基準） | `E06` | `E06-I09` 取込時のリーディング評価・アラーム生成・影響ロットの自動隔離（SCR-21 の取込 RPC の中核） | FT-066、FT-067 | `E06-I09-S01`、`E06-I09-S02`（2 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_TEMPERATURE_HACCP_DB.md、DB_TEMPERATURE_HACCP_DESIGN_DB.md、DB_MASTER_DATA_DESIGN_DB.md | `E06-I01-S04`、`E06-I04-S03`、`E06-I06-S01`、`E06-I07-S01`、`E06-I07-S09`、`E06-I08-S01`、`E06-I09-S01` |
+| API 設計（BM-52） | API-042_API.md、API-041_API.md、API-063_API.md、API-043_API.md、API-046_API.md、API-044_API.md、API-045_API.md、API-D-136_API.md、API-047_API.md、API-048_API.md、API-049_API.md、API-050_API.md、API-051_API.md、API-052_API.md、API-D-135_API.md、API-D-137_API.md、API-D-138_API.md、API-D-139_API.md、API-D-140_API.md | `E06-I01-S02`、`E06-I01-S03`、`E06-I02-S02`、`E06-I03-S03`、`E06-I03-S04`、`E06-I03-S09`、`E06-I03-S05`、`E06-I03-S10`、`E06-I04-S02`、`E06-I04-S07`、`E06-I05-S01`、`E06-I07-S05`、`E06-I07-S06`、`E06-I07-S02`、`E06-I07-S07`、`E06-I08-S02`、`E06-I08-S05`、`E06-I08-S04` |
+| ADR | ADR-005-lock-order-for-temperature-import-and-recall.md、ADR-006-business-rules-placement-in-production-build.md、ADR-007-asynchronous-external-integration-on-supabase.md | `E06-I01-S04`、`E06-I01-S08`、`E06-I03-S04`、`E06-I03-S05`、`E06-I03-S06`、`E06-I04-S02`、`E06-I04-S03`、`E06-I06-S05`、`E06-I07-S05`、`E06-I07-S06`、`E06-I08-S02`、`E06-I09-S01` |
+| 設計補遺 | SCR24_DEVIATION_MANAGEMENT_DESIGN_ADDENDUM.md、SCR25_HACCP_COMPLETENESS_DESIGN_ADDENDUM.md、SCR23_TEMPERATURE_ALERT_DESIGN_ADDENDUM.md | `E06-I03-S03`、`E06-I04-S01`、`E06-I05-S01`、`E06-I05-S02`、`E06-I05-S03`、`E06-I06-S01`、`E06-I06-S05`、`E06-I06-S03`、`E06-I06-S04`、`E06-I07-S05`、`E06-I07-S06`、`E06-I07-S02`、`E06-I07-S07`、`E06-I07-S03`、`E06-I07-S04`、`E06-I07-S08`、`E06-I07-S09`、`E06-I08-S02`、`E06-I08-S03`、`E06-I08-S04` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| temperature-haccp/README.md | 自動生成の索引で、開発作業ではない。 |
+| temperature-haccp/screen-specification/SCR21_TEMPERATURE_IMPORT_SPEC.md §6.9 出典の略記・確認と修正の経緯 / §6.10 変換メモ | 文書の来歴と変換の記録で、実装の作業が無い。 |
+| temperature-haccp/screen-specification/SCR21_TEMPERATURE_IMPORT_SPEC.md §6.8（取込の取消・削除はできない） | 追記専用は設計判断であり、取消機能は作らない。 |
+| temperature-haccp/screen-specification/SCR21_TEMPERATURE_IMPORT_SPEC.md FT-100（データロガーのファイル受信） | SFTP などの自動受信は外部連携（E13）で扱う。SCR-21 は手動アップロードだけ。 |
+| temperature-haccp/screen-specification/SCR23_TEMPERATURE_ALERT_SPEC.md §6.8（通知・エスカレーション）/ temperature-haccp/screen-specification/SCR23_TEMPERATURE_ALERT_DESIGN_ADDENDUM.md 仮定（顧客未確認） | 確認期限の超過では通知を出さない仮定。判定期限の通知は E06-I06。 |
+| temperature-haccp/screen-specification/SCR24_DEVIATION_MANAGEMENT_SPEC.md A11（ケースの手動起票） | 手動で起票する画面と RPC は作らない決定。 |
+| temperature-haccp/screen-specification/SCR25_HACCP_COMPLETENESS_SPEC.md A28（一括クローズ） | 記録なしの枠ごとに理由が違うため、一括クローズは作らない。 |
+| temperature-haccp/screen-specification/assets/（ワイヤーフレーム HTML・画像） | 設計の成果物で、実装作業は各画面のタスクに含む。 |
+
+### E07 トレーサビリティ・リコール
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR26_TRACEABILITY_SEARCH_SPEC.md §3.4 関連 FT / US と実装状況 | `E07` | `E07-I01` SCR-26 トレーサビリティ検索 | FT-080、FT-082、FT-081 | `E07-I01-S01`、`E07-I01-S02`、`E07-I01-S03`、`E07-I01-S04`（4 件） |
+| SCR26_TRACEABILITY_SEARCH_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E07` | `E07-I02` 米の産地での検索（FT-081 の残り） | FT-081 | `E07-I02-S01`、`E07-I02-S02`、`E07-I02-S03`、`E07-I02-S04`（4 件） |
+| SCR26_TRACEABILITY_SEARCH_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E07` | `E07-I03` 社内管理レーン（internal_lot）の検索・保管と回収の起票（FT-118） | FT-118 | `E07-I03-S01`、`E07-I03-S05`、`E07-I03-S02`、`E07-I03-S04`（4 件） |
+| SCR27_RECALL_MANAGEMENT_SPEC.md §3.4 関連 FT / US と実装状況 | `E07` | `E07-I04` SCR-27 リコール管理（回収ケースの起票・範囲確定・返品の受入・照合・クローズ） | FT-083、FT-084 | `E07-I04-S01`、`E07-I04-S09`、`E07-I04-S02`、`E07-I04-S03`、`E07-I04-S13`、`E07-I04-S04`、`E07-I04-S05`、`E07-I04-S10`、`E07-I04-S06`、`E07-I04-S14`、`E07-I04-S07`、`E07-I04-S11`、`E07-I04-S12`、`E07-I04-S08`（14 件） |
+| SCR27_RECALL_MANAGEMENT_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E07` | `E07-I05` 回収通知の作成・版管理・承認・送付（FT-085・FT-086） | FT-085、FT-086 | `E07-I05-S01`、`E07-I05-S07`、`E07-I05-S02`、`E07-I05-S03`、`E07-I05-S06`、`E07-I05-S04`、`E07-I05-S05`（7 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_TRACEABILITY_RECALL_DB.md、DB_INBOUND_INVENTORY_DB.md、DB_TRACEABILITY_RECALL_DESIGN_DB.md | `E07-I01-S03`、`E07-I02-S01`、`E07-I03-S01`、`E07-I03-S05`、`E07-I05-S01` |
+| API 設計（BM-52） | API-053_API.md、API-D-142_API.md、API-D-143_API.md、API-D-159_API.md、API-054_API.md、API-056_API.md、API-055_API.md、API-057_API.md、API-058_API.md、API-059_API.md、API-060_API.md、API-061_API.md、API-D-144_API.md、API-D-145_API.md、API-D-146_API.md、API-D-147_API.md | `E07-I01-S02`、`E07-I02-S02`、`E07-I02-S04`、`E07-I03-S02`、`E07-I04-S03`、`E07-I04-S13`、`E07-I04-S04`、`E07-I04-S05`、`E07-I04-S10`、`E07-I04-S06`、`E07-I04-S14`、`E07-I05-S02`、`E07-I05-S03`、`E07-I05-S06` |
+| ADR | ADR-006-business-rules-placement-in-production-build.md、ADR-005-lock-order-for-temperature-import-and-recall.md、ADR-007-asynchronous-external-integration-on-supabase.md | `E07-I01-S03`、`E07-I04-S04`、`E07-I04-S11`、`E07-I05-S06` |
+| 設計補遺 | SCR26_TRACEABILITY_SEARCH_DESIGN_ADDENDUM.md、SCR27_RECALL_MANAGEMENT_DESIGN_ADDENDUM.md | `E07-I02-S01`、`E07-I02-S02`、`E07-I02-S03`、`E07-I02-S04`、`E07-I03-S05`、`E07-I03-S02`、`E07-I03-S04`、`E07-I05-S01`、`E07-I05-S07`、`E07-I05-S02`、`E07-I05-S03`、`E07-I05-S06`、`E07-I05-S04`、`E07-I05-S05` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| traceability-recall/README.md | 自動生成の索引で、開発作業ではない。 |
+| traceability-recall/screen-specification/SCR26_TRACEABILITY_SEARCH_SPEC.md §6.8 出典の略記・確認と修正の経緯 / §6.9 変換メモ | 文書の来歴と変換の記録で、実装の作業が無い。 |
+| traceability-recall/screen-specification/SCR26_TRACEABILITY_SEARCH_SPEC.md §6.2 模擬（取引先のシステムとの連携） | 仕入先・顧客のシステムとの連携は模擬で、その先は「チェーン終点」と表示する方針。連携は E13 で扱わない。 |
+| traceability-recall/screen-specification/SCR27_RECALL_MANAGEMENT_SPEC.md §6.5 前提 8（解除はできない）/ 前提 9（未解決を残したクローズ） | 解除機能と別担当者の承認の流れは作らない決定（承認の要否は §4 の表に記載）。 |
+| traceability-recall/screen-specification/SCR27_RECALL_MANAGEMENT_SPEC.md §6.2 模擬（通知） | 通知は E07-I05 で作るので、模擬の注意書きは本番で外すだけでタスク化しない。 |
+| traceability-recall/screen-specification/SCR27_RECALL_MANAGEMENT_SPEC.md §6.3 デモのデータとシードの例外 | デモ投入のデータは E12 / E14 のデモ環境で扱う。 |
+| traceability-recall/screen-specification/assets/（ワイヤーフレーム HTML・画像） | 設計の成果物で、実装作業は各画面のタスクに含む。 |
+
+### E08 マスターデータ・納品期限契約
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR31_MASTER_DATA_SPEC.md §3.4 関連 FT / US と実装状況 | `E08` | `E08-I01` SCR-31 マスターデータの閲覧（本日有効な版・温度帯の基準）と「対象外」の枠 | FT-094、FT-095、FT-119 | `E08-I01-S01`、`E08-I01-S02`（2 件） |
+| SCR31_MASTER_DATA_DESIGN_ADDENDUM.md §3.1 関連 FT と元の SPEC とのつながり | `E08` | `E08-I02` SCR-31 マスターの登録・変更・承認（8 種類の版管理・期限種別・温度ポリシー） | FT-094、FT-095、FT-119、FT-120、FT-121 | `E08-I02-S01`、`E08-I02-S02`、`E08-I02-S09`、`E08-I02-S03`、`E08-I02-S04`、`E08-I02-S11`、`E08-I02-S05`、`E08-I02-S12`、`E08-I02-S13`、`E08-I02-S06`、`E08-I02-S07`、`E08-I02-S08`、`E08-I02-S10`（13 件） |
+| SCR32_DELIVERY_RULE_CONTRACT_SPEC.md §3.1 画面情報・関連 FT / US | `E08` | `E08-I03` SCR-32 納品期限ルール契約管理（顧客・SKU 別のルール設定と承認・業務確認待ちの却下） | FT-096、FT-097 | `E08-I03-S01`、`E08-I03-S02`、`E08-I03-S03`、`E08-I03-S07`、`E08-I03-S08`、`E08-I03-S04`、`E08-I03-S05`、`E08-I03-S06`（8 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_MASTER_DATA_DESIGN_DB.md | `E08-I02-S01`、`E08-I02-S02`、`E08-I02-S13`、`E08-I02-S08`、`E08-I03-S01` |
+| API 設計（BM-52） | API-062_API.md、API-D-148_API.md、API-D-153_API.md、API-D-154_API.md、API-D-149_API.md、API-D-150_API.md、API-D-151_API.md、API-D-152_API.md、API-D-064_API.md、API-D-065_API.md、API-D-066_API.md、API-D-067_API.md、API-D-078_API.md | `E08-I01-S02`、`E08-I02-S03`、`E08-I02-S04`、`E08-I02-S11`、`E08-I02-S05`、`E08-I02-S12`、`E08-I03-S02`、`E08-I03-S03`、`E08-I03-S07`、`E08-I03-S08`、`E08-I03-S06` |
+| ADR | ADR-006-business-rules-placement-in-production-build.md | `E08-I02-S04`、`E08-I02-S11`、`E08-I02-S10`、`E08-I03-S03`、`E08-I03-S07`、`E08-I03-S08` |
+| 設計補遺 | SCR31_MASTER_DATA_DESIGN_ADDENDUM.md | `E08-I02-S09`、`E08-I02-S04`、`E08-I02-S11`、`E08-I02-S05`、`E08-I02-S12`、`E08-I02-S06`、`E08-I02-S07`、`E08-I02-S08`、`E08-I02-S10` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| master-data/README.md | 自動生成の索引で、開発作業ではない。 |
+| master-data/screen-specification/SCR31_MASTER_DATA_SPEC.md §6.8 出典の略記 / §6.9 変換メモ | 文書の来歴と変換の記録で、実装の作業が無い。 |
+| system-design/database-design/master-data/DB_MASTER_DATA_DB.md §4.16 app.demo_reset_table / §4.17 app.demo_seed_part | デモの再投入の仕組みは E12 / E14（デモ環境・移行）で扱う。 |
+| master-data/screen-specification/SCR31_MASTER_DATA_SPEC.md §6.3 模擬（masterReadOnly の注意書き） | 書き込み機能の完成で注意書きを外すだけで、別タスクにしない（E08-I02 の UI に含む）。 |
+| master-data/screen-specification/assets/（ワイヤーフレーム HTML・画像） | 設計の成果物で、実装作業は各画面のタスクに含む。 |
+
+### E09 クレーム・返品
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR18_CLAIM_MANAGEMENT_SPEC.md §3.2 関連 FT / US | `E09` | `E09-I01` SCR-18 クレームの受付・調査・判定（A〜C 区画） | FT-049、FT-050 | `E09-I01-S01`、`E09-I01-S02`、`E09-I01-S03`、`E09-I01-S09`、`E09-I01-S06`（5 件） |
+| SCR18_CLAIM_MANAGEMENT_SPEC.md §4.1 項目一覧（D〜F 区画） | `E09` | `E09-I02` SCR-18 証拠の版・返品の保管・在庫処分（D〜F 区画） | FT-050、FT-051、FT-052 | `E09-I02-S01`、`E09-I02-S02`、`E09-I02-S07`、`E09-I02-S03`、`E09-I02-S04`、`E09-I02-S05`、`E09-I02-S06`（7 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_CLAIMS_RETURNS_DESIGN_DB.md | `E09-I01-S01`、`E09-I02-S01` |
+| API 設計（BM-52） | API-D-043_API.md、API-D-045_API.md、API-D-050_API.md、API-D-044_API.md、API-D-046_API.md、API-D-047_API.md、API-D-048_API.md、API-D-049_API.md | `E09-I01-S02`、`E09-I01-S03`、`E09-I01-S09`、`E09-I02-S02`、`E09-I02-S07`、`E09-I02-S03` |
+| ADR | ADR-006-business-rules-placement-in-production-build.md | `E09-I01-S03`、`E09-I01-S09`、`E09-I02-S03` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| claims-returns/README.md | 自動生成の索引で、開発作業ではない。 |
+| claims-returns/screen-specification/SCR18_CLAIM_MANAGEMENT_SPEC.md §6.5（顧客への連絡の専用記録） | 状況のコメントで足りるとする仮定で、専用の記録は作らない。 |
+| claims-returns/screen-specification/SCR18_CLAIM_MANAGEMENT_SPEC.md §6.4 A5（完了後の再開） | 再開はせず新しいクレームで元を指す決定。 |
+| claims-returns/screen-specification/assets/（ワイヤーフレーム HTML・画像） | 設計の成果物で、実装作業は各タスクに含む。 |
+
+### E10 レポート・監査・保持
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| SCR28_OPERATIONAL_REPORT_SPEC.md §5.1 レポートの一覧（12 種類）と既定の付与 | `E10` | `E10-I01` SCR-28 運用レポート（固定 12 種類・付与・部門の範囲・CSV） | FT-087、FT-088 | `E10-I01-S01`、`E10-I01-S02`、`E10-I01-S03`、`E10-I01-S04`、`E10-I01-S05`、`E10-I01-S06`（6 件） |
+| SCR29_AUDIT_EXPORT_SPEC.md §3.2 関連 FT / US と実装状況 | `E10` | `E10-I02` SCR-29 監査・エクスポート（証拠パッケージ・定期アーカイブ・SHA-256 の検証） | FT-089、FT-090、FT-091 | `E10-I02-S01`、`E10-I02-S02`、`E10-I02-S07`、`E10-I02-S06`、`E10-I02-S03`、`E10-I02-S08`、`E10-I02-S04`、`E10-I02-S05`（8 件） |
+| SCR30_AUDIT_LOG_SPEC.md §3.2 関連 FT / US と実装状況 | `E10` | `E10-I03` SCR-30 監査ログ（監査イベントの照会・読み取り専用） | FT-092、FT-093 | `E10-I03-S01`、`E10-I03-S02`（2 件） |
+| SCR36_RETENTION_LEGAL_HOLD_SPEC.md §3.2 関連 FT / US と実装状況 | `E10` | `E10-I04` SCR-36 リテンション・法的保留管理（保持スケジュール・法的保留・パージ） | FT-115、FT-116、FT-117 | `E10-I04-S01`、`E10-I04-S02`、`E10-I04-S07`、`E10-I04-S08`、`E10-I04-S03`、`E10-I04-S09`、`E10-I04-S04`、`E10-I04-S05`、`E10-I04-S06`（9 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_REPORTING_AUDIT_DESIGN_DB.md | `E10-I01-S01`、`E10-I02-S01`、`E10-I03-S01`、`E10-I04-S01` |
+| API 設計（BM-52） | API-D-080_API.md、API-D-081_API.md、API-D-082_API.md、API-D-084_API.md、API-D-087_API.md、API-D-089_API.md、API-D-083_API.md、API-D-085_API.md、API-D-086_API.md、API-D-088_API.md、API-D-093_API.md、API-D-094_API.md、API-D-097_API.md、API-D-098_API.md、API-D-101_API.md、API-D-099_API.md、API-D-100_API.md、API-D-102_API.md、API-D-103_API.md | `E10-I01-S03`、`E10-I02-S02`、`E10-I02-S07`、`E10-I02-S06`、`E10-I02-S03`、`E10-I02-S08`、`E10-I03-S01`、`E10-I04-S02`、`E10-I04-S07`、`E10-I04-S08`、`E10-I04-S03`、`E10-I04-S09` |
+| ADR | ADR-007-asynchronous-external-integration-on-supabase.md、ADR-006-business-rules-placement-in-production-build.md | `E10-I02-S01`、`E10-I02-S02`、`E10-I04-S07`、`E10-I04-S08`、`E10-I04-S03`、`E10-I04-S09` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| reporting-audit/README.md | 自動生成の索引で、開発作業ではない。 |
+| reporting-audit/screen-specification/SCR29_AUDIT_EXPORT_SPEC.md 範囲外（SCR-26・27 の監査者の検索と回収） | トレーサビリティ検索と回収は E07 で扱う。 |
+| reporting-audit/screen-specification/SCR28_OPERATIONAL_REPORT_SPEC.md 範囲外（SCR-31 の版管理の承認） | マスターの版管理の承認は E08 で扱う。 |
+| reporting-audit/README.md 範囲外（監査イベントの記録そのもの） | 記録は各画面の処理の中で行われ、この feature の画面はない。追記専用の確認だけ E10-I03 に含む。 |
+| reporting-audit/screen-specification/assets/（ワイヤーフレーム HTML・画像） | 設計の成果物で、実装作業は各画面のタスクに含む。 |
+
+### E11 2024年運転時間規制（専用）
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| ADR-002-driving-hours-check-in-typescript.md §2 採用した選択肢 | `E11` | `E11-I01` 運転・拘束・休息ルールによるルート検証（本番化） | FT-055 | `E11-I01-S01`、`E11-I01-S03`、`E11-I01-S05`、`E11-I01-S06`、`E11-I01-S07`、`E11-I01-S08`、`E11-I01-S09`、`E11-I01-S10`（8 件） |
+| SCR19_ROUTE_PLANNING_SPEC.md §5 Event（運転時間をチェック・公開） | `E11` | `E11-I02` 違反時の公開禁止と違反時間帯の明示 | FT-056 | `E11-I02-S01`、`E11-I02-S03`、`E11-I02-S04`、`E11-I02-S05`、`E11-I02-S06`（5 件） |
+| SCR16_DRIVER_ITINERARY_DESIGN_ADDENDUM.md §3 Description・§4 View | `E11` | `E11-I03` 4時間連続運転前の休止の自動挿入（SCR-16 補遺） | FT-059 | `E11-I03-S01`、`E11-I03-S03`、`E11-I03-S04`、`E11-I03-S05`、`E11-I03-S07`、`E11-I03-S08`、`E11-I03-S09`（7 件） |
+| SCR19_ROUTE_PLANNING_SPEC.md §6.4 地図の見積（§8.8） | `E11` | `E11-I04` 推定24時間超のルートを公開禁止にする（本番化） | FT-102 | `E11-I04-S01`、`E11-I04-S03`（2 件） |
+| SCR19_ROUTE_PLANNING_SPEC.md §3.3 画面情報・§4.1（運行日 A-3・出発時刻 A-13） | `E11` | `E11-I05` 休息期間チェックのデモ再現性（試作版の確認で判明した点の是正） | FT-055 | `E11-I05-S01`、`E11-I05-S02`、`E11-I05-S04`（3 件） |
+| ADR-002-driving-hours-check-in-typescript.md §2 DB 制約・§6 出発時の再確認 | `E11` | `E11-I06` 規則セットの版管理・公開時の紐付け・出発時の再確認 | FT-055、FT-056 | `E11-I06-S01`、`E11-I06-S02`、`E11-I06-S03`、`E11-I06-S04`、`E11-I06-S05`（5 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_ROUTE_DELIVERY_DB.md、DB_MASTER_DATA_DB.md、DB_ROUTE_DELIVERY_DESIGN_DB.md | `E11-I01-S05`、`E11-I01-S06`、`E11-I03-S01`、`E11-I05-S01`、`E11-I06-S01` |
+| API 設計（BM-52） | API-032_API.md、API-033_API.md、API-034_API.md、API-031_API.md、API-029_API.md、API-D-123_API.md、API-D-124_API.md、API-D-125_API.md、API-036_API.md | `E11-I01-S05`、`E11-I01-S07`、`E11-I01-S09`、`E11-I01-S10`、`E11-I02-S03`、`E11-I02-S04`、`E11-I02-S05`、`E11-I03-S03`、`E11-I03-S04`、`E11-I03-S05`、`E11-I03-S09`、`E11-I06-S02`、`E11-I06-S03` |
+| ADR | ADR-002-driving-hours-check-in-typescript.md、ADR-006-business-rules-placement-in-production-build.md | `E11-I01-S01`、`E11-I01-S07`、`E11-I01-S08`、`E11-I01-S09`、`E11-I02-S03`、`E11-I02-S04`、`E11-I06-S01`、`E11-I06-S02`、`E11-I06-S04` |
+| 設計補遺 | SCR16_DRIVER_ITINERARY_DESIGN_ADDENDUM.md | `E11-I03-S01`、`E11-I03-S03`、`E11-I03-S04`、`E11-I03-S05`、`E11-I03-S07`、`E11-I03-S08`、`E11-I03-S09` |
+| 技術設計（TECH） | DRIVER_RULE_CHECK_TECH.md | `E11-I01-S01`、`E11-I01-S03`、`E11-I01-S05`、`E11-I01-S07`、`E11-I01-S09`、`E11-I01-S10`、`E11-I02-S03`、`E11-I02-S05`、`E11-I03-S03`、`E11-I04-S01`、`E11-I06-S02`、`E11-I06-S04` |
+| 共通の規約・方式 | common-spec.md、error-codes.md | `E11-I02-S01`、`E11-I04-S03` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| route-delivery/screen-specification/SCR19_ROUTE_PLANNING_SPEC.md §6.8 ティア1で扱わない告示の特例 | 告示の特例（サービスエリア満車時の連続運転の延長、宿泊を伴う運行の休息、休息の分割、2人での乗務、フェリーの乗船、労使協定で決める拘束の上限、休日労働の回数）は、2026-10-12 提出の設計書（SCR-19 §6.8）でティア 1 では扱わないと決めた項目。本番で要るかどうかは E11-I01-S08 で法令の出典にあたって決め、要る場合は規則セット v2 と変更要求（CR）で扱う［仮定］。 |
+| _common/adr/ADR-002-driving-hours-check-in-typescript.md §3 却下した代替案（ルートの自動最適化） | 停車順の自動最適化は範囲外。制約チェックのみ（Q&A #10）。 |
+| route-delivery/screen-specification/SCR19_ROUTE_PLANNING_SPEC.md §6.8 範囲外（公開後の変更・取消） | 公開後のルート変更・新版作成（FT-058）とルート取消は E05 の担当で、E11 には置かない。 |
+| route-delivery/screen-specification/SCR19_ROUTE_PLANNING_SPEC.md §6.3 模擬（IF-MAP-01 / FT-101） | 地図サービスの本番接続（FT-101）は E05 の担当。E11 では見積取得失敗の扱いを、E05 側の接続タスクの完了条件に含めてもらう。 |
+| route-delivery/screen-specification/SCR19_ROUTE_PLANNING_SPEC.md §6.9・§6.10 出典の略記・変換メモ | 仕様書の出典略記や L3 から BM-51 への変換メモは文書管理の情報で、開発タスクにならない。 |
+
+### E12 基盤・環境・リリース
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| architecture-overview.md §9.5 環境（dev / stg / UAT / prod） | `E12` | `E12-I01` 環境構成（dev / stg / UAT / prod）の構築 | — | `E12-I01-S01`、`E12-I01-S02`（2 件） |
+| architecture-overview.md §9.5 環境（リリースの手順） | `E12` | `E12-I02` CI/CD とリリース手順 | — | `E12-I02-S01`、`E12-I02-S02`（2 件） |
+| CR-202610-tech-stack-nextjs-supabase.md §4 NFR-OPS-01・§5 G10 | `E12` | `E12-I03` 監視・ログ・アラート | — | `E12-I03-S02`、`E12-I03-S03`（2 件） |
+| CR-202610-tech-stack-nextjs-supabase.md §4 NFR-BCP-01・§5 G4・G7 | `E12` | `E12-I04` バックアップと復旧の仕組み | — | `E12-I04-S01`、`E12-I04-S02`（2 件） |
+| architecture-overview.md §5 セキュリティ | `E12` | `E12-I05` セキュリティの土台（国内保管・キャッシュ・スキャン・ストレージ権限） | — | `E12-I05-S04`、`E12-I05-S01`、`E12-I05-S02`（3 件） |
+| ADR-007-asynchronous-external-integration-on-supabase.md §2 採用した選択肢 | `E12` | `E12-I06` Cron・ワーカーの起動基盤 | — | `E12-I06-S01`、`E12-I06-S02`（2 件） |
+| architecture-overview.md §7 運用（デモデータの再投入） | `E12` | `E12-I07` デモ・リハーサル用データ基盤（日本語の架空データ） | — | `E12-I07-S01`、`E12-I07-S02`（2 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| ADR | ADR-006-business-rules-placement-in-production-build.md、ADR-007-asynchronous-external-integration-on-supabase.md | `E12-I02-S01`、`E12-I06-S01`、`E12-I06-S02` |
+| 共通の規約・方式 | architecture-overview.md、CR-202610-tech-stack-nextjs-supabase.md、external-integration-design.md、common-spec.md | `E12-I01-S01`、`E12-I01-S02`、`E12-I02-S02`、`E12-I03-S02`、`E12-I03-S03`、`E12-I04-S01`、`E12-I04-S02`、`E12-I05-S04`、`E12-I05-S01`、`E12-I05-S02`、`E12-I06-S01`、`E12-I06-S02`、`E12-I07-S01`、`E12-I07-S02` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| change-requests/CR-202610-tech-stack-nextjs-supabase.md §3.4 工程と費用（月額の運用費用） | 費用の比較・見積は提案書側の成果物で、開発タスクではない。 |
+| change-requests/CR-202610-tech-stack-nextjs-supabase.md §7 顧客の同意についての仮定 | 技術スタック変更への顧客同意は契約・合意の作業で、開発タスクにしない。 |
+| _common/architecture-overview.md §1〜§8 プロトタイプの実装 | 既に動いているプロトタイプの記述で、本番版で新規に作るものではない（本番化の差分は各エピックのタスクに含めた）。 |
+
+### E13 外部連携
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| external-integration-design.md §3.1 ERP（IF-ERP-01） | `E13` | `E13-I01` ERP との SFTP 経由 CSV 交換 | FT-098 | `E13-I01-S02`、`E13-I01-S03`、`E13-I01-S05`、`E13-I01-S06`（4 件） |
+| external-integration-design.md §3.1 ERP（エラー）・§4 エラーの扱い | `E13` | `E13-I02` チェックサム・冪等性エラー時のファイル拒否 | FT-099 | `E13-I02-S02`（1 件） |
+| external-integration-design.md §3.2 データロガー（IF-LOG-01） | `E13` | `E13-I03` データロガーの CSV 自動受信 | FT-100 | `E13-I03-S02`（1 件） |
+| external-integration-design.md §3.3 メール（IF-MAIL-01） | `E13` | `E13-I04` メールリレー経由の通知送信 | FT-104 | `E13-I04-S01`、`E13-I04-S02`（2 件） |
+| ADR-007-asynchronous-external-integration-on-supabase.md §2 採用した選択肢 | `E13` | `E13-I05` 取込共通基盤（表・塊ごとの RPC・ワーカー骨格） | — | `E13-I05-S01`、`E13-I05-S04`（2 件） |
+| external-integration-design.md §4 エラーの扱い（運用者の見方と再投入） | `E13` | `E13-I06` 運用者の見方と再投入（画面なし） | — | `E13-I06-S01`（1 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_INTEGRATION_DESIGN_DB.md | `E13-I02-S02`、`E13-I03-S02`、`E13-I04-S01`、`E13-I05-S01`、`E13-I06-S01` |
+| API 設計（BM-52） | API-015_API.md | `E13-I01-S03` |
+| ADR | ADR-004-business-rejection-commits-exception-event-without-rollback.md、ADR-006-business-rules-placement-in-production-build.md | `E13-I02-S02`、`E13-I05-S04` |
+| 共通の規約・方式 | external-integration-design.md | `E13-I01-S02`、`E13-I01-S03`、`E13-I01-S05`、`E13-I01-S06`、`E13-I02-S02`、`E13-I03-S02`、`E13-I04-S02`、`E13-I05-S01`、`E13-I05-S04`、`E13-I06-S01` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| _common/external-integration-design.md §3.4 地図（IF-MAP-01） | 地図サービスの連携は FT-101（E05）の担当で、E13 には置かない。 |
+| _common/external-integration-design.md §3.5 IdP（IF-IDP-01） | SSO（FT-103）は認証エピック（E01）の担当。 |
+| _common/external-integration-design.md §3.6 管理端末（MDM） | 端末の登録・遠隔消去は顧客の MDM が担い、アプリ側はフラグだけ（FT-114 は E01）。 |
+| _common/external-integration-design.md §3.7 アーカイブのエクスポート（IF-ARCH-01） | エクスポートの作成ワーカーは監査・保持エピック（E10）の担当。E13 は共通基盤だけ提供する。 |
+| _common/external-integration-design.md §6 出典 | 出典一覧は文書情報で、開発タスクにならない。 |
+
+### E14 データ移行・切替
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| data-migration-design.md §2 FT ごとの設計（FT-105） | `E14` | `E14-I01` レガシーデータのプロファイリング | FT-105 | `E14-I01-S02`（1 件） |
+| data-migration-design.md §2 FT ごとの設計（FT-106） | `E14` | `E14-I02` レガシーデータ構造のマッピングと変換 | FT-106 | `E14-I02-S02`、`E14-I02-S04`（2 件） |
+| data-migration-design.md §2 FT ごとの設計（FT-107） | `E14` | `E14-I03` 移行演習の実行（ドライラン・リハーサル2回・最終ロード） | FT-107 | `E14-I03-S01`、`E14-I03-S02`（2 件） |
+| data-migration-design.md §2 FT ごとの設計（FT-108） | `E14` | `E14-I04` 移行行の判定結果とソースの照合 | FT-108 | `E14-I04-S01`、`E14-I04-S02`、`E14-I04-S03`（3 件） |
+| data-migration-design.md §2 FT ごとの設計（FT-109） | `E14` | `E14-I05` マスター・注文の凍結 | FT-109 | `E14-I05-S01`、`E14-I05-S02`（2 件） |
+| data-migration-design.md §2 FT ごとの設計（FT-110） | `E14` | `E14-I06` 重大エラー時のロールバック | FT-110 | `E14-I06-S01`、`E14-I06-S02`（2 件） |
+| data-migration-design.md §2 FT ごとの設計（FT-111） | `E14` | `E14-I07` 並行運用（旧システムの読取参照を1週間） | FT-111 | `E14-I07-S01`、`E14-I07-S03`（2 件） |
+| data-migration-design.md §4 カットオーバーと戻し | `E14` | `E14-I08` カットオーバーの計画・最終ロード・スモークテスト | FT-107、FT-110 | `E14-I08-S02`、`E14-I08-S03`（2 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| DB 設計 | DB_INTEGRATION_DESIGN_DB.md、DB_MASTER_DATA_DESIGN_DB.md | `E14-I04-S01`、`E14-I05-S01` |
+| API 設計（BM-52） | API-015_API.md | `E14-I05-S02` |
+| ADR | ADR-001-lot-allocation-atomicity-in-postgres-functions.md、ADR-005-lock-order-for-temperature-import-and-recall.md | `E14-I02-S04`、`E14-I03-S02`、`E14-I07-S03` |
+| 共通の規約・方式 | data-migration-design.md、CR-202610-tech-stack-nextjs-supabase.md | `E14-I01-S02`、`E14-I02-S02`、`E14-I02-S04`、`E14-I03-S01`、`E14-I03-S02`、`E14-I04-S02`、`E14-I04-S03`、`E14-I05-S01`、`E14-I05-S02`、`E14-I06-S01`、`E14-I06-S02`、`E14-I07-S01`、`E14-I07-S03`、`E14-I08-S02`、`E14-I08-S03` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| _common/data-migration-design.md §1 移行の流れ（ワークショップ以外の顧客作業） | 顧客側の旧システムからのデータ抽出（ファイル出力）は顧客の作業で、開発チームのタスクにしない。 |
+| _common/data-migration-design.md §6 出典 | 出典一覧は文書情報で、開発タスクにならない。 |
+| change-requests/CR-202610-tech-stack-nextjs-supabase.md §3.4 工程と費用 | 移行の工数見積・費用は提案書の成果物で、バックログに載せない。 |
+
+### E15 非機能・横断 UI
+
+| Spec（ファイル・章） | Epic | issue | 対象 FT | sub-issue |
+|---|---|---|---|---|
+| CR-202610-tech-stack-nextjs-supabase.md §4 NFR-PERF-01・NFR-PERF-02 | `E15` | `E15-I03` 性能の検証（NFR-PERF） | — | `E15-I03-S03`、`E15-I03-S04`（2 件） |
+| CR-202610-tech-stack-nextjs-supabase.md §4 NFR-AVL-01・NFR-BCP-01・NFR-AVL-02 | `E15` | `E15-I04` 可用性・事業継続の検証（NFR-AVL・NFR-BCP） | — | `E15-I04-S01`、`E15-I04-S02`（2 件） |
+| CR-202610-tech-stack-nextjs-supabase.md §4 NFR-SEC-02・NFR-SEC-03・NFR-ACC-01・NFR-LOC-01 | `E15` | `E15-I05` セキュリティ・アクセシビリティ・多言語の検証（NFR-SEC・ACC） | — | `E15-I05-S03`、`E15-I05-S01`（2 件） |
+| common-spec.md CS-08 日時と温度の表示（JST） | `E15` | `E15-I06` 横断 UI の共通部品（日付・必須マーク・390px・メニュー表記） | — | `E15-I06-S01`、`E15-I06-S02`、`E15-I06-S03`（3 件） |
+| SCR11_ORDER_ENTRY_SPEC.md §5 Event | `E15` | `E15-I07` URL への状態保持の共通部品（絞り込み・日付） | — | `E15-I07-S01`（1 件） |
+| wireframe-index.md §2 画面の一覧（35 画面） | `E15` | `E15-I08` 設計書の保守（ワイヤーフレームと画面仕様の一致・API 契約の一元化） | — | `E15-I08-S01`、`E15-I08-S02`、`E15-I08-S03`、`E15-I08-S04`（4 件） |
+
+**設計書の種類ごとの対応**（画面仕様のほか、DB・API・ADR などを参照する sub-issue）
+
+| 種類 | 設計書 | sub-issue |
+|---|---|---|
+| API 設計（BM-52） | API-053_API.md | `E15-I03-S03` |
+| ADR | ADR-006-business-rules-placement-in-production-build.md | `E15-I08-S03` |
+| 共通の規約・方式 | CR-202610-tech-stack-nextjs-supabase.md、architecture-overview.md、common-spec.md | `E15-I03-S03`、`E15-I03-S04`、`E15-I04-S01`、`E15-I04-S02`、`E15-I05-S03`、`E15-I05-S01`、`E15-I06-S01` |
+
+**issue にしなかった部分**
+
+| Spec の箇所 | 理由 |
+|---|---|
+| change-requests/CR-202610-tech-stack-nextjs-supabase.md §4 NFR-OPS-01（Vercel の実行ログの保持） | ログの保持・アラートの構築は基盤エピック（E12-I03）の担当。E15 は検証のみ。 |
+| change-requests/CR-202610-tech-stack-nextjs-supabase.md §4 NFR-AUD-01・DR-RET-01 | 監査・保持・パージは監査エピック（E10）の担当。 |
+| change-requests/CR-202610-tech-stack-nextjs-supabase.md §5 G11 MDM・端末証明書 | MDM の運用は顧客の担当で、アプリはフラグだけ（E01 の FT-114）。 |
+| PREMISE.md §4.2 Q&A（顧客回答の想定） | Q&A の想定回答は設計の前提で、開発タスクにならない。 |
+
+### FT から issue への対応（逆引き）
+
+対象 FT の列を FT の側から引いた表。1 つの FT が複数の issue にまたがるときは、すべてを並べる。
+
+| FT | issue |
+|---|---|
+| FT-001 | `E02-I01` |
+| FT-002 | `E02-I02` |
+| FT-003 | `E02-I02` |
+| FT-004 | `E02-I02` |
+| FT-005 | `E02-I11` |
+| FT-006 | `E02-I12` |
+| FT-007 | `E02-I11` |
+| FT-008 | `E02-I11` |
+| FT-009 | `E02-I11` |
+| FT-010 | `E02-I03` |
+| FT-011 | `E02-I03` |
+| FT-012 | `E02-I04` |
+| FT-013 | `E02-I05` |
+| FT-014 | `E02-I05` |
+| FT-015 | `E02-I05` |
+| FT-016 | `E02-I06` |
+| FT-017 | `E02-I07` |
+| FT-018 | `E02-I07` |
+| FT-019 | `E02-I08` |
+| FT-020 | `E02-I09` |
+| FT-021 | `E02-I09` |
+| FT-022 | `E02-I10` |
+| FT-023 | `E02-I10` |
+| FT-024 | `E02-I10` |
+| FT-025 | `E03-I01` |
+| FT-026 | `E03-I01` |
+| FT-027 | `E03-I02` |
+| FT-028 | `E03-I02` |
+| FT-029 | `E03-I02` |
+| FT-030 | `E03-I03` |
+| FT-031 | `E03-I03` |
+| FT-032 | `E03-I03` |
+| FT-033 | `E03-I04` |
+| FT-034 | `E03-I02` |
+| FT-035 | `E03-I04` |
+| FT-036 | `E04-I01` |
+| FT-037 | `E04-I01` |
+| FT-038 | `E04-I02` |
+| FT-039 | `E04-I02` |
+| FT-040 | `E04-I03` |
+| FT-041 | `E04-I03` |
+| FT-042 | `E05-I01` |
+| FT-043 | `E05-I02` |
+| FT-044 | `E05-I02` |
+| FT-045 | `E05-I02` |
+| FT-046 | `E05-I05` |
+| FT-047 | `E05-I05` |
+| FT-048 | `E05-I06` |
+| FT-049 | `E09-I01` |
+| FT-050 | `E09-I01`、`E09-I02` |
+| FT-051 | `E09-I02` |
+| FT-052 | `E09-I02` |
+| FT-053 | `E05-I03` |
+| FT-054 | `E05-I03` |
+| FT-055 | `E11-I01`、`E11-I05`、`E11-I06` |
+| FT-056 | `E11-I02`、`E11-I06` |
+| FT-057 | `E05-I07` |
+| FT-058 | `E05-I07` |
+| FT-059 | `E11-I03` |
+| FT-060 | `E05-I04` |
+| FT-061 | `E06-I01` |
+| FT-062 | `E06-I01` |
+| FT-063 | `E06-I01` |
+| FT-064 | `E06-I01` |
+| FT-065 | `E06-I01` |
+| FT-066 | `E06-I09` |
+| FT-067 | `E06-I09` |
+| FT-068 | `E06-I02` |
+| FT-069 | `E06-I05` |
+| FT-070 | `E06-I03` |
+| FT-071 | `E06-I03` |
+| FT-072 | `E06-I03` |
+| FT-073 | `E06-I03` |
+| FT-074 | `E06-I03` |
+| FT-075 | `E06-I03` |
+| FT-076 | `E06-I03` |
+| FT-077 | `E06-I06` |
+| FT-078 | `E06-I04`、`E06-I07` |
+| FT-079 | `E06-I04` |
+| FT-080 | `E07-I01` |
+| FT-081 | `E07-I01`、`E07-I02` |
+| FT-082 | `E07-I01` |
+| FT-083 | `E07-I04` |
+| FT-084 | `E07-I04` |
+| FT-085 | `E07-I05` |
+| FT-086 | `E07-I05` |
+| FT-087 | `E10-I01` |
+| FT-088 | `E10-I01` |
+| FT-089 | `E10-I02` |
+| FT-090 | `E10-I02` |
+| FT-091 | `E10-I02` |
+| FT-092 | `E10-I03` |
+| FT-093 | `E10-I03` |
+| FT-094 | `E08-I01`、`E08-I02` |
+| FT-095 | `E08-I01`、`E08-I02` |
+| FT-096 | `E08-I03` |
+| FT-097 | `E08-I03` |
+| FT-098 | `E13-I01` |
+| FT-099 | `E13-I02` |
+| FT-100 | `E13-I03` |
+| FT-101 | `E05-I03` |
+| FT-102 | `E11-I04` |
+| FT-103 | `E01-I01` |
+| FT-104 | `E13-I04` |
+| FT-105 | `E14-I01` |
+| FT-106 | `E14-I02` |
+| FT-107 | `E14-I03`、`E14-I08` |
+| FT-108 | `E14-I04` |
+| FT-109 | `E14-I05` |
+| FT-110 | `E14-I06`、`E14-I08` |
+| FT-111 | `E14-I07` |
+| FT-112 | `E01-I02` |
+| FT-113 | `E01-I04` |
+| FT-114 | `E01-I03` |
+| FT-115 | `E10-I04` |
+| FT-116 | `E10-I04` |
+| FT-117 | `E10-I04` |
+| FT-118 | `E07-I03` |
+| FT-119 | `E08-I01`、`E08-I02` |
+| FT-120 | `E08-I02` |
+| FT-121 | `E08-I02` |
+| FT-122 | `E03-I03` |
+| FT-123 | `E06-I08` |
+| FT-124 | `E02-I02` |
+| FT-125 | `E02-I10` |
+
+### どの sub-issue からも参照しない設計書
+
+設計書（2026-10-12 提出版）のうち、どの issue の参照にも出てこないファイルと、その理由。
+
+| ファイル | 理由 |
+|---|---|
+| AI-report.md | 設計書に添えた作業記録（AI の使い方の報告）で、開発作業ではない。 |
+| _common/adr/README.md、_index.md、_templates/README.md、system-design/database-design/_index.md | 索引・目次で、開発作業を含まない。 |
+| _common/api-conventions.md | API 共通の規約（認証・CSRF・応答の形）。各 API の sub-issue の前提で、単独の作業はない。 |
+| _common/api-list.md、_common/rpc-list.md | API・RPC の一覧。各 API の sub-issue が個別の設計書（BM-52）を参照するため、一覧そのものは issue にしない。 |
+| _common/architecture/01-components-and-authorization.architecture.json、_common/architecture/01-components-and-authorization.html、_common/architecture/01-components-and-authorization.png、ほか 24 件 | アーキテクチャ概要（architecture-overview.md）の図。sub-issue は本文を参照する。 |
+| _common/ft-coverage-matrix.md | FT と設計書の対応表。backlog の対象 FT の確認に使い、開発作業ではない。 |
+| _templates/BM-2-901-50-database-design-template.md、_templates/BM-2-901-51-screen-specification-template.md、_templates/BM-2-901-52-api-design-template.md、ほか 2 件 | 設計書の様式の雛形で、開発作業ではない。 |
+| system-design/database-design/authentication/DB_AUTHENTICATION_DB_er.png、system-design/database-design/authentication/DB_AUTHENTICATION_DESIGN_DB_er.png、system-design/database-design/claims-returns/DB_CLAIMS_RETURNS_DESIGN_DB_er.png、ほか 15 件 | DB 設計書の ER 図。sub-issue は本文の DB 設計書を参照する。 |
+| wireframes-all.pdf | ワイヤーフレームの索引と一覧。画面の sub-issue は各画面仕様を参照する。 |
+
+<!-- END generated:spec-to-issue -->
+
+## 3. 2024 年運転時間規制の issue を別立てにした理由
+
+<!-- BEGIN generated:constraint-2024 -->
+
+| 規制上の制約 | issue | 別立てにした理由 |
+|---|---|---|
+| 連続運転・休憩・休息・拘束・平均運転時間の境界計算 | `E11-I01`（運転・拘束・休息ルールによるルート検証（本番化））— sub-issue `E11-I01-S01`、`E11-I01-S03`、`E11-I01-S05`、`E11-I01-S06`、`E11-I01-S07`、`E11-I01-S08`、`E11-I01-S09`、`E11-I01-S10` | 数値が法令の改正で変わる部分なので、検査の関数と境界テストを 1 か所に集め、規則セットの版で差し替えられるようにする。 |
+| 違反したルートは公開できず、違反の時間帯を示す | `E11-I02`（違反時の公開禁止と違反時間帯の明示）— sub-issue `E11-I02-S01`、`E11-I02-S03`、`E11-I02-S04`、`E11-I02-S05`、`E11-I02-S06` | 公開の可否という業務の出口を規制に結び付けて管理する。配送エピック（E05）の公開と混ぜると、規制の変更が E05 全体に波及する。 |
+| 4 時間連続運転の前に休止を入れる | `E11-I03`（4時間連続運転前の休止の自動挿入（SCR-16 補遺））— sub-issue `E11-I03-S01`、`E11-I03-S03`、`E11-I03-S04`、`E11-I03-S05`、`E11-I03-S07`、`E11-I03-S08`、`E11-I03-S09` | 規制の「4 時間ごとの休憩」を満たす機能で、規制が変われば設計ごと変わる。SCR-16 と SCR-19 にまたがるが、起点が規制なので 1 か所に置く。 |
+| 推定 24 時間を超えるルートは公開できない | `E11-I04`（推定24時間超のルートを公開禁止にする（本番化））— sub-issue `E11-I04-S01`、`E11-I04-S03` | 拘束時間の上限と同じ考え方の規則で、見積のない区間の扱い（PREMISE P-S09）とも結び付く。まとめて検証できるようにする。 |
+| 休息期間の規則を人が確認できるようにする | `E11-I05`（休息期間チェックのデモ再現性（試作版の確認で判明した点の是正））— sub-issue `E11-I05-S01`、`E11-I05-S02`、`E11-I05-S04` | 試作版のレビューで、規則が働いていないように見えた件の是正（PREMISE P-S07）。規制の検証と同じ場所で追えば、再発したときに原因を探しやすい。 |
+| 規則セットの版管理と公開時の紐付け | `E11-I06`（規則セットの版管理・公開時の紐付け・出発時の再確認）— sub-issue `E11-I06-S01`、`E11-I06-S02`、`E11-I06-S03`、`E11-I06-S04`、`E11-I06-S05` | 法令が改正されたとき、公開済みのルートを遡って変えずに新しい版を足すため。ADR-002 の決定をタスクにしたもの。 |
+
+<!-- END generated:constraint-2024 -->
+
+## 4. 仕様の抜け・矛盾と扱い
+
+backlog を切るときに見つけたもの、設計書が自分で書いていた抜け、LAB-4（2026-10-12 提出）に対する講師講評（2026-10-19）の指摘（GR-091〜094）、その指摘を受けてワイヤーフレームを作り直す中で見つかった画面仕様の中の食い違い（GR-095〜100）を統合した表。同じ原因のものは 1 行にまとめた。「影響度」は放置したときの影響で、「設計を止める」は方式・データの形・業務の流れが決まらないもの、「詳細のみ」は値・文言・運用手順の範囲に収まるもの。「顧客側の決定者」は回答や承認をもらう相手の役割（個人名ではない）で、チームが設計で決めた行は「—」とした。
+
+<!-- BEGIN generated:gaps-table -->
+
+| No. | Spec | 抜け・矛盾 | 扱い | 影響度 | 顧客側の決定者 | 関連する issue |
+|---|---|---|---|---|---|---|
+| GR-001 | SCR33_LOGIN_SPEC.md §6.3 モックに関する注記・既知の制約 | 本番の IdP の製品・属性（sub の値、グループ連携）が未確認で、SSO の受け入れ基準の一部（他システムで SSO 済みなら再ログイン不要）を満たす方法が決まっていない。 | 仮定（PREMISE P-A01） | 設計を止める | 情報システムの担当 | `E01-I01-S04` |
+| GR-002 | SCR33_LOGIN_SPEC.md §6.3 モックに関する注記・既知の制約 | 失敗ログインの可視化が未実装で、監査ログ画面（SCR-30）からも見られない。API-002 は記録の入口だけを定めており、閲覧側の要件が空いている。 | 確認用の issue を作成（`E01-I01-S07`） | 詳細のみ | システム管理者（ROLE-007） | `E01-I01-S02`、`E01-I01-S07` |
+| GR-003 | SCR34_USER_ROLE_MANAGEMENT_SPEC.md §6 Other Notes（その他） | 特権ロールの MFA（aal2）を確かめる RPC が、他 feature の書込み RPC 全体に及ぶ。対象の RPC 一覧が設計書に無く、組込みの漏れを機械的に検出できない。 | 設計を修正（PREMISE P-S11） | 設計を止める | —（チームが設計で決定） | `E01-I04-S03` |
+| GR-004 | SCR02_RECEIVING_INSPECTION_SPEC.md §6.7 既知の制約 | SCR-02 は入力に ScanInput を使っていない。仕様の骨子は PC とバーコードスキャナを想定しており、仕入先ロットだけが手入力のままで食い違う。 | 設計を修正（PREMISE P-S12） | 詳細のみ | —（チームが設計で決定） | `E02-I02-S01` |
+| GR-005 | SCR02_RECEIVING_INSPECTION_SPEC.md §6.7 既知の制約; SCR24_DEVIATION_MANAGEMENT_SPEC.md 6.8 範囲外・既知の制約（証拠の孤立ファイル A30） | 確定しなかった証拠ファイルを消す手段が設計に無い（削除 API・ポリシーなし）。孤児ファイルが蓄積する。 保存後にクローズされたケースの証拠を消せなかったとき、孤立ファイルがストレージに残りパスはログだけに残る。掃除の手段が無い。 | 仮定（PREMISE P-A02） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E02-I02-S03`、`E06-I03-S09` |
+| GR-006 | DB_TEMPERATURE_HACCP_DB.md §4.3 deviation_case | 検品で作る逸脱ケースの測定時刻・ゾーン・記録者を必ず入れる規則が、SCR-02 にも逸脱の DB 設計にも明記されていない。試作版の確認で、記録の項目が足りないと指摘された。 | 設計を修正（PREMISE P-S01） | 設計を止める | —（チームが設計で決定） | `E02-I02-S01`、`E02-I11-S02`、`E02-I11-S04` |
+| GR-007 | SCR05_PUTAWAY_SPEC.md §6.4 未確認事項（open questions）・計画とコードの差 | 提案の並びは空き容量の多い順だけで、FEFO を保つ並びは未実装。容量なしのロケーションが先頭に来て、容量のある場所が3件の外に出る。 | 仮定（PREMISE P-A03） | 詳細のみ | センター作業の責任者（ROLE-002） | `E02-I05-S01` |
+| GR-008 | SCR10_LOT_STATUS_SPEC.md §6.5 未確認事項（open questions）・計画とコードの差 | 入荷の例外（ラベル不一致）を品質管理が閉じる・保留にする処理が、計画の対象外のまま設計にも無い。閲覧だけで止まる。 | 確認用の issue を作成（`E02-I10-S06`） | 設計を止める | 品質管理の責任者（ROLE-003） | `E02-I10-S01`、`E02-I10-S02`、`E02-I10-S06` |
+| GR-009 | SCR04_LOCATION_MANAGEMENT_SPEC.md §3.1 画面情報 | FT-012 の名称は容量・温度帯の設定を含むが、SCR-04 は参照専用で、設定の画面は SCR-31（E08）にある。FT と画面の範囲が一致しない。 | 設計を修正（PREMISE P-S13） | 詳細のみ | —（チームが設計で決定） | `E02-I04-S01`、`E08-I02` |
+| GR-010 | SCR02_RECEIVING_INSPECTION_SPEC.md §6.6 未確認事項（open questions）・計画とコードの差 | 検品の操作を許すロールが、手順書側（入荷担当のみ）とコード側（入荷担当とセンター作業者）で食い違っている。 | 確認用の issue を作成（`E02-I10-S06`） | 詳細のみ | 入荷の責任者（ROLE-001） | `E02-I02-S01`、`E02-I10-S06` |
+| GR-011 | SCR11_ORDER_ENTRY_SPEC.md §6.5 未確認事項（open questions）・計画とコードの差 | 配送条件を契約から取る方針と、入力必須でフォームに残している実装が食い違う。契約と違う値は却下される。 | 仮定（PREMISE P-A04） | 詳細のみ | 営業・契約管理の責任者 | `E03-I01-S01` |
+| GR-012 | SCR12_ALLOCATION_RESULT_SPEC.md §4.1 項目一覧（Item list）; SCR19_ROUTE_PLANNING_SPEC.md §4.1 項目一覧（Item list） | 受注一覧・結果の絞り込みを URL に載せる要件が、画面仕様に無い。試作版の確認で、戻る操作で条件が消えると指摘された。 運行日を URL に載せる要件が画面仕様に無い。試作版の確認で、戻る操作で条件が消えると指摘された。 | 設計を修正（PREMISE P-S02） | 詳細のみ | —（チームが設計で決定） | `E03-I02-S01`、`E05-I03-S01`、`E15-I07-S01` |
+| GR-013 | SCR12_ALLOCATION_RESULT_SPEC.md §6.6 未確認事項（open questions）・計画とコードの差 | 解除された `-Q` ロケーションのロットを引当してよいかが、判定の置き場所の決定に依存している。順序規則（期限 → 温度帯 → 状態）と合わせた文書化が不足。 | 仮定（PREMISE P-A05） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E03-I02-S04` |
+| GR-014 | SCR12_ALLOCATION_RESULT_SPEC.md §6.6 未確認事項（open questions）・計画とコードの差 | 旧顧客コード → 新顧客コードの履歴の読み替えが未実装で、納品期限の日付の逆転検査が顧客 ID をそのまま読む。 | 確認用の issue を作成（`E03-I04-S08`） | 設計を止める | 営業・契約管理の責任者 | `E03-I03-S01`、`E03-I04-S08` |
+| GR-015 | SCR12_ALLOCATION_RESULT_SPEC.md §6.6 未確認事項（open questions）・計画とコードの差 | advisory ロックと FOR NO KEY UPDATE を接続プーラー越しに使ったときの挙動が、クラウドで確認しきれていない。 | 未解決のまま（staging で接続プーラー越しのロックを計測してから決める。計測は E03-I04-S02 の完了の定義） | 設計を止める | —（チームが検証で決定） | `E03-I04-S02` |
+| GR-016 | SCR12_ALLOCATION_RESULT_SPEC.md §6.6 未確認事項（open questions）・計画とコードの差 | US-018 の却下（受注を業務確認待ちのまま理由を記録する）が未実装で、承認と取消しか出口が無い。FT-035 の範囲に却下が入るか不明確。 | 確認用の issue を作成（`E03-I04-S08`） | 設計を止める | 営業・契約管理の責任者 | `E03-I04-S04`、`E03-I04-S08` |
+| GR-017 | SCR13_PICK_LOAD_SPEC.md §6.7 範囲外・既知の制約 | 戻し作業の完了が戻し先ロケーションのスキャンだけで、ロットを照合しない。別のロットを置いても気づかない。 | 仮定（PREMISE P-A06） | 詳細のみ | センター作業の責任者（ROLE-002） | `E04-I01-S02` |
+| GR-018 | SCR15_PICKING_TASKS_SPEC.md §6 Other Notes（その他） | 積載順の定義が RFP に無く、停車順の降順と仮定している。車両・封印の順は含めない。 | 仮定（PREMISE P-A07） | 詳細のみ | 配送計画の責任者（ROLE-004） | `E04-I03-S02` |
+| GR-019 | SCR13_PICK_LOAD_SPEC.md §6.7 範囲外・既知の制約 | ピッキングのオフライン対応が先送りで、画面は操作を止める。ADR-008 のオフライン方式は POD のみが対象で、ピッキングは範囲外。 | 確認用の issue を作成（`E04-I01-S08`） | 設計を止める | センター作業の責任者（ROLE-002） | `E04-I01-S01`、`E04-I01-S08` |
+| GR-020 | SCR16_DRIVER_ITINERARY_SPEC.md §6.8 範囲外・既知の制約; SCR19_ROUTE_PLANNING_SPEC.md §6.8 X15 / §6.7 S10 | ルートが止まったまま進めなくなる場合（再点検不合格・公開後の受注取消・期限切れの代替ロットなし）の解消手順が設計に無い。オフラインの出発確定とオフライン時の旅程表示も無い。 再点検が不合格になった公開済みルートは、業務上の復旧操作がなく進めなくなる。新版作成（FT-058）も未実装。 | 確認用の issue を作成（`E11-I06-S05`） | 設計を止める | 配送計画の責任者（ROLE-004） | `E05-I01-S01`、`E11-I06-S03`、`E11-I06-S05` |
+| GR-021 | SCR16_DRIVER_ITINERARY_SPEC.md §6.8 範囲外・既知の制約 | 出発のゲートが失敗したとき、同じ車両の別ルートの荷の行が応答に含まれる。デモ・架空データの範囲で受け入れた扱いで、実データでは情報の過剰露出になる。 | 設計を修正（PREMISE P-S14） | 詳細のみ | —（チームが設計で決定） | `E05-I01-S03` |
+| GR-022 | SCR17_DELIVERY_POD_DESIGN_ADDENDUM.md §6 Other Notes（その他） | オフラインの暗号鍵の保管場所・端末紛失時の破棄・iOS の保存容量の制限が設計に無い。ADR-008 は方式を決めているが運用条件が未確認。 | 確認用の issue を作成（`E05-I05-S07`） | 設計を止める | 情報システムの担当 | `E05-I05-S01`、`E05-I05-S07` |
+| GR-023 | SCR19_ROUTE_PLANNING_SPEC.md §6.8 範囲外・既知の制約; SCR19_ROUTE_PLANNING_SPEC.md §6.8 範囲外・既知の制約（depot_hours / 運行日） | デポの営業時間の版を今日の版でしか引かない。運行日で引く関数が無く、版が2つになると誤る。過去の運行日のルートも作れる。 営業時間設定は今日の版で引く。過去の運行日のルートも作成できる（運行日と今日の比較なし）。 | 設計を修正（PREMISE P-S10） | 詳細のみ | 配送計画の責任者（ROLE-004） | `E11-I01-S06` |
+| GR-024 | SCR19_ROUTE_PLANNING_DESIGN_ADDENDUM.md §3 Description（画面概要） | 地図サービスの製品・契約・上限・失敗時の挙動が未確認で、距離・時間の誤差が運転時間検査に直接影響する。 | 確認用の issue を作成（`E05-I03-S10`） | 設計を止める | 情報システムの担当・配送計画の責任者（ROLE-004） | `E05-I03-S07`、`E05-I03-S10` |
+| GR-025 | SCR19_ROUTE_PLANNING_SPEC.md §6.8 範囲外・既知の制約 | 公開 API が運転時間の再検査と規則セットの版の固定を含むかが、E05 と E11 の境界で曖昧。API-034 の仕様に両方が混在している。 | 設計を修正（PREMISE P-S15） | 設計を止める | —（チームが設計で決定） | `E05-I07-S01`、`E11-I02-S03` |
+| GR-026 | SCR21_TEMPERATURE_IMPORT_SPEC.md 6.6 設計判断 T1 / 6.8 範囲外 | デモの取込は Asia/Tokyo 以外のタイムゾーンを行ごと却下する。実機ロガーは機器ごとの信頼できるタイムゾーンが要ると書くだけで、本番の方針が無い。 | 仮定（PREMISE P-A08） | 詳細のみ | 情報システムの担当 | `E06-I01-S02` |
+| GR-027 | API-063_API.md 2 内容 / Description; architecture-overview.md §7 運用 | デモ用ロガーファイル作成 API を本番切替後に残すか無効にするかが書かれていない。 デモの毎日再投入は本番に登録しない方針が文書にない。誤登録で業務データが消える危険がある。 | 設計を修正（PREMISE P-S20） | 詳細のみ | —（チームが設計で決定） | `E06-I01-S03`、`E12-I07-S02` |
+| GR-028 | SCR21_TEMPERATURE_IMPORT_SPEC.md 6.7 S8 / 6.8 S3-1 | 取り込めなかった行をマスター修正のあとに救済する手段が無い（再取込は前回結果を返すだけ）。人の判断は警告のみとなっている。 | 仮定（PREMISE P-A09） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E06-I01-S07` |
+| GR-029 | SCR23_TEMPERATURE_ALERT_SPEC.md 6.7 S1 / 6.8 | SCR-23 の SPEC は管理レポートへの掲載を未実装としつつ、設計補遺は SCR-23 のタブで報告を出すと書く。管理レポート 6（SCR-28）との二重実装になる。 | 仮定（PREMISE P-A10） | 詳細のみ | 運用管理者（ROLE-009） | `E06-I05-S01`、`E10-I01-S01` |
+| GR-030 | SCR24_DEVIATION_MANAGEMENT_SPEC.md 6.8（取り込んだ本人は判定できない） | 取込者本人はそのアラームのロットを判定できない。品質管理が 1 人の拠点では判定者がいなくなる。 | 確認用の issue を作成（`E06-I03-S11`） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E06-I02-S03`、`E06-I03-S02`、`E06-I03-S05`、`E06-I03-S11` |
+| GR-031 | SCR24_DEVIATION_MANAGEMENT_SPEC.md 2 Layout（レイアウト）; SCR25_HACCP_COMPLETENESS_SPEC.md 4.1 項目一覧（機器 ID の入力例）; SCR24_DEVIATION_MANAGEMENT_SPEC.md §4.1 項目一覧（操作ボタン） | SPEC に 390px 幅（スマートフォン）での操作ボタンの配置規則が無い。試作版の確認で逸脱管理と HACCP の操作ボタンが画面外に出ると指摘された。 機器 ID 絞り込み欄の入力例が長く、390px 幅で文字が切れる。入力例の長さと表示方法の規則が無い。 390px 幅で逸脱・HACCP 画面の操作ボタンが画面外に出る（試作版の確認で受けた指摘）。仕様に幅ごとの配置の定義がない。 | 設計を修正（PREMISE P-S06） | 詳細のみ | —（チームが設計で決定） | `E06-I04-S06`、`E15-I06-S03` |
+| GR-032 | SCR25_HACCP_COMPLETENESS_SPEC.md 6.4 起点 / 6.8 クラウドは seed 後まで起点なし | 監視の起点はデモの再投入が書く設計で、本番の稼働開始時に誰がいつ起点を入れるかが無い。 | 確認用の issue を作成（`E14-I04-S03`） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E06-I04-S01`、`E06-I04-S03`、`E14-I04-S03`、`E14-I08` |
+| GR-033 | SCR23_TEMPERATURE_ALERT_SPEC.md 6.7 S6 / 6.8（ロットは UUID 先頭 8 文字）; SCR27_RECALL_MANAGEMENT_SPEC.md 6.7 範囲外（起票フォームのロットは先頭 8 桁の表示） | SCR-23・SCR-24 でロットを業務のロットコードでなく UUID 先頭 8 桁で出す。本番では担当者が照合しにくい。 回収ケースの起票フォームでロットが先頭 8 桁しか出ない。取り違えが許されない回収で確認しづらい。 | 設計を修正（PREMISE P-S16） | 詳細のみ | —（チームが設計で決定） | `E06-I02-S01`、`E06-I03-S02`、`E07-I04-S01` |
+| GR-034 | SCR26_TRACEABILITY_SEARCH_SPEC.md 1 History of change No.3（日付の表記を YYYY-MM-DD にそろえた）; SCR26_TRACEABILITY_SEARCH_SPEC.md §4.1 項目一覧（日付の表示） | SPEC は日付を YYYY-MM-DD にそろえたと書くが、試作版の確認では日本の利用者向けに YYYY/MM/DD で統一し、expiry_date が ISO 形式のまま出る点が指摘された。 トレース検索の結果画面の日付表示が他の画面と違う（試作版の確認で受けた指摘）。 | 設計を修正（PREMISE P-S04） | 詳細のみ | —（チームが設計で決定） | `E07-I01-S01`、`E15-I06-S01` |
+| GR-035 | SCR26_TRACEABILITY_SEARCH_SPEC.md 6.3 切り詰め（根のロット 20・下流の節点 200）/ SCR-27 6.3 F1 | 検索結果が 20 ロット・200 節点を超えると回収ケースを起票できない。大量のロットに及ぶ実際の回収で、起票そのものが止まる恐れがある。 | 確認用の issue を作成（`E07-I04-S08`） | 設計を止める | 品質管理の責任者（ROLE-003） | `E07-I01-S01`、`E07-I04-S08` |
+| GR-036 | SCR27_RECALL_MANAGEMENT_SPEC.md 6.3 履歴の欠け（前提 17） | 導入前の出荷履歴・移行データ・過去の回収の返品を含む家系は、範囲確定と照合ができない。本番では移行データを含むロットが当たる。 | 確認用の issue を作成（`E07-I04-S08`） | 設計を止める | 品質管理の責任者（ROLE-003） | `E07-I04-S09`、`E07-I04-S08` |
+| GR-037 | SCR27_RECALL_MANAGEMENT_SPEC.md 6.3 廃棄の根拠と「申告」の限界 / 6.5（未解決を残したクローズは範囲外） | 廃棄確認は担当者の申告で、照合済み・クローズも同じ人が 1 人で行える。第三者の確認や二人目の承認が無い。 | 確認用の issue を作成（`E07-I04-S08`） | 設計を止める | 品質管理の責任者（ROLE-003） | `E07-I04-S02`、`E07-I04-S08` |
+| GR-038 | SCR26_TRACEABILITY_SEARCH_SPEC.md 6.7 検索の回数制限（フェーズ 12） | 回数制限（60 秒に 30 回）はデモ用の設計値で、負荷の実測が無い。本番の調査では 1 人が短時間に多数を検索する場合がある。 | 仮定（PREMISE P-A11） | 詳細のみ | 情報システムの担当 | `E07-I01-S02` |
+| GR-039 | SCR27_RECALL_MANAGEMENT_SPEC.md 3.4 関連 FT / 6.6 差異 #2（scoped → notified の遷移が未実装） | 試作版の画面で作ったケースは範囲確定で止まり、照合・クローズへ進めるのはシードのケースだけ。本番の通常の流れが通知の実装に依存する。 | 仮定（PREMISE P-A12） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E07-I04-S07`、`E07-I04-S12` |
+| GR-040 | SCR31_MASTER_DATA_DESIGN_ADDENDUM.md 3 Description（6 種類）/ 4.1 E-1（8 種類のタブ） | 補遺の本文はマスターを 6 種類と数えるが、画面のタブと API の種別の値は 8 種類（規則セットと設定値を含む）ある。 | 設計を修正（PREMISE P-S18） | 詳細のみ | —（チームが設計で決定） | `E08-I02-S07` |
+| GR-041 | DB_MASTER_DATA_DESIGN_DB.md 5.3 追加の仮定（容量を下げるロケーションの版） | 容量を下げるロケーションの版は、容量を超えるロットがあっても承認を止めず、既存のロットを動かさない仮定になっている。保管の安全上、承認時に警告が要るかもしれない。 | 確認用の issue を作成（`E08-I02-S13`） | 詳細のみ | システム管理者（ROLE-007） | `E08-I02-S04`、`E08-I02-S13` |
+| GR-042 | DB_MASTER_DATA_DESIGN_DB.md 4.7 temperature_policy_version（複数の範囲が当たるときの優先） | 範囲が重なる温度ポリシーの優先（SKU 指定 > ゾーン指定 > 全体）は、マスターの DB 設計に SCR-31 の仮定として置かれているが顧客は未確認で、読取を評価する側（温度の取込・評価の設計書）には範囲で版を選ぶ処理が書かれていない。 | 仮定（PREMISE P-A14） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E06-I09-S01`、`E08-I02-S01` |
+| GR-043 | API-D-065_API.md 1 内容（新しい顧客・SKU の組の登録） | 新しい顧客と SKU の組を SCR-32 で登録する場合に、顧客・SKU が有効な版を持つことの検査が書かれていない。 | 仮定（PREMISE P-A13） | 詳細のみ | 営業・契約管理の責任者 | `E08-I03-S02` |
+| GR-044 | SCR18_CLAIM_MANAGEMENT_SPEC.md 6.5 他画面との整合（SCR-17） | SCR-17（配送の証拠）から SCR-18 を開く入口が、確認済みの SCR-17 の仕様に無い。 | 設計を修正（PREMISE P-S19） | 詳細のみ | —（チームが設計で決定） | `E05-I02`、`E09-I01-S06` |
+| GR-045 | SCR18_CLAIM_MANAGEMENT_SPEC.md 6.5 他画面との整合（SCR-27 の返品との二重計上） | 回収に紐づくクレームの返品を、回収の返品数量に自動で足さない仮定になっている。担当者が両方に入力する運用になり、数量の食い違いが起きうる。 | 確認用の issue を作成（`E09-I02-S06`） | 詳細のみ | クレーム・CS の責任者（ROLE-006） | `E09-I02-S05`、`E09-I02-S06` |
+| GR-046 | SCR18_CLAIM_MANAGEMENT_SPEC.md 6.4 A10（返品ロットの置き場所） | 元のロットの温度帯に合う隔離ロケーションの空きが無いと受領が拒否される。返品が届いても記録できない運用上の詰まりが起きる。 | 確認用の issue を作成（`E09-I02-S06`） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E09-I02-S07`、`E09-I02-S06` |
+| GR-047 | SCR28_OPERATIONAL_REPORT_SPEC.md 6.2 RP-02・RP-12 / 6.5 未確認事項 | レポートの既定の付与と、12 種類ごとの主管部門・使える条件・主な列は 当社の設計で、顧客の確認が無い。変更履歴レポートの主管部門も ADMIN とした仮定。 | 確認用の issue を作成（`E10-I01-S06`） | 詳細のみ | 運用管理者（ROLE-009） | `E10-I01-S01`、`E10-I01-S06` |
+| GR-048 | SCR28_OPERATIONAL_REPORT_SPEC.md 6.5（CSV を画面の要求の中で作る範囲 100,000 行） | 運用レポートの CSV は画面の要求内で作る前提だが、行数が増えると SCR-29 の非同期方式が要る。切り替えの基準が無い。 | 確認用の issue を作成（`E10-I01-S06`） | 詳細のみ | 運用管理者（ROLE-009） | `E10-I01-S03`、`E10-I01-S06` |
+| GR-049 | SCR29_AUDIT_EXPORT_SPEC.md 6.2 AX-13（ワーカーの Route Handler と audit_export_dispatch） | 証拠パッケージの作成ワーカー（POST /api/internal/worker/audit-export）と pg_cron の起動関数は、E10 の API 一覧に無い共通の仕組みで、E12・E13 のタスクとの重複・抜けが起きうる。 | 仮定（PREMISE P-A15） | 詳細のみ | —（チームが設計で決定） | `E10-I02-S02`、`E10-I02-S06`、`E13-I05` |
+| GR-050 | SCR29_AUDIT_EXPORT_SPEC.md 6.2 AX-11（定期アーカイブの内容・PDF の要約） | 月次アーカイブに CSV と PDF の要約を入れるとあるが、PDF の作り方（ライブラリ・様式）が決まっていない。 | 仮定（PREMISE P-A16） | 詳細のみ | 監査者（ROLE-008） | `E10-I02-S01` |
+| GR-051 | SCR36_RETENTION_LEGAL_HOLD_SPEC.md 5 Event（パージの実行中）/ API-D-103 | パージは 1,000 行ずつ削除するが、途中で失敗したときの再開と、実行中のまま止まったパージの扱いが書かれていない。 | 確認用の issue を作成（`E10-I04-S06`） | 詳細のみ | システム管理者（ROLE-007） | `E10-I04-S09`、`E10-I04-S06` |
+| GR-052 | SCR30_AUDIT_LOG_SPEC.md 3.2 関連 FT（FT-092 は画面なし） | FT-092（監査イベントの追記専用の記録）は画面がなく、試作版で動作済み。backlog 上の担当が SCR-30 だけで、記録側の本番確認の置き場が曖昧。 | 仮定（PREMISE P-A17） | 詳細のみ | —（チームが設計で決定） | `E10-I03-S01` |
+| GR-053 | SCR19_ROUTE_PLANNING_SPEC.md §6.7 仕様との差異 S5 | 見積のない区間を0分で進めるため、ブロックされても後続の到着予定・連続運転・拘束が短く出る。 | 設計を修正（PREMISE P-S09） | 詳細のみ | —（チームが設計で決定） | `E11-I01-S05` |
+| GR-054 | SCR19_ROUTE_PLANNING_SPEC.md §6.7 仕様との差異 S13 | 公開ボタンの有効判定が下書き番号だけを見て、乗務履歴の変化を見ない。履歴が古くても有効に見える。 | 設計を修正（PREMISE P-S08） | 詳細のみ | —（チームが設計で決定） | `E11-I02-S01` |
+| GR-055 | SCR19_ROUTE_PLANNING_SPEC.md §6.7 仕様との差異 S8 | 地図の見積が 24 時間を超える例の期待は理由 IF-MAP-01 だが、チェック段では規則コード map_estimate_24h が出て状態は created のまま。 | 設計を修正（PREMISE P-S23） | 詳細のみ | —（チームが設計で決定） | `E11-I04-S03` |
+| GR-056 | SCR19_ROUTE_PLANNING_SPEC.md §4.1 運行日（A-3）・§6.8 | 運行日の既定が明日で、デモの前日勤務が D1 の 22:00 終業の1件だけのため、休息8時間台のブロックを人が確認できなかった（試作版の確認で判明）。 | 設計を修正（PREMISE P-S07） | 詳細のみ | 配送計画の責任者（ROLE-004） | `E11-I05-S01`、`E11-I05-S02`、`E11-I05-S04` |
+| GR-057 | ADR-002-driving-hours-check-in-typescript.md §1 背景・§4 結果 | 休憩（4時間ごとに合計30分・1回10分以上）の解釈は当社設計で、公式出典で未検証。10分未満の休憩は告示より厳しく数えない。 | 確認用の issue を作成（`E11-I01-S08`） | 設計を止める | 配送計画の責任者（ROLE-004） | `E11-I01-S08` |
+| GR-058 | SCR19_ROUTE_PLANNING_SPEC.md §6.8 自動の最適化・休憩の自動挿入はしない | SCR-19 本体は休憩の自動挿入を『しない』と書くが、SCR-16 補遺は FT-059 として自動挿入を設計している。 | 設計を修正（PREMISE P-D01） | 設計を止める | —（チームが設計で決定） | `E11-I03-S04`、`E11-I03-S07`、`E11-I03-S08` |
+| GR-059 | SCR16_DRIVER_ITINERARY_DESIGN_ADDENDUM.md §4.1 項目一覧（E-2 休止の位置） | 地図が固定表で座標を持たないため、休止の位置を区間と走行分でしか示せない。休憩施設の選択はできない。 | 仮定（PREMISE P-A18） | 詳細のみ | 配送計画の責任者（ROLE-004） | `E11-I03-S07` |
+| GR-060 | ADR-002-driving-hours-check-in-typescript.md §3 却下した代替案とその理由 | DB は運転時間の規則を再計算しないため、TS 関数の誤りは DB で検出できない。守りはテストだけ。 | 未解決のまま（DB は運転時間の規則を再計算しない決定（ADR-002 §3）。守りは境界テストと運用手順書で補う。） | 詳細のみ | —（チームが設計で決定） | `E11-I01-S01` |
+| GR-061 | CR-202610-tech-stack-nextjs-supabase.md §5 G1 SLA | 稼働率の SLA はプラン上 Enterprise のみで、月99.5%の保証が得られない。 | 確認用の issue を作成（`E12-I03-S03`） | 設計を止める | 情報システムの担当 | `E12-I03`、`E12-I03-S03` |
+| GR-062 | CR-202610-tech-stack-nextjs-supabase.md §5 G12 Multi-AZ の代わり | DB の自動切替（Multi-AZ 相当）の記載が公式資料に無く、RTO 4時間・稼働率の根拠が弱い。 | 未解決のまま（Multi-AZ 相当の記載が公式資料にない。可用性の実測（E15-I04）の結果が出るまで判断できない。） | 詳細のみ | 情報システムの担当 | `E15-I04` |
+| GR-063 | CR-202610-tech-stack-nextjs-supabase.md §5 G10 監視・アラート | ログの送り先（監視ツール）が未選定で、保持期間の要件を満たす構成が決まっていない。 | 仮定（PREMISE P-A19） | 詳細のみ | 情報システムの担当 | `E12-I03` |
+| GR-064 | architecture-overview.md §9.5 環境 | UAT 環境のカスタム環境は Pro で1つまで。本設計は stg と UAT で Supabase プロジェクトを共有する前提で、データ分離が弱い。 | 仮定（PREMISE P-A20） | 詳細のみ | 情報システムの担当 | `E12-I01` |
+| GR-065 | external-integration-design.md §5 仮定 #1 SFTP の受け口 | Supabase にも Vercel にも SFTP サーバーの機能が無く、受け口の運用主体が未確定。ERP 側ホストを使う仮定で設計している。 | 仮定（PREMISE P-A21） | 設計を止める | 情報システムの担当 | `E13-I01` |
+| GR-066 | external-integration-design.md §5 仮定 #2 ERP の CSV の形と列 | CSV の列・形式は仮定で、顧客のサンプルを受け取っていない。 | 確認用の issue を作成（`E13-I01-S06`） | 設計を止める | 情報システムの担当 | `E13-I01`、`E13-I01-S06` |
+| GR-067 | external-integration-design.md §5 仮定 #12 ファイルを出す日と時刻 | 休日・該当なしの日にも見出し行だけのファイルを出す義務は、顧客の ERP バッチ変更を伴い、未確認。 | 確認用の issue を作成（`E13-I01-S06`） | 詳細のみ | 情報システムの担当 | `E13-I01`、`E13-I01-S06` |
+| GR-068 | external-integration-design.md §3.2 データロガー（経路） | ロガーの CSV を誰がどう置くか（自動送信か手動アップロードか）が未定。実機の見本も未入手。 | 確認用の issue を作成（`E13-I01-S06`） | 設計を止める | 品質管理の責任者（ROLE-003）・情報システムの担当 | `E13-I01-S06`、`E13-I03` |
+| GR-069 | SCR21_TEMPERATURE_IMPORT_SPEC.md §6.4 元のファイルを保存しない（D1） | プロトタイプは元の CSV を保存しないが、RFP は元ファイルと SHA-256 の保持を求める。 | 設計を修正（PREMISE P-S17） | 詳細のみ | —（チームが設計で決定） | `E13-I03-S02` |
+| GR-070 | external-integration-design.md §4 運用者の見方と再投入［仮定］ | 運用者向けの一覧・再投入の画面を作らない設計。SQL を使えない運用者では運用できない。 | 仮定（PREMISE P-A22） | 詳細のみ | 情報システムの担当 | `E13-I06` |
+| GR-071 | external-integration-design.md §2 共通の方式 6（service_role） | ワーカーが service_role で RPC を呼ぶ暫定設計。顧客が鍵の保持を認めない場合は専用ロールへ移す必要がある。 | 仮定（PREMISE P-A23） | 詳細のみ | 情報システムの担当 | `E13-I05` |
+| GR-072 | data-migration-design.md §5 仮定 #4 照合の式の 4 区分目 | RFP の照合式は3区分（受入・却下・重複）。設計書は 4 区分目として BUSINESS-REVIEW を式に足しており、事業確認の行を 3 区分のどれに数えるかが書かれていない。 | 設計を修正（PREMISE P-S30） | 詳細のみ | —（チームが設計で決定） | `E14-I04` |
+| GR-073 | data-migration-design.md §5 仮定 #1 ビジネスオーナーの承認者 | ビジネスオーナーが8つのシステムロールの外で、承認者が未定。事業責任者1名を仮定している。 | 確認用の issue を作成（`E14-I04-S03`） | 詳細のみ | 事業責任者（移行のビジネスオーナー） | `E14-I04`、`E14-I04-S03` |
+| GR-074 | data-migration-design.md §2 FT-109（注文の凍結） | 凍結後の新規注文を入れる『制御された手動のキュー』の形（新しい状態か別表か）が未設計。 | 仮定（PREMISE P-A25） | 詳細のみ | 営業・契約管理の責任者 | `E14-I05-S02` |
+| GR-075 | data-migration-design.md §5 仮定 #7 旧 POD の画像の件数と容量 | 旧 POD 画像の件数・容量が不明で、契約する Storage の容量が足りるか判断できない。 | 未解決のまま（旧 POD 画像の件数と容量はドライランで測るまで分からない。超過時の対応は測定後に決める。） | 詳細のみ | 事業責任者（移行のビジネスオーナー） | `E14-I02` |
+| GR-076 | data-migration-design.md §4 カットオーバーと戻し（戻し） | PITR の復旧時間は DB の大きさで変わり、RTO 4時間に収まるか未測定。PITR は追加費用が要る。 | 未解決のまま（PITR の復旧時間は DB の大きさに依存する。ロールバック演習（E14-I06）で測るまで未確定。） | 詳細のみ | 情報システムの担当 | `E14-I06` |
+| GR-077 | data-migration-design.md §1 移行の流れ（出荷の履歴） | 出荷の履歴に空白の賞味期限・複数の日付書式・顧客コード変更・負の返金行が混在し、変換規則の確定に顧客の判断が多数要る。 | 確認用の issue を作成（`E14-I04-S03`） | 設計を止める | 事業責任者（移行のビジネスオーナー） | `E14-I02`、`E14-I04-S03` |
+| GR-078 | data-migration-design.md §3.2 ロードの順序（過去の温度データ） | 約250万件の温度データを専用経路で入れる設計で、通常経路を通さないことの妥当性は実機のリハーサルで確かめていない。 | 仮定（PREMISE P-A26） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E14-I03-S02` |
+| GR-079 | SCR21_TEMPERATURE_IMPORT_SPEC.md §6.4 アラームの作り方（まとめ方） | アラームはファイルをまたいでつなげない。自動受信の日次ファイルの境目で、継続する超過が別のアラームに分かれる恐れがある。 | 仮定（PREMISE P-A27） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E06-I09-S01` |
+| GR-080 | SCR21_TEMPERATURE_IMPORT_SPEC.md §6.4 アラームの作り方（隔離・取込んだ本人） | 取込んだ本人を隔離元を開いた人として扱う規則が、人のいない自動受信でどうなるか決まっていない。 | 確認用の issue を作成（`E13-I01-S06`） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E06-I09-S01`、`E13-I01-S06` |
+| GR-081 | SCR21_TEMPERATURE_IMPORT_SPEC.md §6.8 範囲外・既知の制約（取り込んだ本人・ファイルの出所） | ファイルの出所を認証しておらず、SHA-256 は取込む人が計算し直せる。改ざんされたデータで隔離が出ない恐れがある。 | 未解決のまま（自動受信は送り手の認証（E13）で補う。手動経路の限界は文書に残すだけにする。） | 設計を止める | 情報システムの担当 | `E13-I03` |
+| GR-082 | SCR05_PUTAWAY_SPEC.md §3.1 画面情報（画面名 Put-away） | メニュー・画面名が英語表記（Put-away）で、日本語のみの方針（CS-01）と食い違う。 | 設計を修正（PREMISE P-S05） | 詳細のみ | —（チームが設計で決定） | `E02-I05-S01` |
+| GR-083 | CR-202610-tech-stack-nextjs-supabase.md §4 NFR-ACC-01 | アクセシビリティはスタックでは満たせず、実装と試験で満たす必要があるが、プロトタイプは基本対応のみで、不適合の規模が不明。 | 未解決のまま（不適合の規模はアクセシビリティの検証（E15-I05-S03）で測るまで不明。） | 詳細のみ | 情報システムの担当 | `E15-I05-S03` |
+| GR-084 | _index.md ほか DB_*_DB.md の「論理名」列 | 実装済みの DB 設計書の論理名の列が空欄で、日本語の列名の出典がない。推測で埋めない方針にしている。 | 未解決のまま（コメントの出典がなく、推測で埋めない方針を保つ。本番の DB 設計書で日本語名を付けるかは様式の要求次第で、顧客の指定を待つ。） | 詳細のみ | —（チームが設計で決定） | — |
+| GR-085 | 各画面仕様 §4（様式が求める値） | 画面仕様の全体で「未記載」と書いた値が 186 箇所ある。様式は Type / Min / Max / Default などを項目ごとに求めるが、元の文書に値がない。 | 未解決のまま（設計（未実装）の画面は実装時に値が決まる。実装で確認済みの画面は各本番化 issue の完了の定義で補い、全件の棚卸しは別の作業にしない。） | 詳細のみ | —（チームが設計で決定） | — |
+| GR-086 | SCR34_USER_ROLE_MANAGEMENT_SPEC.md §6 M-5 | 特権ロールの MFA 端末を失った人の回復手順が画面になく、運用手順の仮定だけで書かれている。 | 仮定（PREMISE P-A28） | 詳細のみ | システム管理者（ROLE-007） | `E01-I04-S04` |
+| GR-087 | SCR33_LOGIN_DESIGN_ADDENDUM.md §E-3 | SSO でログインしたが user_profile がない利用者の、Supabase 側に残る行の掃除が手作業の運用手順になっている。 | 仮定（PREMISE P-A29） | 詳細のみ | システム管理者（ROLE-007） | `E01-I01-S04` |
+| GR-088 | SCR15_PICKING_TASKS_SPEC.md §6 仮定 A5 | ピッキング順の並び替えは、グループの reserved 行が 200 件を超えると使えなくなる。 | 設計を修正（PREMISE P-D05） | 詳細のみ | —（チームが設計で決定） | `E04-I03-S02` |
+| GR-089 | README.md（ADR-006〜008） | ADR-006・007・008 が「提案（CR 承認後に採用）」のままで、バックログが前提にする方式が未決の状態になっている。 | 設計を修正（PREMISE P-D02） | 設計を止める | —（チームが設計で決定） | `E05-I05-S01`、`E11-I02-S04`、`E13-I05` |
+| GR-090 | architecture-overview.md §9（SSO） | SSO の方式が「OIDC または SAML 2.0」と二択のまま書かれている。 | 設計を修正（PREMISE P-D03） | 設計を止める | —（チームが設計で決定） | `E01-I01-S04` |
+| GR-091 | ワイヤーフレーム 8 画面（wireframe-index.md の SCR-02・05・12・17・19・20・23・25） | ワイヤーフレームが画面仕様の改訂に追いついておらず、ダイアログの内部コード・必須印・ボタン名・並び順が本文と食い違う。 | 設計を修正（PREMISE P-S21） | 詳細のみ | —（チームが設計で決定） | `E15-I08`、`E15-I08-S01`、`E15-I08-S02`、`E15-I08-S04` |
+| GR-092 | SCR25_HACCP_COMPLETENESS_DESIGN_ADDENDUM.md §4.2 記録リズムの表 | 記録リズムごとに、法令上の義務か Yuki の方針（BR-HACCP-01）かの区別がなく、事業規模に応じた HACCP の義務の水準も書かれていない。 | 設計を修正（PREMISE P-S22） | 設計を止める | 品質管理の責任者（ROLE-003） | `E06-I07-S08`、`E06-I07-S09` |
+| GR-093 | api-list-design.md と各画面の設計補遺、BM-52 の API 設計書 | 同じ API の契約が 3 か所に書かれ、どれが正か決まっていない。 | 設計を修正（PREMISE P-D06） | 設計を止める | —（チームが設計で決定） | `E15-I08`、`E15-I08-S03` |
+| GR-094 | SCR25_HACCP_COMPLETENESS_DESIGN_ADDENDUM.md §1（タブ「記録の入力」） | 複数のロールを持つ人が開いたときの既定のタブと、ロール → タブ → API の対応が書かれていない。 | 仮定（PREMISE P-A30） | 詳細のみ | 品質管理の責任者（ROLE-003） | `E06-I04-S01` |
+| GR-095 | SCR17_DELIVERY_POD_SPEC.md §4.1 C-6 写真・C-7 署名、§4.2、§6.4 | 4.1 の Required は写真を必須・署名を任意とするが、4.2 と 6.4 では車上渡しは写真か署名のどちらか 1 つでよく、写真が必須なのは軒先渡しだけ。 | 設計を修正（PREMISE P-S24） | 詳細のみ | —（チームが設計で決定） | `E05-I02-S02`、`E15-I08-S04` |
+| GR-096 | SCR02_RECEIVING_INSPECTION_SPEC.md §4.1 A-5 理由、§4.2 | 理由の Required の列は「必須」だが、同じ行の必須の条件と 4.2 は、却下か保留の数量が 0 を超えるときだけ必須としている。 | 設計を修正（PREMISE P-S25） | 詳細のみ | —（チームが設計で決定） | `E02-I11-S05`、`E15-I08-S04` |
+| GR-097 | SCR02_RECEIVING_INSPECTION_SPEC.md §4.1 A-6 製造日・A-7 期限日、§4.2 | 日付の形式が送る値（YYYY-MM-DD）でしか書かれておらず、共通仕様の画面の表示（YYYY/MM/DD）と食い違って読める。 | 設計を修正（PREMISE P-S26） | 詳細のみ | —（チームが設計で決定） | `E02-I02-S01`、`E15-I08-S04` |
+| GR-098 | SCR19_ROUTE_PLANNING_SPEC.md §4.1 A-18 処理不可のダイアログ、§5 | A-18 の Note は規則のコードをいつも出すと読めるが、5 章と共通仕様 CS-07 は業務規則の番号のときだけ出すとしている。 | 設計を修正（PREMISE P-S27） | 詳細のみ | —（チームが設計で決定） | `E11-I04-S03`、`E15-I08-S04` |
+| GR-099 | SCR20_TRANSPORT_INCIDENT_SPEC.md §4.1 D-2 証拠を追加・運行日、§4.3、§5 | ボタンの D-2 だけ Required が「任意」で、ほかのボタンの「-」と合わない。5 章と 4.3 で ROLE-004 が選ぶ運行日の項目が 4.1 にない。 | 設計を修正（PREMISE P-S28） | 詳細のみ | —（チームが設計で決定） | `E05-I04-S01`、`E15-I08-S04` |
+| GR-100 | 8 画面（SCR-02・05・12・17・19・20・23・25）の画面仕様 §2 Layout | 2 章の注釈番号と項目 ID の対応表は旧い画像の番号を前提にしており、ピンを 4.1 の項目 ID にした新しいワイヤーフレームと合わない。 | 設計を修正（PREMISE P-S29） | 詳細のみ | —（チームが設計で決定） | `E15-I08-S04` |
+
+<!-- END generated:gaps-table -->

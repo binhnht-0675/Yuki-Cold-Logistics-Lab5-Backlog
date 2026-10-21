@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCR-12 引当結果 — ワイヤーフレーム（2026-10-19 改訂）| Yuki Cold Logistics</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#111;--ink2:#3d3d3d;--ink3:#6b6b6b;--line:#1a1a1a;--line2:#b9b9b9;--line3:#dcdcdc;--paper:#fff;--bg:#e8e8e8;--fill:#efefef;--fill2:#dedede;--fill3:#c9c9c9;--mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--ink);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #111;outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#111;color:#fff;padding:8px 14px;z-index:99}
+.skip:focus{left:8px;top:8px}
+h1,h2,h3,h4{line-height:1.35;margin:0}
+code,.mono{font-family:var(--mono);font-size:.92em}
+/* ---- page chrome ---- */
+.top{background:#111;color:#fff;padding:18px 24px 20px}
+.top .tin{max-width:1280px;margin:0 auto}
+.top .crumb{font-size:12px;opacity:.8;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.top .crumb a{color:#fff}
+.top h1{font-size:28px;margin-top:8px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.top h1 .code{font-family:var(--mono);font-size:18px;border:1.5px solid #fff;border-radius:4px;padding:1px 10px}
+.top .lead{margin:6px 0 0;font-size:13px;opacity:.88;max-width:980px}
+.page{max-width:1280px;margin:0 auto;padding:18px 24px 80px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:0 0 14px;padding:0}
+.meta div{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:8px 12px}
+.meta dt{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.04em}
+.meta dd{margin:2px 0 0;font-size:13px;font-weight:500;word-break:break-word}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.toc a{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:12px;text-decoration:none;background:var(--paper);min-height:28px}
+.toc a:hover{background:#111;color:#fff}
+.pintoggle{margin-left:auto;font-size:12px;display:flex;gap:6px;align-items:center}
+body:has(#hidepins:checked) .pin{display:none}
+.legend{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;margin:0 0 18px;padding:0}
+.legend>summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px}
+.legend .lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 18px;padding:2px 14px 14px}
+.legend .lg div{display:flex;gap:10px;align-items:flex-start;font-size:12px}
+.legend .sw{flex:0 0 74px;min-height:26px;font-size:11px;padding:3px 6px;display:flex;align-items:center;justify-content:center;text-align:center}
+section.blk{margin:0 0 30px}
+section.blk>h2{font-size:20px;display:flex;gap:10px;align-items:center;margin:0 0 6px;padding-bottom:6px;border-bottom:3px solid var(--line)}
+section.blk>h2 .n{background:#111;color:#fff;font-size:13px;border-radius:4px;padding:1px 8px}
+section.blk>.sub{margin:4px 0 12px;color:var(--ink2);font-size:13px;max-width:1000px}
+h3.h3{font-size:15px;margin:20px 0 8px;display:flex;gap:8px;align-items:center}
+h3.h3 small{font-weight:400;color:var(--ink3);font-size:12px}
+.ov{overflow-x:auto;padding-bottom:4px}
+/* ---- tables (docs) ---- */
+table.doc{border-collapse:collapse;width:100%;background:var(--paper);font-size:12.5px;border:1.5px solid var(--line)}
+table.doc th{background:var(--fill3);text-align:left;padding:6px 9px;border:1px solid var(--line2);font-size:12px;white-space:nowrap}
+table.doc td{padding:6px 9px;border:1px solid var(--line3);vertical-align:top}
+table.doc tr:nth-child(even) td{background:#fafafa}
+table.doc td.c{text-align:center;white-space:nowrap}
+table.doc td.mono,table.doc td code{font-family:var(--mono);font-size:11.5px}
+.pinc{width:34px;text-align:center}
+/* ---- pins ---- */
+.pin{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#111;color:#fff;font:700 10.5px/1 var(--mono);margin-left:5px;vertical-align:middle;flex:0 0 auto}
+.col>.pin,.card>.pin,.body>.pin,form>.pin,.phb>.pin{align-self:flex-start}
+.pin.lg{min-width:22px;height:22px;font-size:12px}
+/* ---- wire frames ---- */
+.fig{margin:0 0 18px}
+.fig>figcaption{font-size:12px;font-weight:700;margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fig>figcaption .tag{background:#111;color:#fff;border-radius:3px;padding:0 7px;font-size:11px}
+.fig>figcaption .rt{font-weight:400;color:var(--ink3)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;align-items:start}
+.grid-ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(375px,375px));gap:22px;align-items:start}
+.wf{background:var(--paper);border:2px solid var(--line);border-radius:6px;font-size:12.5px;line-height:1.5;overflow:hidden;position:relative}
+.wf.pcw{min-width:1020px}
+.wf .url{background:var(--fill3);border-bottom:2px solid var(--line);padding:4px 10px;font:11px var(--mono);display:flex;gap:8px;align-items:center}
+.wf .url i{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line)}
+.wf .url b{font-weight:500;background:#fff;border:1px solid var(--line2);border-radius:3px;padding:0 8px;flex:1}
+.shell{display:flex;min-height:420px}
+.shell>.side{flex:0 0 190px;border-right:2px solid var(--line);background:var(--fill);padding:10px 8px;display:flex;flex-direction:column;gap:10px}
+.shell>.side .g{font-size:10.5px;color:var(--ink3);font-weight:700;padding:0 6px}
+.shell>.side a,.shell>.side span.mi{display:block;padding:5px 10px;border-radius:5px;font-size:12px;text-decoration:none;color:var(--ink)}
+.shell>.side .cur{background:#111;color:#fff;font-weight:700}
+.shell>.side .ghost{color:var(--ink3);font-size:11px;border:1px dashed var(--line2);border-radius:5px;padding:4px 8px}
+.shell>.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.hdr{display:flex;gap:16px;align-items:center;padding:6px 12px;border-bottom:2px solid var(--line);background:var(--paper);flex-wrap:wrap}
+.hdr .sys{font-weight:700;font-size:13px}
+.hdr .bc{flex:1;color:var(--ink2);font-size:12px;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.hdr .who{font-size:12px}
+.body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;background:#fff}
+.body h1.pt{font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.body h2.st{font-size:14px;display:flex;gap:6px;align-items:center}
+.body .sp{flex:1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.top{align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:8px}
+.cols{display:grid;gap:14px;align-items:start}
+.cols.c23{grid-template-columns:2fr 3fr}.cols.c32{grid-template-columns:3fr 2fr}.cols.c11{grid-template-columns:1fr 1fr}.cols.c3{grid-template-columns:repeat(3,1fr)}.cols.c2{grid-template-columns:1fr 1fr}.cols.c1{grid-template-columns:1fr}
+.card{border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.card.thick{border-width:3px}
+.card h3{font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:0;font-size:12px}
+.dl dt{color:var(--ink3)}.dl dd{margin:0}
+.dl.two{grid-template-columns:auto 1fr auto 1fr}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f>label,.f>.lb{font-size:12px;font-weight:700;display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.f .rq{font-weight:700}
+.in{border:1.5px solid var(--line);border-radius:4px;background:#fff;min-height:30px;padding:4px 8px;color:var(--ink3);font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.in.val{color:var(--ink)}
+.in.mono,.mono .in{font-family:var(--mono)}
+.in.dis{background:var(--fill);border-style:dashed}
+.in.ta{min-height:58px;align-items:flex-start}
+.in.err{border-width:2.5px}
+.in .car{color:var(--ink);font-size:11px}
+.hint{font-size:11px;color:var(--ink3)}
+.fe{display:flex;gap:5px;align-items:flex-start;font-size:11.5px;font-weight:700;border-left:4px solid #111;padding:1px 0 1px 6px;background:var(--fill)}
+.chk{display:flex;gap:7px;align-items:center;font-size:12px;min-height:26px}
+.chk .bx{width:15px;height:15px;border:1.5px solid var(--line);border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;line-height:1;flex:0 0 auto;background:#fff}
+.chk .bx.on{background:#111;color:#fff}
+.chk .rd{width:15px;height:15px;border:1.5px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:#fff}
+.chk .rd.on::after{content:"";width:7px;height:7px;border-radius:50%;background:#111}
+.chk.dis{color:var(--ink3)}
+.fgrid{display:grid;gap:9px 12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fgrid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.fgrid.g1{grid-template-columns:1fr}
+.fgrid .span2{grid-column:span 2}
+.fset{border:1.5px solid var(--line2);border-radius:5px;padding:8px 10px 10px;margin:0}
+.fset>legend{font-size:12px;font-weight:700;padding:0 6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:4px 14px;border-radius:5px;border:2px solid var(--line);font:700 12px var(--mono);font-family:inherit;background:#fff;color:#111;white-space:nowrap}
+.btn.pri{background:#111;color:#fff}
+.btn.dng{background:#111;color:#fff;outline:2px solid #111;outline-offset:2px}
+.btn.ghost{border-color:var(--line2);font-weight:500}
+.btn.dis{background:var(--fill2);color:var(--ink3);border-style:dashed;border-color:var(--ink3)}
+.btn.lg{min-height:40px;width:100%}
+.btn.t48{min-height:48px}
+.btn.xs{min-height:24px;padding:1px 8px;font-size:11px}
+.btn.tog{font-weight:500}
+.btn .pin{background:#fff;color:#111;border:1.5px solid #111}
+.btn:not(.pri):not(.dng) .pin{background:#111;color:#fff}
+svg.i{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;vertical-align:-2px}
+svg.i.l{width:18px;height:18px}
+/* tones: never colour only -> pattern + icon + text */
+.t-danger{border:2.5px solid #111!important;background:repeating-linear-gradient(135deg,#f6f6f6 0 7px,#e6e6e6 7px 9px)}
+.t-warn{border:2px dashed #111!important;background:#f4f4f4}
+.t-ok{border:1.5px solid #555!important;background:#fafafa}
+.t-info{border:2px dotted #333!important;background:#fff}
+.t-neutral{border:1.5px solid #9a9a9a!important;background:var(--fill)}
+.ban{display:flex;gap:9px;align-items:flex-start;border-radius:5px;padding:7px 10px;font-size:12px}
+.ban .tt{font-weight:700;font-size:12.5px}
+.ban .ds{font-size:12px}
+.ban ul{margin:3px 0 0;padding-left:16px}
+.bd{display:inline-flex;gap:4px;align-items:center;border-radius:999px;padding:0 8px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bd.t-danger,.bd.t-warn,.bd.t-ok,.bd.t-info,.bd.t-neutral{border-width:1.5px!important}
+.bd.strike{text-decoration:line-through}
+.tb-chip{display:inline-flex;gap:4px;align-items:center;border:1.5px solid #111;border-radius:4px;padding:0 7px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.tb-amb{background:#fff}.tb-chl{background:var(--fill2)}.tb-frz{background:var(--fill3)}
+.tbl{border-collapse:collapse;width:100%;font-size:12px;border:1.5px solid var(--line)}
+.tbl th{background:var(--fill3);text-align:left;padding:5px 8px;border-bottom:2px solid var(--line);font-size:11.5px;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:1px solid var(--line3);vertical-align:top}
+.tbl tr.sel td{background:var(--fill2)}
+.tbl td.num,.tbl th.num{text-align:right}
+.tbl td.mono{font-family:var(--mono)}
+.tbl .lnk{text-decoration:underline;font-family:var(--mono)}
+.listbtn{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line2);border-radius:5px;min-height:38px;padding:5px 10px;background:#fff;font-size:12px}
+.listbtn.sel{border:2.5px solid #111;background:var(--fill2)}
+.listbtn .sp{flex:1}
+.tabs{display:flex;gap:0;border-bottom:2px solid #111}
+.tabs span{padding:6px 16px;border:1.5px solid var(--line2);border-bottom:0;border-radius:5px 5px 0 0;font-size:12px;margin-right:3px;background:#fff}
+.tabs span.on{background:#111;color:#fff;font-weight:700;border-color:#111}
+.tabs.seg{border:0;gap:0}
+.tabs.seg span{border:1.5px solid #111;border-radius:0;margin:0}
+.tabs.seg span:first-child{border-radius:5px 0 0 5px}.tabs.seg span:last-child{border-radius:0 5px 5px 0}
+.hatch{background:repeating-linear-gradient(45deg,#f3f3f3 0 8px,#e3e3e3 8px 10px);border:1.5px dashed #777;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:11px;text-align:center;border-radius:4px}
+.thumb{width:62px;height:46px}
+/* mock notice: double rule + tag */
+.mock{border:3px double #111;border-radius:6px;background:repeating-linear-gradient(135deg,#fafafa 0 10px,#f0f0f0 10px 12px);padding:7px 10px;font-size:11.5px;position:relative}
+.mock .mt{display:inline-flex;gap:4px;align-items:center;background:#111;color:#fff;border-radius:999px;padding:0 9px;font-weight:700;font-size:11px;min-height:20px}
+.mock dl{margin:6px 0 0;display:grid;gap:4px}
+.mock dt{font-weight:700}.mock dd{margin:0}
+.mock .mk{position:absolute;right:6px;top:4px;font-size:10px;color:var(--ink3)}
+.dim{position:relative;background:#cfcfcf}
+.dim .bgp{opacity:.35;padding:14px;pointer-events:none;min-height:90px;font-size:11px;color:#444}
+.dlg{width:min(430px,92%);margin:0 auto;background:#fff;border:3px solid #111;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12px;box-shadow:6px 6px 0 #111}
+.dim>.dlg{position:relative;margin:-84px auto 18px}
+.dlg h4{font-size:15px;display:flex;gap:8px;align-items:center}
+.dlg .vals{background:var(--fill);border:1px solid var(--line2);border-radius:4px;padding:6px 9px}
+.dlg .vals dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+.dlg .vals dt{color:var(--ink3)}.dlg .vals dd{margin:0;font-family:var(--mono);word-break:break-all}
+.dlg .ft{display:flex;gap:8px;justify-content:flex-end}
+.dlg .nx{font-size:12px}
+/* phone */
+.ph{width:375px;background:#fff;border:3px solid #111;border-radius:26px;overflow:hidden;font-size:13px;line-height:1.5;position:relative;display:flex;flex-direction:column}
+.ph.tall{min-height:640px}
+.ph .notch{height:16px;background:#111;position:relative}
+.ph .notch::after{content:"";position:absolute;left:50%;top:5px;width:70px;height:6px;border-radius:99px;background:#444;transform:translateX(-50%)}
+.ph .phh{height:48px;display:flex;gap:8px;align-items:center;padding:0 12px;border-bottom:2px solid #111;background:#fff}
+.ph .phh .sys{font-weight:700;font-size:13px;flex:1}
+.ph .phh .who{font-size:11.5px}
+.ph .phb{flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:13px}
+.ph .fix{position:sticky;bottom:0;background:#fff;border-top:2px solid #111;padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.ph .ptabs{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #111}
+.ph .ptabs span{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;text-align:center;border-right:1.5px solid var(--line2);padding:2px 6px}
+.ph .ptabs span:last-child{border-right:0}
+.ph .ptabs span.on{background:#111;color:#fff;font-weight:700}
+.ph .f>label{font-size:13px}
+.ph .in{min-height:44px;font-size:14px}
+.ph .btn{font-size:14px}
+.ph .chk{min-height:48px;font-size:13px}
+.ph .chk .bx,.ph .chk .rd{width:20px;height:20px}
+.ph .dlg{width:92%;margin:0 auto}
+.ph .dim>.dlg{margin:-70px auto 14px}
+.ph .tbl{font-size:11.5px}
+.ph .listbtn{min-height:48px}
+/* diagrams */
+.flow{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap}
+.flow .nd{border:2px solid #111;border-radius:6px;padding:5px 10px;background:#fff;font-size:12px;min-width:92px;text-align:center}
+.flow .nd.ghost{border-style:dashed;color:var(--ink3)}
+.flow .ar{align-self:center;font-weight:700;font-size:13px}
+.flow .ar small{display:block;font-size:10px;font-weight:400;color:var(--ink3);max-width:130px;text-align:center}
+.axis{position:relative;height:96px;margin:8px 6px 0;border-top:3px solid #111}
+.axis .tk{position:absolute;top:-3px;width:0;height:12px;border-left:2px solid #111}
+.axis .tl{position:absolute;top:14px;transform:translateX(-50%);font:11px var(--mono);white-space:nowrap}
+.axis .ev{position:absolute;top:36px;transform:translateX(-50%);border:2px solid #111;border-radius:5px;padding:2px 7px;background:#fff;font-size:11px;white-space:nowrap}
+.axis .ev.x{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#ddd 6px 8px);border-width:2.5px}
+.axis .ev.ok{border-style:solid}
+.tl-bar{display:flex;height:34px;border:2px solid #111;border-radius:5px;overflow:hidden;font-size:10.5px}
+.tl-bar span{display:flex;align-items:center;justify-content:center;border-right:1.5px solid #111;white-space:nowrap;overflow:hidden}
+.tl-bar .dr{background:var(--fill2)}.tl-bar .sv{background:#fff}.tl-bar .bk{background:repeating-linear-gradient(45deg,#fff 0 4px,#d9d9d9 4px 6px)}
+.tl-bar .vi{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#bbb 6px 8px);font-weight:700}
+.note{border-left:5px solid #111;background:var(--paper);padding:8px 12px;font-size:12.5px;margin:8px 0}
+.note.warn{border-left-style:double}
+footer.src{margin-top:30px;border-top:3px solid #111;padding-top:12px;font-size:12px;color:var(--ink2)}
+@media (max-width:760px){.page{padding:12px}.top{padding:14px}.grid2,.grid3{grid-template-columns:1fr}}
+@media print{.top{-webkit-print-color-adjust:exact;print-color-adjust:exact}.toc,.pintoggle{display:none}body{background:#fff}.ov{overflow:visible}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* ---- 2026-10-19 改訂: 項目 ID のピン・必須 / 任意・本番版で追加 ---- */
+.rq,.op{display:inline-flex;align-items:center;border-radius:3px;padding:0 5px;font-size:10.5px;font-weight:700;min-height:17px;margin-left:4px;white-space:nowrap;line-height:1.2}
+.rq{background:#111;color:#fff}
+.op{border:1px solid #777;color:#3d3d3d;font-weight:500;background:#fff}
+.ps-box{border:2px dashed #111;border-radius:6px;padding:6px 8px;position:relative;background:#fff;display:flex;flex-direction:column;gap:6px}
+.ps-tag{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;border:1.5px dashed #111;border-radius:999px;padding:0 8px;font-size:10.5px;font-weight:700;background:#fff;white-space:nowrap}
+.pin.ps{background:#fff;color:#111;border:1.5px dashed #111}
+.hid{border:1.5px dotted #777;border-radius:4px;padding:3px 8px;font-size:11px;color:#3d3d3d;background:#fafafa}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+<symbol id="i-open" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017-2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L5 19a1 1 0 001 1h12a1 1 0 001-1l-5-10V3"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.5"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+<symbol id="i-pkg" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+<symbol id="i-off" viewBox="0 0 24 24"><path d="M3 3l18 18M5 12a10 10 0 015-2.7M9 16a5 5 0 016-.9M12 20v.5M2 8.5a15 15 0 015-3"/></symbol>
+<symbol id="i-therm" viewBox="0 0 24 24"><path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/></symbol>
+<symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M4 17L20 7"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></symbol>
+<symbol id="i-load" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+<symbol id="i-hour" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3c0 6 5 6 5 9s-5 3-5 9M17 3c0 6-5 6-5 9s5 3 5 9"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></symbol>
+</defs></svg>
+<a class="skip" href="#s-wire">本文へ移動</a>
+<header class="top"><div class="tin">
+<div class="crumb"><span>ワイヤーフレーム（2026-10-19 改訂）</span><span>›</span><span>SCR-12</span></div>
+<h1><span class="code">SCR-12</span>引当結果</h1>
+<p class="lead">配送計画者（ROLE-004）が受注の一覧から受注を開き、「引当を実行」でロットを引き当て、引き当てたロットと除外したロット（除外の規則と比べた値）を確かめる画面。納品期限ルールが未設定の契約の受注は業務確認待ちになり、営業・契約管理（SALES_CONTRACT）が理由をつけて承認するまで引当しない。<br>LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR12_ALLOCATION_RESULT_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></div></header>
+<div class="page">
+<dl class="meta"><div><dt>画面コード</dt><dd>SCR-12</dd></div><div><dt>画面名（日本語）</dt><dd>引当結果</dd></div><div><dt>試作版での実装</dt><dd>実装済み（実データ。模擬の表示なし）</dd></div><div><dt>端末 · 幅</dt><dd>PC</dd></div><div><dt>表示対象ロール</dt><dd>ROLE-004 配送計画者、営業・契約管理（SALES_CONTRACT）</dd></div><div><dt>ルート</dt><dd><code>/orders</code>（受注一覧）· <code>/orders/[orderId]/allocation</code>（引当結果）</dd></div><div><dt>関連 FT / US</dt><dd>FT-027〜FT-035、FT-122 / US-017、US-018</dd></div><div><dt>画面仕様</dt><dd>SCR12_ALLOCATION_RESULT_SPEC.md（version 0.4.1）</dd></div></dl>
+<div class="bar"><ul class="toc" aria-label="この画面の目次"><li><a href="#s-wire">ワイヤーフレーム</a></li><li><a href="#s-notes">注釈</a></li><li><a href="#s-states">状態</a></li><li><a href="#s-blocked">遮断される分岐</a></li><li><a href="#s-roles">ロール別表示</a></li><li><a href="#s-mock">模擬</a></li><li><a href="#s-src">出典</a></li></ul>
+<label class="pintoggle"><input type="checkbox" id="hidepins"> 項目 ID を隠す</label></div>
+<details class="legend" open><summary>凡例（グレースケールのワイヤー。色ではなく線種・柄・文字・アイコンで意味を示す）</summary><div class="lg">
+<div><span class="sw t-danger">危険・ブロック</span><span>太い実線 + 斜線の柄 + アイコン「×」。処理不可・エラー・隔離など。</span></div>
+<div><span class="sw t-warn">警告</span><span>破線。業務確認待ち・保留・一部引当など。</span></div>
+<div><span class="sw t-ok">成功・正常</span><span>細い実線 + チェックのアイコン。引当済み・利用可能など。</span></div>
+<div><span class="sw t-info">情報</span><span>点線。ピック済・積込済・出発済・補足の案内など。</span></div>
+<div><span class="sw t-neutral">中立</span><span>灰色の枠。作成・検証済・取消など。</span></div>
+<div><span class="sw"><b class="pin" style="margin:0">B-7</b></span><span>項目 ID のピン（画面仕様 4.1 の ID）。「注釈」の表の同じ ID と対応</span></div>
+<div><span class="sw"><span class="rq" style="margin:0">必須</span></span><span>画面仕様 4.1 の Required が「必須」の入力</span></div>
+<div><span class="sw"><span class="op" style="margin:0">任意</span></span><span>Required が「任意」の入力</span></div>
+<div><span class="sw"><span class="ps-tag">本番版で追加</span></span><span>画面仕様（本文）にはなく、PREMISE（P-Sxx）または設計補遺で足す部分。破線の枠で示す</span></div>
+<div><span class="sw dim" style="color:#111">ダイアログ</span><span>灰色の背景の上に、黒い影つきの枠で重ねて描く。</span></div>
+<div><span class="sw" style="font-size:12px">例: 2026/10/12</span><span>画面に出ている値はすべてワイヤー用の仮の値（日付は YYYY/MM/DD、時刻は HH:MM・JST）。</span></div>
+</div></details>
+
+<section class="blk" id="s-wire" aria-labelledby="s-wire-h"><h2 id="s-wire-h"><span class="n">1</span>ワイヤーフレーム（主画面）</h2><p class="sub">受注一覧（A）→ 引当結果（B）。B は上から 受注の概要 → サマリーバナー → 操作 / 業務確認 → 引当されたロット → 除外されたロット の順（画面仕様 5 章 初期処理）。C は操作の入力（ダイアログ・承認パネル）。</p>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">PC</span>A — 受注一覧 /orders（配送計画者 ROLE-004。既定の絞り込みは「すべて」）</figcaption><div class="ov"><div class="wf pcw"><div class="url"><i></i><i></i><i></i><b>/orders</b></div><div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">受注・出荷 <span>›</span> 引当結果</nav><span class="who">氏名 · 配送計画者</span><span class="btn xs">ログアウト</span></div><div class="shell"><nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">受注・出荷</div><a>注文作成</a><a class="cur" aria-current="page">引当結果</a></div><div class="gp"><div class="g">ルート・配送</div><a>ルート計画</a></div></nav><main class="main"><div class="body">
+<div class="row"><h1 class="pt">引当結果</h1><span class="sp"></span><span data-item="A-3" class="row" style="gap:2px"><span class="btn pri" role="button">注文作成</span><b class="pin">A-3</b></span></div>
+<div class="cols c32">
+<div data-item="A-1" class="col" style="gap:4px"><div class="row"><span class="lb" style="font-size:12px;font-weight:700">表示する状態</span><b class="pin">A-1</b></div><div class="tabs seg" role="group" aria-label="表示する状態"><span class="on">すべて</span><span>業務確認待ち</span><span>登録済（契約なし）</span><span>検証済</span><span>引当済</span><span>取消</span></div><span class="hint">絞り込みはサーバー（DB の問い合わせ）。ROLE-004 を持つ人の既定 =「すべて」、持たない人（営業・契約管理だけ）=「業務確認待ち」</span></div>
+<div class="ps-box"><span class="ps-tag">本番版で追加（P-S02）</span><div data-item="P-S02" class="col" style="gap:4px"><div class="row"><span style="font-size:12px;font-weight:700">絞り込みを URL のクエリに載せる</span><b class="pin ps">P-S02</b></div><div class="in val mono" style="min-height:24px;font-size:11px">/orders?status=on_hold_business_review</div><span class="hint">戻る・再読込・リンクの共有で同じ絞り込みに戻る（画面仕様 6.7 では「URL に入らない」— 本番版で変える）</span></div></div>
+</div>
+<div data-item="A-2" class="col" style="gap:4px"><div class="row"><b>受注一覧</b><b class="pin">A-2</b><span class="hint">新しい順・最大 100 件（超えると表の上に「すべては表示していません（表示できる件数の上限に達しました）」）</span></div>
+<table class="tbl"><thead><tr><th>受注番号</th><th>顧客</th><th>SKU</th><th class="num">数量</th><th>納品日</th><th>配送条件</th><th>状態</th></tr></thead><tbody>
+<tr><td><span class="lnk">ORD-2026-1012-03</span></td><td>CUS-002　株式会社あおぞらマート</td><td>SKU-0215　冷凍餃子（20 個入）</td><td class="num">120</td><td>2026/10/14</td><td>軒先渡し</td><td><span class="bd t-neutral">検証済</span></td></tr>
+<tr><td><span class="lnk">ORD-2026-1012-02</span></td><td>CUS-005　北星スーパー</td><td>SKU-0102　生鮮鶏もも肉 2kg</td><td class="num">60</td><td>2026/10/14</td><td>車上渡し</td><td><span class="bd t-warn"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg>業務確認待ち</span></td></tr>
+<tr><td><span class="lnk">ORD-2026-1011-07</span></td><td>CUS-002　株式会社あおぞらマート</td><td>SKU-0330　国産牛ロース</td><td class="num">30</td><td>2026/10/13</td><td>軒先渡し</td><td><span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>引当済</span></td></tr>
+<tr><td><span class="lnk">ORD-2026-1011-03</span></td><td>CUS-009　ハーバー食品</td><td>SKU-0215　冷凍餃子（20 個入）</td><td class="num">10.5</td><td>2026/10/15</td><td>車上渡し</td><td><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>登録済（契約なし）</span></td></tr></tbody></table>
+<span class="hint">受注番号は入力したままの大文字小文字で、引当結果へのリンク。受注 ID は出さない。顧客・SKU は「コード　名称」。操作者・承認の記録は一覧に出さない</span></div>
+</div></main></div></div></div></figure>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">PC</span>B — 引当結果 /orders/[orderId]/allocation（ROLE-004）。直近の実行が一部引当で、除外されたロットがある例</figcaption><div class="ov"><div class="wf pcw"><div class="url"><i></i><i></i><i></i><b>/orders/&lt;受注 ID&gt;/allocation</b></div><div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">受注・出荷 <span>›</span> 引当結果</nav><span class="who">氏名 · 配送計画者</span><span class="btn xs">ログアウト</span></div><div class="shell"><nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">受注・出荷</div><a>注文作成</a><a class="cur" aria-current="page">引当結果</a></div><div class="gp"><div class="g">ルート・配送</div><a>ルート計画</a></div></nav><main class="main"><div class="body">
+<h1 class="pt">引当結果</h1>
+<div data-item="B-1" class="row"><u>← 引当結果の一覧へ戻る</u><b class="pin">B-1</b></div>
+<div data-item="B-2" class="card"><h3>受注の概要<b class="pin">B-2</b></h3>
+<div class="row"><b class="mono" style="font-size:14px">ORD-2026-1012-03</b><span class="bd t-neutral">検証済</span></div>
+<dl class="dl two"><dt>顧客</dt><dd>CUS-002　株式会社あおぞらマート</dd><dt>SKU</dt><dd>SKU-0215　冷凍餃子（20 個入）</dd><dt>数量</dt><dd class="mono">120</dd><dt>納品日</dt><dd class="mono">2026/10/14</dd><dt>配送条件</dt><dd>軒先渡し</dd><dt>契約</dt><dd>AGR-007（v1）／3分の1ルール</dd></dl>
+<span class="hint">「業務確認の承認者」（表示名）は承認済みのときだけ出る。UUID・起票者は出さない</span></div>
+<div data-item="B-3" class="col" style="gap:4px"><div class="ban t-warn" role="status"><svg class="i l" aria-hidden="true"><use href="#i-warn"/></svg><div><div class="tt">一部引当（在庫不足）</div><div class="ds">受注数量に足りません。再引当、または欠品出荷の確定を選べます</div></div><b class="pin">B-3</b></div>
+<div class="row hint">受注数量 <b class="mono">120</b> ／ 引当済み <b class="mono">90</b> ／ 不足 <b class="mono">30</b>　（除外されたロット 3 件）</div></div>
+<div data-item="B-4" class="row" role="group" aria-label="受注の操作"><span data-item="C-4" class="row" style="gap:2px"><span class="btn pri" role="button">再引当</span><b class="pin">C-4</b></span><span data-item="C-5" class="row" style="gap:2px"><span class="btn" role="button">欠品出荷を確定</span><b class="pin">C-5</b></span><span data-item="C-6" class="row" style="gap:2px"><span class="btn dng" role="button">受注を取消</span><b class="pin">C-6</b></span><b class="pin">B-4</b><span class="hint">ROLE-004 だけ。出る条件は「ロール別の表示」の表。実行中は全ボタン無効（同時に 1 操作）</span></div>
+<div data-item="B-6" class="col" style="gap:4px"><h2 class="st">引当されたロット<b class="pin">B-6</b></h2>
+<table class="tbl"><thead><tr><th>ロット</th><th>期限日</th><th class="num">数量</th><th>ロケーション</th><th>状態</th><th>備考</th></tr></thead><tbody>
+<tr><td><span class="mono">MKF-261001-02</span> <span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>利用可能</span></td><td>2027/03/20</td><td class="num">50</td><td>F-01-01</td><td>引当中</td><td>—</td></tr>
+<tr><td><span class="mono">MKF-261004-01</span> <span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>利用可能</span></td><td>2027/04/05</td><td class="num">40</td><td>F-01-02</td><td>引当中</td><td>—</td></tr>
+<tr><td><span class="mono">MKF-260925-03</span> <span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>隔離</span></td><td>2027/03/25</td><td class="num">20</td><td>F-Q-01</td><td>解除済み</td><td>解除の理由: ロットが隔離されたため</td></tr></tbody></table>
+<span class="hint">ロットは仕入先ロットで示す（UUID は出さない）。引当中を先に FEFO 順、解除済みも残す。備考のほかの例:「賞味期限まで残り 5 日です（7 日以内は警告）」/「賞味期限を過ぎています（警告のみ — 引当は可能です）」/「&lt;規則&gt; は業務確認により省略 — 承認者: &lt;氏名&gt;」</span></div>
+<div data-item="B-7" class="col" style="gap:4px"><h2 class="st">除外されたロット<b class="pin">B-7</b></h2>
+<table class="tbl"><thead><tr><th>ロット</th><th>期限日</th><th>ロケーション</th><th>ルールコード</th><th>比較した値</th></tr></thead><tbody>
+<tr><td class="mono">MKF-260920-01</td><td>2027/03/18</td><td>F-01-01</td><td><b>日付逆転禁止</b><br><span class="mono">BR-DATE-01</span></td><td><span class="hint">ロットの期限日</span> <span class="mono">2027/03/18</span><br><span class="hint">基準日（直近の出荷行の期限日）</span> <span class="mono">2027/03/20</span><br><span class="hint">基準日の出典</span> 出荷履歴<br><span class="hint">参照した出荷行</span> <span class="mono">SL-003</span><br><span class="hint">参照した出荷行の種類</span> システム導入前の出荷履歴<br><span class="hint">出荷行の受領日時</span> <span class="mono">2026/10/05 14:30</span></td></tr>
+<tr><td class="mono">MKF-260930-02</td><td>2027/02/01</td><td>C-02-03</td><td><b>温度帯の不一致</b><br><span class="mono">BR-TEMP-02</span></td><td><span class="hint">SKU の温度帯</span> 冷凍（−18 °C 以下）<br><span class="hint">ロケーション</span> <span class="mono">C-02-03</span><br><span class="hint">ロケーションの種別</span> 保管<br><span class="hint">ロケーションの温度帯</span> 冷蔵（0〜5 °C）</td></tr>
+<tr><td class="mono">MKF-260925-03</td><td>2027/03/25</td><td>F-Q-01</td><td><b>隔離・保留中のロット</b><br><b class="mono">FR-INV-05</b></td><td><span class="hint">ロットの状態</span> 隔離</td></tr></tbody></table>
+<span class="hint">直近の実行の除外だけ。「ルールコード」の欄 = 日本語の名前 + 業務ルール番号（業務ルール番号のときだけ。内部の規則名は出さない）。番号は画面仕様 6.3 の表。比較した値 = 規則ごとのラベル + 値</span></div>
+</div></main></div></div></div></figure>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">PC</span>B（営業・契約管理 SALES_CONTRACT）— 業務確認待ちの受注。承認パネルだけが出る（引当・取消・注文作成のボタンは出ない）</figcaption><div class="ov"><div class="wf pcw"><div class="url"><i></i><i></i><i></i><b>/orders/&lt;受注 ID&gt;/allocation</b></div><div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">受注・出荷 <span>›</span> 引当結果</nav><span class="who">氏名 · 営業・契約管理</span><span class="btn xs">ログアウト</span></div><div class="shell"><nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">受注・出荷</div><a class="cur" aria-current="page">引当結果</a></div></nav><main class="main"><div class="body">
+<h1 class="pt">引当結果</h1>
+<div class="cols c23">
+<div class="col">
+<div class="card"><h3>受注の概要</h3><div class="row"><b class="mono">ORD-2026-1012-02</b><span class="bd t-warn">業務確認待ち</span></div><dl class="dl"><dt>契約</dt><dd>AGR-008（v2）／未設定</dd></dl></div>
+<div class="ban t-warn" role="status"><svg class="i l" aria-hidden="true"><use href="#i-pause"/></svg><div><div class="tt">業務確認待ち</div><div class="ds">営業・契約管理の承認が出るまで引当は実行されません</div><ul><li>契約 AGR-008（v2）の納品期限ルールが未設定（UNSET）です</li><li>直近の出荷履歴（SL-004）に期限日がない、または要確認の印があります</li></ul></div></div>
+</div>
+<div data-item="B-5" class="card"><h3>業務確認<b class="pin">B-5</b></h3>
+<div data-item="C-3" class="f"><label>理由（必須）<span class="rq">必須</span><b class="pin">C-3</b></label><div class="in ta"><span></span></div><span class="hint">2000 文字まで（検査はサーバー）</span></div>
+<span data-item="C-9" class="row" style="gap:2px"><span class="btn pri" role="button">承認して引当を実行</span><b class="pin">C-9</b></span>
+<span class="hint">自分が登録した受注では欄とボタンを無効にし「この受注は自分が登録したため、承認できません。別の営業・契約管理の担当者が承認してください」を出す</span></div>
+</div>
+</div></main></div></div></div></figure>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">ダイアログ</span>C — 理由つきの操作（ROLE-004）。理由は必須・開くたびに空・送信中は閉じられない</figcaption><div class="grid2">
+<div class="dim"><div class="bgp">引当結果（背景）</div><div class="dlg" role="dialog" aria-label="欠品出荷を確定"><h4>欠品出荷を確定</h4><div>引き当てた数量だけを出荷し、足りない数量は欠品として確定します。理由を入力してください。</div>
+<div data-item="C-1" class="f"><label>理由（必須）<span class="rq">必須</span><b class="pin">C-1</b></label><div class="in ta"><span></span></div><span class="hint">500 文字まで</span></div>
+<div class="ft"><span data-item="C-7" class="row" style="gap:2px"><span class="btn" role="button">キャンセル</span><b class="pin">C-7</b></span><span data-item="C-8" class="row" style="gap:2px"><span class="btn pri" role="button">欠品出荷を確定</span><b class="pin">C-8</b></span></div></div></div>
+<div class="dim"><div class="bgp">引当結果（背景）</div><div class="dlg" role="dialog" aria-label="受注を取消"><h4>受注を取消</h4><div>引当済みのロットは解除され、数量は在庫へ戻ります。取り消した受注は元に戻せません。</div><span class="hint">ピック済・積込済の受注では「出荷口・車両の荷は、棚へ戻す作業が作られます。作業を完了すると、数量が在庫へ戻ります。取り消した受注は元に戻せません。」</span>
+<div data-item="C-2" class="f"><label>理由（必須）<span class="rq">必須</span><b class="pin">C-2</b></label><div class="in ta"><span></span></div><span class="hint">500 文字まで</span></div>
+<div class="ft"><span data-item="C-7" class="row"><span class="btn" role="button">キャンセル</span></span><span data-item="C-8" class="row"><span class="btn dng" role="button">取り消す</span></span></div></div></div>
+</div></figure>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">遮断 · 届かない</span>処理不可ダイアログ（理由以外の却下）と、読み込みで DB に届かないときの「再試行」</figcaption><div class="grid3">
+<div class="dim"><div class="bgp">引当結果（背景。409 のときは最新の状態に読み直してある）</div><div class="dlg" role="alertdialog" aria-label="処理不可"><h4><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg>処理不可</h4><div>検証済みの受注だけ引当できます。ほかの操作で状態が変わった可能性があります</div><div class="vals"><div style="font-weight:700;margin-bottom:3px">比較した値</div><dl><dt>現在の状態</dt><dd>引当済</dd></dl></div><div class="nx"><b>次の対応：</b>画面を最新の状態に更新しました。受注の状態を確認してください</div><div class="ft"><span data-item="B-9" class="row" style="gap:2px"><span class="btn pri" role="button">閉じて続ける</span><b class="pin">B-9</b></span></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><b style="font-size:12px">A の受注一覧で届かないとき</b><div class="ban t-warn" role="alert"><svg class="i l" aria-hidden="true"><use href="#i-off"/></svg><div><div class="tt" style="font-weight:500">システムを再起動しています。1〜2分後にもう一度お試しください</div><div class="ds">管理者の方へ: Supabase のダッシュボードでプロジェクトを再開（Resume project）してください</div></div></div><span data-item="A-4" class="row" style="gap:2px"><span class="btn" role="button">再試行</span><b class="pin">A-4</b></span></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><b style="font-size:12px">B の引当結果で届かないとき</b><div class="ban t-warn" role="alert"><svg class="i l" aria-hidden="true"><use href="#i-off"/></svg><div><div class="tt" style="font-weight:500">システムを再起動しています。1〜2分後にもう一度お試しください</div><div class="ds">管理者の方へ: Supabase のダッシュボードでプロジェクトを再開（Resume project）してください</div></div></div><span data-item="B-8" class="row" style="gap:2px"><span class="btn" role="button">再試行</span><b class="pin">B-8</b></span></div></div>
+</div></figure>
+</section>
+
+<section class="blk" id="s-notes" aria-labelledby="s-notes-h"><h2 id="s-notes-h"><span class="n">2</span>注釈（画面仕様 4.1 の項目）</h2><p class="sub">1 行 = 画面仕様 4.1 の 1 項目。項目名と Required は 4.1 のまま。最後の 2 行は PREMISE で足す部分。</p><div class="ov"><table class="doc"><thead><tr><th>ID</th><th>項目名（4.1 の Item Name）</th><th>種別</th><th>Required</th><th>画面での表し方・補足</th></tr></thead><tbody>
+<tr><td>A-1</td><td>表示する状態</td><td>Button</td><td>-</td><td>トグルボタン 6 つ（すべて / 業務確認待ち / 登録済（契約なし）/ 検証済 / 引当済 / 取消）。既定は ROLE-004 を持つ人 =「すべて」、持たない人 =「業務確認待ち」。絞り込みはサーバー。</td></tr>
+<tr><td>A-2</td><td>列: 受注番号 / 顧客 / SKU / 数量 / 納品日 / 配送条件 / 状態</td><td>表示ブロック（4 値外 — 一覧の表。受注番号の列だけリンク）</td><td>-</td><td>新しい順・最大 100 件（検索・ページ送りなし）。受注番号は引当結果へのリンク。数量は小数 3 桁まで・末尾の 0 なし。0 件は「業務確認待ちの受注はありません」/「該当する受注はありません」。</td></tr>
+<tr><td>A-3</td><td>注文作成ボタン</td><td>リンク（4 値外 — ボタンの見た目のリンク）</td><td>-</td><td>ROLE-004 だけ。注文作成（SCR-11）へ移る。空の一覧では「「注文作成」から受注を登録できます」。</td></tr>
+<tr><td>A-4</td><td>再試行</td><td>Button</td><td>-</td><td>一覧の読み込みで DB に届かないときだけ出る（主画面の下の図）。同じ一覧を読み直す。</td></tr>
+<tr><td>B-1</td><td>一覧へ戻るリンク</td><td>リンク（4 値外）</td><td>-</td><td>「← 引当結果の一覧へ戻る」。受注一覧へ移る。</td></tr>
+<tr><td>B-2</td><td>受注の概要</td><td>表示ブロック（4 値外）</td><td>-</td><td>受注番号 + 状態バッジ、顧客・SKU・数量・納品日・配送条件・契約（契約 ID（vN）／納品期限ルール。なければ「—」）、業務確認の承認者（承認済みのときだけ）。UUID・起票者は出さない。</td></tr>
+<tr><td>B-3</td><td>サマリーバナー</td><td>表示ブロック（4 値外）</td><td>-</td><td>結果 1 つ（見出し + 説明。13 種は「状態」の節）+「受注数量 ／ 引当済み ／ 不足」+「（除外されたロット n 件）」+ 業務確認待ちのときは保留の理由の箇条書き。色だけでなくアイコン + 文。</td></tr>
+<tr><td>B-4</td><td>操作ボタン（ROLE-004）</td><td>Button</td><td>-</td><td>「引当を実行」/「再引当」、「欠品出荷を確定」、「受注を取消」の 3 つの置き場所（それぞれ C-4・C-5・C-6）。</td></tr>
+<tr><td>B-5</td><td>業務確認パネル（SALES_CONTRACT）</td><td>表示ブロック（4 値外）</td><td>-</td><td>見出し「業務確認」、理由（C-3）+「承認して引当を実行」（C-9）。営業・契約管理で、受注が業務確認待ちのときだけ。</td></tr>
+<tr><td>B-6</td><td>引当されたロット（表）</td><td>表示ブロック（4 値外）</td><td>-</td><td>列: ロット（仕入先ロット + ロット状態バッジ）/ 期限日 / 数量 / ロケーション / 状態（引当中・解除済み・出荷済み）/ 備考（解除の理由、賞味期限の警告、業務確認による省略）。引当中を先に FEFO 順、解除済みも残す。0 件「引当されたロットはありません」/ 未実行「まだ引当されていません」。</td></tr>
+<tr><td>B-7</td><td>除外されたロット（表）</td><td>表示ブロック（4 値外）</td><td>-</td><td>列: ロット / 期限日 / ロケーション / ルールコード（日本語名 + 業務ルール番号。番号のときだけ）/ 比較した値。直近の実行の除外だけ。0 件「除外されたロットはありません」/ 未実行「引当を実行すると、除外されたロットとその理由がここに出ます」。番号は画面仕様 6.3 の表（例: BR-DATE-01・BR-TEMP-02・FR-INV-05）。</td></tr>
+<tr><td>B-8</td><td>再試行</td><td>Button</td><td>-</td><td>引当結果の読み込みで DB に届かないときだけ出る。同じ引当結果を読み直す。</td></tr>
+<tr><td>B-9</td><td>処理不可ダイアログの「閉じて続ける」</td><td>Button</td><td>-</td><td>理由以外の却下で出る「処理不可」を閉じる。ダイアログは 理由 1 文・比較した値・次の対応。「ルールコード」の行は出ない（この画面の却下は業務ルール番号ではない — 共通仕様 CS-07 7.4）。</td></tr>
+<tr><td>C-1</td><td>理由（欠品出荷を確定）</td><td>Text box（複数行）</td><td>必須</td><td>ダイアログ「欠品出荷を確定」の欄「理由（必須）」。500 文字まで（検査はサーバー）。欠けると欄の直下に出し、開いたまま。</td></tr>
+<tr><td>C-2</td><td>理由（受注を取消）</td><td>Text box（複数行）</td><td>必須</td><td>ダイアログ「受注を取消」の欄。500 文字まで。確認文は受注の状態で替わる（ピック済・積込済は棚へ戻す作業の文）。</td></tr>
+<tr><td>C-3</td><td>理由（業務確認の承認）</td><td>Text box（複数行）</td><td>必須</td><td>業務確認パネルの欄。2000 文字まで。承認が成功すると空に戻る。</td></tr>
+<tr><td>C-4</td><td>「引当を実行」/「再引当」</td><td>Button</td><td>-</td><td>ROLE-004 で受注が検証済のとき。再引当が必要・直近が一部引当 / 在庫不足なら「再引当」。押すと「処理中…」。</td></tr>
+<tr><td>C-5</td><td>欠品出荷を確定</td><td>Button</td><td>-</td><td>一部だけ引き当てた検証済の受注（ROLE-004）だけ。押すと理由つきのダイアログ。</td></tr>
+<tr><td>C-6</td><td>受注を取消</td><td>Button</td><td>-</td><td>出発前の状態（作成・検証済・業務確認待ち・引当済・ピック済・積込済）の受注（ROLE-004）だけ。押すと理由つきのダイアログ。</td></tr>
+<tr><td>C-7</td><td>ダイアログのキャンセル</td><td>Button</td><td>-</td><td>欠品出荷・取消のダイアログを閉じる（送信中は押せない・入力は消える）。</td></tr>
+<tr><td>C-8</td><td>ダイアログの確定（欠品出荷を確定 / 取り消す）</td><td>Button</td><td>-</td><td>理由を送る。送信中は「処理中…」。取消の「取り消す」は危険の見た目。</td></tr>
+<tr><td>C-9</td><td>承認して引当を実行</td><td>Button</td><td>-</td><td>業務確認パネルの送信。自分が登録した受注・ほかの操作の処理中は押せない。</td></tr>
+<tr><td>P-S02</td><td>絞り込みを URL のクエリに載せる（本番版で追加）</td><td>本番版で追加</td><td>-</td><td>PREMISE P-S02。受注一覧の「表示する状態」を URL のクエリに載せ、戻る・再読込・リンクの共有で同じ表示に戻す。画面仕様（本文）の「URL には入らない」を本番版で変える。</td></tr>
+<tr><td>P-S04</td><td>日付の表記（本番版で統一）</td><td>本番版で追加</td><td>-</td><td>PREMISE P-S04。画面に出す日付は YYYY/MM/DD（図の値もこの形）。時刻は HH:MM（JST）。</td></tr>
+</tbody></table></div></section>
+
+<section class="blk" id="s-states" aria-labelledby="s-states-h"><h2 id="s-states-h"><span class="n">3</span>状態バリエーション</h2>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">B-3</span>サマリーバナー 13 種（画面仕様 5.1。上ほど優先し、表示は 1 つだけ。結果の種類は日本語の見出しで出す）</figcaption><div class="ov"><div class="grid3">
+<div class="col" style="gap:3px"><div class="ban t-neutral" role="status"><div><div class="tt">取消済みの受注です</div><div class="ds">（取消の理由）</div></div></div><span class="hint">受注が取消</span></div>
+<div class="col" style="gap:3px"><div class="ban t-warn" role="status"><div><div class="tt">業務確認待ち</div><div class="ds">営業・契約管理の承認が出るまで引当は実行されません（+ 保留の理由の箇条書き）</div></div></div><span class="hint">受注が業務確認待ち</span></div>
+<div class="col" style="gap:3px"><div class="ban t-danger" role="status"><div><div class="tt">登録済（契約なし）— 引当できません</div><div class="ds">有効な契約がないため引当できません。受注を取り消してください</div></div></div><span class="hint">受注が作成（契約なし）</span></div>
+<div class="col" style="gap:3px"><div class="ban t-warn" role="status"><div><div class="tt">再引当が必要です</div><div class="ds">引当を解除した理由: ロットが隔離されたため</div></div></div><span class="hint">検証済で、最後の実行より後にロットの隔離・保留 / 消費期限の停止で引当が外れた（理由は最も新しい解除のもの）</span></div>
+<div class="col" style="gap:3px"><div class="ban t-warn" role="status"><div><div class="tt">欠品出荷を確定済み</div><div class="ds">欠品数量 30 — （理由）</div></div></div><span class="hint">引当済で欠品数量 &gt; 0</span></div>
+<div class="col" style="gap:3px"><div class="ban t-info" role="status"><div><div class="tt">ピック済</div><div class="ds">積込待ちです。取消すると、出荷口の荷を棚へ戻す作業が作られます</div></div></div><span class="hint">受注がピック済（引当の結果より先に受注の状態で決まる）</span></div>
+<div class="col" style="gap:3px"><div class="ban t-info" role="status"><div><div class="tt">積込済</div><div class="ds">出発前点検・出発待ちです。取消すると、車両の荷を棚へ戻す作業が作られます</div></div></div><span class="hint">受注が積込済</span></div>
+<div class="col" style="gap:3px"><div class="ban t-info" role="status"><div><div class="tt">出発済</div><div class="ds">出発後は取消できません（配送不能・返品で処理します）</div></div></div><span class="hint">受注が出発済（操作ボタンは出ない）。欠品数量 &gt; 0 なら「。欠品数量 n」を足す</span></div>
+<div class="col" style="gap:3px"><div class="ban t-ok" role="status"><div><div class="tt">引当済み</div><div class="ds">受注数量すべてを引き当てました</div></div></div><span class="hint">直近の実行で満量（実行の記録がない引当済の受注は見出しだけ）</span></div>
+<div class="col" style="gap:3px"><div class="ban t-warn" role="status"><div><div class="tt">一部引当（在庫不足）</div><div class="ds">受注数量に足りません。再引当、または欠品出荷の確定を選べます</div></div></div><span class="hint">直近の実行で一部だけ</span></div>
+<div class="col" style="gap:3px"><div class="ban t-danger" role="status"><div><div class="tt">在庫不足 — 引き当てられるロットがありません</div><div class="ds">除外されたロットの理由を確認してください</div></div></div><span class="hint">直近の実行で 0</span></div>
+<div class="col" style="gap:3px"><div class="ban t-info" role="status"><div><div class="tt">追加で引き当てる数量はありません</div><div class="ds">引当済みの数量で受注数量を満たしています</div></div></div><span class="hint">既存の引当で満量</span></div>
+<div class="col" style="gap:3px"><div class="ban t-neutral" role="status"><div><div class="tt">未引当</div><div class="ds">「引当を実行」を押すと、先に期限が切れるロットから引き当てます</div></div></div><span class="hint">検証済で実行の記録なし</span></div>
+</div></div></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">操作</span>操作の結果（ページ上部のメッセージ）・実行中・理由の欠落・一般エラー</figcaption><div class="grid3">
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-ok" role="status"><div class="tt">引当を実行しました</div></div><div class="hint">結果に合う 1 文: 一部「一部だけ引き当てました（在庫不足 — 受注数量に足りません）」/ なし「引き当てられるロットがありませんでした（在庫不足）」/ 追加なし「追加で引き当てる数量はありませんでした」/ 保留「業務確認待ちになりました（承認が出るまで引当は実行されません）」</div><div class="hint">承認: 満量「業務確認を承認し、引当を実行しました」、そうでなければ「業務確認を承認しました。」+ 引当の結果の文。欠品出荷「欠品出荷を確定しました」、取消「受注を取り消しました」</div><div class="ban t-danger" role="alert"><div class="tt" style="font-weight:500">受注は取り消されましたが、最新の状態を読み込めませんでした。画面を読み込み直してください</div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="row"><span class="btn dis" role="button" aria-busy="true">処理中…</span><span class="btn dis" role="button">欠品出荷を確定</span><span class="btn dis" role="button">受注を取消</span></div><div class="hint">いずれかの操作の後は全ボタン無効（業務確認パネルの欄とボタンも）。押したボタンは「処理中…」。画面が別の受注に移った後の応答は反映しない</div><div class="f"><label>理由（必須）</label><div class="in ta err"><span></span></div><div class="fe" role="alert"><span>入力してください</span></div></div><div class="hint">理由の欠落・長すぎ（500 / 2000 文字）だけを欄の直下に出し、開いたまま</div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-danger" role="alert"><div class="tt" style="font-weight:500">この操作を行う権限がありません</div></div><div class="hint">DB に届かない・権限なし・500 などは理由欄の誤りにしない。理由つきの操作はダイアログ / パネルの欄の上、引当はページ上部。入力を直すと消える</div><div class="card" style="background:var(--fill)"><b style="font-size:12px">業務確認パネル — 自分が登録した受注</b><div class="ban t-neutral" role="note"><div class="tt" style="font-weight:500">この受注は自分が登録したため、承認できません。別の営業・契約管理の担当者が承認してください</div></div><div class="in ta dis"><span></span></div><span class="btn dis" role="button">承認して引当を実行</span></div></div></div>
+</div></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">読み込み</span>一覧・結果の共通の状態（画面仕様 5 章 エラー制御）</figcaption><div class="grid3">
+<div class="wf"><div class="body" style="padding:10px 12px"><p role="status" aria-busy="true" class="row" style="color:#6b6b6b;margin:0">読み込み中…</p><div class="card t-neutral" style="align-items:center;text-align:center;padding:14px"><div style="font-weight:700">業務確認待ちの受注はありません</div><div class="hint">絞り込みが業務確認待ち以外なら「該当する受注はありません」。ROLE-004 には「「注文作成」から受注を登録できます」も出る</div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-danger" role="alert"><div class="tt" style="font-weight:500">受注が見つかりません</div></div><div class="hint">結果の読み込みで受注がない / 読めないとき（メッセージ）。「← 引当結果の一覧へ戻る」は使える</div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><h1 class="pt" style="font-size:15px">引当結果</h1><div class="ban t-neutral" role="status"><svg class="i l" aria-hidden="true"><use href="#i-shield"/></svg><div><div class="tt" style="font-weight:500">この操作を行う権限がありません</div><div class="ds">必要な場合は管理者にお問い合わせください</div></div></div><div class="hint">ROLE-004・営業・契約管理以外（見出しだけで本文なし）</div></div></div>
+</div></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">業務ルール</span>除外規則の評価の順（ロット 1 つに記録する理由は、最初に破った規則 1 つだけ — 画面仕様 6.3）</figcaption><div class="flow"><div class="nd">0 業務確認の保留<br><small>ロットは評価しない</small></div><span class="ar">→</span><div class="nd">1 消費期限切れ</div><span class="ar">→</span><div class="nd">2 温度帯の不一致</div><span class="ar">→</span><div class="nd">3 隔離・保留中のロット</div><span class="ar">→</span><div class="nd">4 納品期限ルール違反</div><span class="ar">→</span><div class="nd">5 日付逆転禁止</div><span class="ar">→</span><div class="nd">6 FEFO で引当<br><small>通過したロットだけ</small></div></div>
+<div class="note">日付逆転禁止: ロットの期限日 &lt; 基準日 なら除外（同じ日は通過）。基準日 = 同じ顧客 × SKU の、受領済みの直近の出荷行の期限日 / 配送中の受注のロットの期限日 / ほかの受注で引当中のロットの期限日 のうち最も遅い日。<b>ほかの顧客の履歴は読まない。今日とは比べない。</b>消費期限切れ: 期限種別が消費期限で 期限日 ≤ max(納品日, 本日 JST) なら除外。賞味期限のロットは除外せず、備考に警告を出す。</div></figure>
+</section>
+
+<section class="blk" id="s-blocked" aria-labelledby="s-blocked-h"><h2 id="s-blocked-h"><span class="n">4</span>遮断される分岐（処理不可）</h2><p class="sub">画面仕様 5 章 エラー制御・5.2。「処理不可」ダイアログ（共通仕様 CS-07 7.4）で出す: タイトル「処理不可」、理由 1 文、比較した値、次の対応、ボタン「閉じて続ける」だけ。この画面の却下は業務ルール番号ではないため「ルールコード」の行は出ない。409 のときは最新の状態を読み直してから出す。</p><div class="ov"><table class="doc"><thead><tr><th>#</th><th>遮断される状況</th><th>理由（1 文）</th><th>比較した値</th><th>次の対応</th></tr></thead><tbody>
+<tr><td>1</td><td>検証済以外の受注に引当（同時の 2 要求の後発も）</td><td>検証済みの受注だけ引当できます。ほかの操作で状態が変わった可能性があります</td><td>現在の状態</td><td>画面を最新の状態に更新しました。受注の状態を確認してください</td></tr>
+<tr><td>2</td><td>業務確認待ちでない受注を承認</td><td>この受注は業務確認待ちではありません</td><td>—</td><td>画面を最新の状態に更新しました。受注の状態を確認してください</td></tr>
+<tr><td>3</td><td>起票者本人が承認（画面では無効化済み）</td><td>自分が登録した受注は承認できません（自己承認の禁止）。別の営業・契約管理の担当者が承認してください</td><td>—</td><td>登録した人とは別の、営業・契約管理の担当者に承認を依頼してください</td></tr>
+<tr><td>4</td><td>出発後・取消済みの受注を取消</td><td>この状態の受注は取り消せません</td><td>現在の状態</td><td>受注の状態を確認してください。出発後の受注は取り消せません</td></tr>
+<tr><td>5</td><td>検証済以外に欠品出荷を確定</td><td>欠品出荷を確定できるのは検証済みの受注だけです</td><td>現在の状態</td><td>受注の状態を確認してください</td></tr>
+<tr><td>6</td><td>引当が 0 のまま欠品出荷を確定 / すでに満量</td><td>欠品出荷を確定できるのは、一部だけ引き当てた受注だけです / 受注数量すべてを引き当て済みのため、欠品出荷の確定は不要です</td><td>数量 / 引当済みの数量</td><td>引当の数量を確認してください</td></tr>
+<tr><td>7</td><td>一部引当のあとに未承認の業務確認の対象が出た受注に欠品出荷を確定</td><td>承認されていない業務確認の対象があるため、欠品出荷は確定できません</td><td>保留の理由</td><td>再引当を実行すると業務確認待ちになります</td></tr>
+<tr><td>8</td><td>受注が存在しない / 読めない</td><td>受注が見つかりません</td><td>—</td><td>（なし。画面の「← 引当結果の一覧へ戻る」は使える）</td></tr>
+<tr><td>9</td><td>ロールが違う（API を直接呼んだとき）</td><td>引当は配送計画者だけが行えます / 受注の操作（登録・取消・欠品出荷の確定）は配送計画者だけが行えます / 業務確認の承認は営業・契約管理だけが行えます / 引当結果を見られるのは配送計画者・営業・契約管理だけです</td><td>—</td><td>（なし）</td></tr>
+</tbody></table></div>
+<div class="note">理由の欠落・長すぎ（入力の誤り）はダイアログ / パネルの欄の直下に出し、「処理不可」にはしない。除外されたロット（業務ルール）は却下ではなく、主画面 B の「除外されたロット」の表で示す。</div></section>
+
+<section class="blk" id="s-roles" aria-labelledby="s-roles-h"><h2 id="s-roles-h"><span class="n">5</span>ロール別の表示</h2><div class="ov"><table class="doc"><thead><tr><th>ボタン / ブロック</th><th>出る条件</th><th>無効化</th></tr></thead><tbody>
+<tr><td>「引当を実行」/「再引当」（C-4）</td><td>ROLE-004 かつ受注が検証済。再引当が必要・直近が一部引当 / 在庫不足なら「再引当」</td><td>実行中は全ボタン無効</td></tr>
+<tr><td>「欠品出荷を確定」（C-5）</td><td>ROLE-004 かつ検証済 かつ 0 &lt; 引当中の数量 &lt; 受注数量</td><td>同上</td></tr>
+<tr><td>「受注を取消」（C-6）</td><td>ROLE-004 かつ 作成 / 検証済 / 業務確認待ち / 引当済 / ピック済 / 積込済</td><td>同上</td></tr>
+<tr><td>業務確認パネル（B-5）</td><td>営業・契約管理 かつ受注が業務確認待ち</td><td>自分が登録した受注ならパネル内を一括で無効化。どの操作が処理中でも無効</td></tr>
+</tbody></table></div><div class="ov"><table class="doc"><thead><tr><th>ロール</th><th>画面</th></tr></thead><tbody>
+<tr><td>ROLE-004 配送計画者</td><td>一覧 + 結果。登録・引当・欠品出荷・取消。承認パネルは出ない</td></tr>
+<tr><td>SALES_CONTRACT 営業・契約管理</td><td>一覧（既定「業務確認待ち」）+ 結果（読み取り）+ 承認パネル。引当・取消・注文作成のボタンは出ない</td></tr>
+<tr><td>ほかのロール</td><td>見られない（権限なしの表示。メニューにも出ない）</td></tr>
+</tbody></table></div></section>
+
+<section class="blk" id="s-mock" aria-labelledby="s-mock-h"><h2 id="s-mock-h"><span class="n">6</span>模擬の表示の位置</h2><div class="note"><b>模擬なし</b> — 実データで動く画面（模擬の表示は出ない）。</div></section>
+
+<section class="blk" id="s-src" aria-labelledby="s-src-h"><h2 id="s-src-h"><span class="n">7</span>出典</h2><p>画面仕様 SCR12_ALLOCATION_RESULT_SPEC.md（version 0.4.1）の 4.1（項目）・4.2（入力規則）・5 章（イベント・5.1 状態・5.2 遮断・5.3 文言）・6 章（6.1 ロール別・6.3 引当エンジン・6.7 既知の制約）。共通仕様 CS-06（届かないとき）・CS-07 7.4（処理不可ダイアログ）・CS-08（日時）。PREMISE P-S02・P-S04。画面の文言はアプリの日本語の文言と同じもの。</p><div class="note">意図して省いたもの: ロックと同時実行・隔離トリガー（画面仕様 6.4）、受注の状態遷移の全行（バナーで表す）、監査（6.2）。</div></section>
+</div>
+<footer class="src"><p>LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR12_ALLOCATION_RESULT_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></footer></body></html>

@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCR-25 HACCP 完全性 — ワイヤーフレーム（2026-10-19 改訂）| Yuki Cold Logistics</title><meta name="robots" content="noindex">
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#111;--ink2:#3d3d3d;--ink3:#6b6b6b;--line:#1a1a1a;--line2:#b9b9b9;--line3:#dcdcdc;--paper:#fff;--bg:#e8e8e8;--fill:#efefef;--fill2:#dedede;--fill3:#c9c9c9;--mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--ink);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #111;outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#111;color:#fff;padding:8px 14px;z-index:99}
+.skip:focus{left:8px;top:8px}
+h1,h2,h3,h4{line-height:1.35;margin:0}
+code,.mono{font-family:var(--mono);font-size:.92em}
+/* ---- page chrome ---- */
+.top{background:#111;color:#fff;padding:18px 24px 20px}
+.top .tin{max-width:1280px;margin:0 auto}
+.top .crumb{font-size:12px;opacity:.8;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.top .crumb a{color:#fff}
+.top h1{font-size:28px;margin-top:8px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.top h1 .code{font-family:var(--mono);font-size:18px;border:1.5px solid #fff;border-radius:4px;padding:1px 10px}
+.top .lead{margin:6px 0 0;font-size:13px;opacity:.88;max-width:980px}
+.page{max-width:1280px;margin:0 auto;padding:18px 24px 80px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:0 0 14px;padding:0}
+.meta div{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:8px 12px}
+.meta dt{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.04em}
+.meta dd{margin:2px 0 0;font-size:13px;font-weight:500;word-break:break-word}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.toc a{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:12px;text-decoration:none;background:var(--paper);min-height:28px}
+.toc a:hover{background:#111;color:#fff}
+.pintoggle{margin-left:auto;font-size:12px;display:flex;gap:6px;align-items:center}
+body:has(#hidepins:checked) .pin{display:none}
+.legend{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;margin:0 0 18px;padding:0}
+.legend>summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px}
+.legend .lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 18px;padding:2px 14px 14px}
+.legend .lg div{display:flex;gap:10px;align-items:flex-start;font-size:12px}
+.legend .sw{flex:0 0 74px;min-height:26px;font-size:11px;padding:3px 6px;display:flex;align-items:center;justify-content:center;text-align:center}
+section.blk{margin:0 0 30px}
+section.blk>h2{font-size:20px;display:flex;gap:10px;align-items:center;margin:0 0 6px;padding-bottom:6px;border-bottom:3px solid var(--line)}
+section.blk>h2 .n{background:#111;color:#fff;font-size:13px;border-radius:4px;padding:1px 8px}
+section.blk>.sub{margin:4px 0 12px;color:var(--ink2);font-size:13px;max-width:1000px}
+h3.h3{font-size:15px;margin:20px 0 8px;display:flex;gap:8px;align-items:center}
+h3.h3 small{font-weight:400;color:var(--ink3);font-size:12px}
+.ov{overflow-x:auto;padding-bottom:4px}
+/* ---- tables (docs) ---- */
+table.doc{border-collapse:collapse;width:100%;background:var(--paper);font-size:12.5px;border:1.5px solid var(--line)}
+table.doc th{background:var(--fill3);text-align:left;padding:6px 9px;border:1px solid var(--line2);font-size:12px;white-space:nowrap}
+table.doc td{padding:6px 9px;border:1px solid var(--line3);vertical-align:top}
+table.doc tr:nth-child(even) td{background:#fafafa}
+table.doc td.c{text-align:center;white-space:nowrap}
+table.doc td.mono,table.doc td code{font-family:var(--mono);font-size:11.5px}
+.pinc{width:34px;text-align:center}
+/* ---- pins ---- */
+.pin{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#111;color:#fff;font:700 10.5px/1 var(--mono);margin-left:5px;vertical-align:middle;flex:0 0 auto}
+.col>.pin,.card>.pin,.body>.pin,form>.pin,.phb>.pin{align-self:flex-start}
+.pin.lg{min-width:22px;height:22px;font-size:12px}
+/* ---- wire frames ---- */
+.fig{margin:0 0 18px}
+.fig>figcaption{font-size:12px;font-weight:700;margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fig>figcaption .tag{background:#111;color:#fff;border-radius:3px;padding:0 7px;font-size:11px}
+.fig>figcaption .rt{font-weight:400;color:var(--ink3)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;align-items:start}
+.grid-ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(375px,375px));gap:22px;align-items:start}
+.wf{background:var(--paper);border:2px solid var(--line);border-radius:6px;font-size:12.5px;line-height:1.5;overflow:hidden;position:relative}
+.wf.pcw{min-width:1020px}
+.wf .url{background:var(--fill3);border-bottom:2px solid var(--line);padding:4px 10px;font:11px var(--mono);display:flex;gap:8px;align-items:center}
+.wf .url i{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line)}
+.wf .url b{font-weight:500;background:#fff;border:1px solid var(--line2);border-radius:3px;padding:0 8px;flex:1}
+.shell{display:flex;min-height:420px}
+.shell>.side{flex:0 0 190px;border-right:2px solid var(--line);background:var(--fill);padding:10px 8px;display:flex;flex-direction:column;gap:10px}
+.shell>.side .g{font-size:10.5px;color:var(--ink3);font-weight:700;padding:0 6px}
+.shell>.side a,.shell>.side span.mi{display:block;padding:5px 10px;border-radius:5px;font-size:12px;text-decoration:none;color:var(--ink)}
+.shell>.side .cur{background:#111;color:#fff;font-weight:700}
+.shell>.side .ghost{color:var(--ink3);font-size:11px;border:1px dashed var(--line2);border-radius:5px;padding:4px 8px}
+.shell>.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.hdr{display:flex;gap:16px;align-items:center;padding:6px 12px;border-bottom:2px solid var(--line);background:var(--paper);flex-wrap:wrap}
+.hdr .sys{font-weight:700;font-size:13px}
+.hdr .bc{flex:1;color:var(--ink2);font-size:12px;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.hdr .who{font-size:12px}
+.body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;background:#fff}
+.body h1.pt{font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.body h2.st{font-size:14px;display:flex;gap:6px;align-items:center}
+.body .sp{flex:1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.top{align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:8px}
+.cols{display:grid;gap:14px;align-items:start}
+.cols.c23{grid-template-columns:2fr 3fr}.cols.c32{grid-template-columns:3fr 2fr}.cols.c11{grid-template-columns:1fr 1fr}.cols.c3{grid-template-columns:repeat(3,1fr)}.cols.c2{grid-template-columns:1fr 1fr}.cols.c1{grid-template-columns:1fr}
+.card{border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.card.thick{border-width:3px}
+.card h3{font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:0;font-size:12px}
+.dl dt{color:var(--ink3)}.dl dd{margin:0}
+.dl.two{grid-template-columns:auto 1fr auto 1fr}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f>label,.f>.lb{font-size:12px;font-weight:700;display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.f .rq{font-weight:700}
+.in{border:1.5px solid var(--line);border-radius:4px;background:#fff;min-height:30px;padding:4px 8px;color:var(--ink3);font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.in.val{color:var(--ink)}
+.in.mono,.mono .in{font-family:var(--mono)}
+.in.dis{background:var(--fill);border-style:dashed}
+.in.ta{min-height:58px;align-items:flex-start}
+.in.err{border-width:2.5px}
+.in .car{color:var(--ink);font-size:11px}
+.hint{font-size:11px;color:var(--ink3)}
+.fe{display:flex;gap:5px;align-items:flex-start;font-size:11.5px;font-weight:700;border-left:4px solid #111;padding:1px 0 1px 6px;background:var(--fill)}
+.chk{display:flex;gap:7px;align-items:center;font-size:12px;min-height:26px}
+.chk .bx{width:15px;height:15px;border:1.5px solid var(--line);border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;line-height:1;flex:0 0 auto;background:#fff}
+.chk .bx.on{background:#111;color:#fff}
+.chk .rd{width:15px;height:15px;border:1.5px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:#fff}
+.chk .rd.on::after{content:"";width:7px;height:7px;border-radius:50%;background:#111}
+.chk.dis{color:var(--ink3)}
+.fgrid{display:grid;gap:9px 12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fgrid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.fgrid.g1{grid-template-columns:1fr}
+.fgrid .span2{grid-column:span 2}
+.fset{border:1.5px solid var(--line2);border-radius:5px;padding:8px 10px 10px;margin:0}
+.fset>legend{font-size:12px;font-weight:700;padding:0 6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:4px 14px;border-radius:5px;border:2px solid var(--line);font:700 12px var(--mono);font-family:inherit;background:#fff;color:#111;white-space:nowrap}
+.btn.pri{background:#111;color:#fff}
+.btn.dng{background:#111;color:#fff;outline:2px solid #111;outline-offset:2px}
+.btn.ghost{border-color:var(--line2);font-weight:500}
+.btn.dis{background:var(--fill2);color:var(--ink3);border-style:dashed;border-color:var(--ink3)}
+.btn.lg{min-height:40px;width:100%}
+.btn.t48{min-height:48px}
+.btn.xs{min-height:24px;padding:1px 8px;font-size:11px}
+.btn.tog{font-weight:500}
+.btn .pin{background:#fff;color:#111;border:1.5px solid #111}
+.btn:not(.pri):not(.dng) .pin{background:#111;color:#fff}
+svg.i{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;vertical-align:-2px}
+svg.i.l{width:18px;height:18px}
+/* tones: never colour only -> pattern + icon + text */
+.t-danger{border:2.5px solid #111!important;background:repeating-linear-gradient(135deg,#f6f6f6 0 7px,#e6e6e6 7px 9px)}
+.t-warn{border:2px dashed #111!important;background:#f4f4f4}
+.t-ok{border:1.5px solid #555!important;background:#fafafa}
+.t-info{border:2px dotted #333!important;background:#fff}
+.t-neutral{border:1.5px solid #9a9a9a!important;background:var(--fill)}
+.ban{display:flex;gap:9px;align-items:flex-start;border-radius:5px;padding:7px 10px;font-size:12px}
+.ban .tt{font-weight:700;font-size:12.5px}
+.ban .ds{font-size:12px}
+.ban ul{margin:3px 0 0;padding-left:16px}
+.bd{display:inline-flex;gap:4px;align-items:center;border-radius:999px;padding:0 8px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bd.t-danger,.bd.t-warn,.bd.t-ok,.bd.t-info,.bd.t-neutral{border-width:1.5px!important}
+.bd.strike{text-decoration:line-through}
+.tb-chip{display:inline-flex;gap:4px;align-items:center;border:1.5px solid #111;border-radius:4px;padding:0 7px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.tb-amb{background:#fff}.tb-chl{background:var(--fill2)}.tb-frz{background:var(--fill3)}
+.tbl{border-collapse:collapse;width:100%;font-size:12px;border:1.5px solid var(--line)}
+.tbl th{background:var(--fill3);text-align:left;padding:5px 8px;border-bottom:2px solid var(--line);font-size:11.5px;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:1px solid var(--line3);vertical-align:top}
+.tbl tr.sel td{background:var(--fill2)}
+.tbl td.num,.tbl th.num{text-align:right}
+.tbl td.mono{font-family:var(--mono)}
+.tbl .lnk{text-decoration:underline;font-family:var(--mono)}
+.listbtn{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line2);border-radius:5px;min-height:38px;padding:5px 10px;background:#fff;font-size:12px}
+.listbtn.sel{border:2.5px solid #111;background:var(--fill2)}
+.listbtn .sp{flex:1}
+.tabs{display:flex;gap:0;border-bottom:2px solid #111}
+.tabs span{padding:6px 16px;border:1.5px solid var(--line2);border-bottom:0;border-radius:5px 5px 0 0;font-size:12px;margin-right:3px;background:#fff}
+.tabs span.on{background:#111;color:#fff;font-weight:700;border-color:#111}
+.tabs.seg{border:0;gap:0}
+.tabs.seg span{border:1.5px solid #111;border-radius:0;margin:0}
+.tabs.seg span:first-child{border-radius:5px 0 0 5px}.tabs.seg span:last-child{border-radius:0 5px 5px 0}
+.hatch{background:repeating-linear-gradient(45deg,#f3f3f3 0 8px,#e3e3e3 8px 10px);border:1.5px dashed #777;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:11px;text-align:center;border-radius:4px}
+.thumb{width:62px;height:46px}
+/* mock notice: double rule + tag */
+.mock{border:3px double #111;border-radius:6px;background:repeating-linear-gradient(135deg,#fafafa 0 10px,#f0f0f0 10px 12px);padding:7px 10px;font-size:11.5px;position:relative}
+.mock .mt{display:inline-flex;gap:4px;align-items:center;background:#111;color:#fff;border-radius:999px;padding:0 9px;font-weight:700;font-size:11px;min-height:20px}
+.mock dl{margin:6px 0 0;display:grid;gap:4px}
+.mock dt{font-weight:700}.mock dd{margin:0}
+.mock .mk{position:absolute;right:6px;top:4px;font-size:10px;color:var(--ink3)}
+.dim{position:relative;background:#cfcfcf}
+.dim .bgp{opacity:.35;padding:14px;pointer-events:none;min-height:90px;font-size:11px;color:#444}
+.dlg{width:min(430px,92%);margin:0 auto;background:#fff;border:3px solid #111;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12px;box-shadow:6px 6px 0 #111}
+.dim>.dlg{position:relative;margin:-84px auto 18px}
+.dlg h4{font-size:15px;display:flex;gap:8px;align-items:center}
+.dlg .vals{background:var(--fill);border:1px solid var(--line2);border-radius:4px;padding:6px 9px}
+.dlg .vals dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+.dlg .vals dt{color:var(--ink3)}.dlg .vals dd{margin:0;font-family:var(--mono);word-break:break-all}
+.dlg .ft{display:flex;gap:8px;justify-content:flex-end}
+.dlg .nx{font-size:12px}
+/* phone */
+.ph{width:375px;background:#fff;border:3px solid #111;border-radius:26px;overflow:hidden;font-size:13px;line-height:1.5;position:relative;display:flex;flex-direction:column}
+.ph.tall{min-height:640px}
+.ph .notch{height:16px;background:#111;position:relative}
+.ph .notch::after{content:"";position:absolute;left:50%;top:5px;width:70px;height:6px;border-radius:99px;background:#444;transform:translateX(-50%)}
+.ph .phh{height:48px;display:flex;gap:8px;align-items:center;padding:0 12px;border-bottom:2px solid #111;background:#fff}
+.ph .phh .sys{font-weight:700;font-size:13px;flex:1}
+.ph .phh .who{font-size:11.5px}
+.ph .phb{flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:13px}
+.ph .fix{position:sticky;bottom:0;background:#fff;border-top:2px solid #111;padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.ph .ptabs{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #111}
+.ph .ptabs span{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;text-align:center;border-right:1.5px solid var(--line2);padding:2px 6px}
+.ph .ptabs span:last-child{border-right:0}
+.ph .ptabs span.on{background:#111;color:#fff;font-weight:700}
+.ph .f>label{font-size:13px}
+.ph .in{min-height:44px;font-size:14px}
+.ph .btn{font-size:14px}
+.ph .chk{min-height:48px;font-size:13px}
+.ph .chk .bx,.ph .chk .rd{width:20px;height:20px}
+.ph .dlg{width:92%;margin:0 auto}
+.ph .dim>.dlg{margin:-70px auto 14px}
+.ph .tbl{font-size:11.5px}
+.ph .listbtn{min-height:48px}
+/* diagrams */
+.flow{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap}
+.flow .nd{border:2px solid #111;border-radius:6px;padding:5px 10px;background:#fff;font-size:12px;min-width:92px;text-align:center}
+.flow .nd.ghost{border-style:dashed;color:var(--ink3)}
+.flow .ar{align-self:center;font-weight:700;font-size:13px}
+.flow .ar small{display:block;font-size:10px;font-weight:400;color:var(--ink3);max-width:130px;text-align:center}
+.axis{position:relative;height:96px;margin:8px 6px 0;border-top:3px solid #111}
+.axis .tk{position:absolute;top:-3px;width:0;height:12px;border-left:2px solid #111}
+.axis .tl{position:absolute;top:14px;transform:translateX(-50%);font:11px var(--mono);white-space:nowrap}
+.axis .ev{position:absolute;top:36px;transform:translateX(-50%);border:2px solid #111;border-radius:5px;padding:2px 7px;background:#fff;font-size:11px;white-space:nowrap}
+.axis .ev.x{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#ddd 6px 8px);border-width:2.5px}
+.axis .ev.ok{border-style:solid}
+.tl-bar{display:flex;height:34px;border:2px solid #111;border-radius:5px;overflow:hidden;font-size:10.5px}
+.tl-bar span{display:flex;align-items:center;justify-content:center;border-right:1.5px solid #111;white-space:nowrap;overflow:hidden}
+.tl-bar .dr{background:var(--fill2)}.tl-bar .sv{background:#fff}.tl-bar .bk{background:repeating-linear-gradient(45deg,#fff 0 4px,#d9d9d9 4px 6px)}
+.tl-bar .vi{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#bbb 6px 8px);font-weight:700}
+.note{border-left:5px solid #111;background:var(--paper);padding:8px 12px;font-size:12.5px;margin:8px 0}
+.note.warn{border-left-style:double}
+footer.src{margin-top:30px;border-top:3px solid #111;padding-top:12px;font-size:12px;color:var(--ink2)}
+@media (max-width:760px){.page{padding:12px}.top{padding:14px}.grid2,.grid3{grid-template-columns:1fr}}
+@media print{.top{-webkit-print-color-adjust:exact;print-color-adjust:exact}.toc,.pintoggle{display:none}body{background:#fff}.ov{overflow:visible}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* ---- 2026-10-19 改訂: 項目 ID のピン・必須 / 任意・本番版で追加 ---- */
+.rq,.op{display:inline-flex;align-items:center;border-radius:3px;padding:0 5px;font-size:10.5px;font-weight:700;min-height:17px;margin-left:4px;white-space:nowrap;line-height:1.2}
+.rq{background:#111;color:#fff}
+.op{border:1px solid #777;color:#3d3d3d;font-weight:500;background:#fff}
+.ps-box{border:2px dashed #111;border-radius:6px;padding:6px 8px;position:relative;background:#fff;display:flex;flex-direction:column;gap:6px}
+.ps-tag{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;border:1.5px dashed #111;border-radius:999px;padding:0 8px;font-size:10.5px;font-weight:700;background:#fff;white-space:nowrap}
+.pin.ps{background:#fff;color:#111;border:1.5px dashed #111}
+.hid{border:1.5px dotted #777;border-radius:4px;padding:3px 8px;font-size:11px;color:#3d3d3d;background:#fafafa}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+<symbol id="i-open" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017-2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L5 19a1 1 0 001 1h12a1 1 0 001-1l-5-10V3"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.5"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+<symbol id="i-pkg" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+<symbol id="i-off" viewBox="0 0 24 24"><path d="M3 3l18 18M5 12a10 10 0 015-2.7M9 16a5 5 0 016-.9M12 20v.5M2 8.5a15 15 0 015-3"/></symbol>
+<symbol id="i-therm" viewBox="0 0 24 24"><path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/></symbol>
+<symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M4 17L20 7"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></symbol>
+<symbol id="i-load" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+<symbol id="i-hour" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3c0 6 5 6 5 9s-5 3-5 9M17 3c0 6-5 6-5 9s5 3 5 9"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></symbol>
+</defs></svg>
+<a class="skip" href="#s-wire">本文へ移動</a>
+<header class="top"><div class="tin"><div class="crumb"><span>ワイヤーフレーム（2026-10-19 改訂）</span><span>›</span><span>SCR-25</span></div>
+<h1><span class="code">SCR-25</span>HACCP 完全性</h1><p class="lead">ロガーの 15 分ごとの記録が届いていない枠を、品質管理が確認して 1 件ずつクローズする画面。予定枠は予定時刻の古い順。自動では閉じない。ほかの記録リズム（日次・月次・衛生など）は試作版では作っていない（模擬の案内で知らせる）。LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR25_HACCP_COMPLETENESS_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></div></header><div class="page"><dl class="meta"><div><dt>画面コード</dt><dd>SCR-25</dd></div><div><dt>画面名（日本語）</dt><dd>HACCP 完全性</dd></div><div><dt>試作版での実装</dt><dd>実装済み（一部 — ロガーの 15 分ごとだけ + 模擬の案内）</dd></div><div><dt>端末 · 幅</dt><dd>PC（1 列の表）。390px 幅の配置は PREMISE P-S06</dd></div><div><dt>表示対象ロール</dt><dd>ROLE-003 品質管理 のみ</dd></div><div><dt>ルート</dt><dd><code>/temperature/haccp</code></dd></div><div><dt>関連 FT / US</dt><dd>FT-078（一部）・FT-079 / US-033</dd></div><div><dt>模擬の表示</dt><dd>あり（画面の先頭）</dd></div><div><dt>表の並び順</dt><dd>予定時刻の古い順（同じ時刻は ID 順）· 50 件 / ページ</dd></div></dl>
+<div class="bar"><ul class="toc" aria-label="この画面の目次"><li><a href="#s-wire">ワイヤーフレーム</a></li><li><a href="#s-notes">注釈</a></li><li><a href="#s-states">状態</a></li><li><a href="#s-blocked">遮断される分岐</a></li><li><a href="#s-roles">ロール別表示</a></li><li><a href="#s-mock">模擬</a></li><li><a href="#s-src">出典・照合</a></li></ul><label class="pintoggle"><input type="checkbox" id="hidepins"> 項目 ID のピンを隠す</label></div>
+<details class="legend" open><summary>凡例（グレースケールのワイヤー。色ではなく線種・柄・文字・アイコンで意味を示す）</summary><div class="lg">
+<div><span class="sw t-danger">危険・ブロック</span><span>太い実線 + 斜線の柄 + アイコン「×」。記録なし・エラーなど。</span></div>
+<div><span class="sw t-warn">警告</span><span>破線。確認待ち・起点が未設定など。</span></div>
+<div><span class="sw t-ok">成功・正常</span><span>細い実線 + チェックのアイコン。クローズしたあとの 1 文など。</span></div>
+<div><span class="sw t-neutral">中立</span><span>灰色の枠。クローズ済みなど。</span></div>
+<div><span class="sw" style="border:3px double #111">模擬</span><span>二重線 + 黒の「模擬」タグ。模擬の案内の置き場所。</span></div>
+<div><span class="sw"><b class="pin" style="margin:0">A-1</b></span><span>項目 ID のピン（画面仕様 4.1 の ID）。「注釈」の表の同じ ID と対応</span></div>
+<div><span class="sw"><span class="rq">必須</span></span><span>画面仕様 4.1 の Required が「必須」の入力</span></div>
+<div><span class="sw"><span class="op">任意</span></span><span>Required が「任意」の入力</span></div>
+<div><span class="sw"><span class="ps-tag">本番版で追加</span></span><span>画面仕様（本文）にはなく、PREMISE（P-Sxx）または設計補遺で足す部分。破線の枠で示す</span></div>
+<div><span class="sw dim" style="color:#111">ダイアログ</span><span>灰色の背景の上に、黒い影つきの枠で重ねて描く。</span></div>
+<div><span class="sw" style="font-size:12px">例: 2026/10/05</span><span>画面に出ている値はすべてワイヤー用の仮の値（実データではない）。日付は YYYY/MM/DD、時刻は HH:MM（JST）。</span></div>
+</div></details>
+<section class="blk" id="s-wire" aria-labelledby="s-wire-h"><h2 id="s-wire-h"><span class="n">1</span>ワイヤーフレーム（主画面と状態）</h2><p class="sub">模擬の案内 → 案内文 → 絞り込み → 結果の 1 文 → 起点が未設定の警告 → 予定枠の表（予定時刻の古い順・50 件 / ページ）→ ページ送り。確認待ちは理由なし、記録なしは理由必須で 1 件ずつクローズする。一括クローズはない。</p>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">PC</span>主画面 A — 予定枠の一覧 /temperature/haccp（「すべて」を押し、1 件をクローズした直後）<span class="rt">並び順: 予定時刻の古い順 — 03:00 → 06:30 → 08:15（いまの時刻 2026/10/05 10:00 JST の例）</span></figcaption><div class="ov"><div class="wf pcw"><div class="url"><i></i><i></i><i></i><b>/temperature/haccp</b></div><div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">温度・HACCP <span>›</span> HACCP 完全性</nav><span class="who">氏名 · 品質管理</span><span class="btn xs">ログアウト</span></div><div class="shell"><nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">在庫・ロット</div><a>ロット状態管理</a></div><div class="gp"><div class="g">温度・HACCP</div><a>温度データインポート</a><a>温度アラート</a><a>逸脱管理</a><a class="cur" aria-current="page">HACCP 完全性</a></div></nav><main class="main"><div class="body">
+<h1 class="pt" data-item="A-1">HACCP 完全性<b class="pin">A-1</b></h1>
+<div class="mock" data-item="A-2"><span class="mt"><svg class="i" aria-hidden="true"><use href="#i-flask"/></svg>模擬</span><b class="pin">A-2</b><dl><dt>模擬している部分</dt><dd>HACCP の記録リズムのうち、実際に確認しているのはロガーの 15 分ごとの記録だけです。日次（監督者）・月次（管理者）のレビューは、このプロトタイプでは作っていません。入出庫ごと・衛生（シフトごと）・来訪者 / ドライバーの入退・アラームレビューのリズムは、このプロトタイプにはありません。</dd><dt>本番で必要なもの</dt><dd>各リズムの記録元（衛生記録・入退記録など）と、日次・月次レビューの定期実行。</dd></dl></div>
+<div class="col" data-item="A-3" style="gap:2px"><p class="hint" style="margin:0;color:#3d3d3d;font-size:12.5px">ロガーの 15 分ごとの記録が届いていない枠を確認します。記録が届いても自動では閉じません。品質管理が確認してクローズします。<b class="pin">A-3</b></p><p class="hint" style="margin:0">最後の記録から 30 時間までは、記録が届くのを待ちます。それを過ぎた枠が「記録なし」になります。</p></div>
+<div class="row" data-item="A-4" style="align-items:flex-end"><div class="f" data-item="B-1"><span class="lb">状態の絞り込み<span class="op">任意</span><b class="pin">B-1</b></span><div class="row" style="gap:6px"><span class="btn">未クローズ</span><span class="btn pri" aria-pressed="true">すべて</span></div></div><div class="f" data-item="B-2" style="width:300px"><label>機器 ID<span class="op">任意</span><b class="pin">B-2</b></label><div class="in">例: DL-C01（空欄ですべての機器）</div></div><span class="btn" data-item="B-3">絞り込む<b class="pin">B-3</b></span><b class="pin">A-4</b></div>
+<div class="ban t-ok" data-item="A-5"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg><span class="tt">クローズしました</span><span class="hint">（クローズのあとだけ。失敗は赤の 1 文）</span><b class="pin">A-5</b></div>
+<div class="ban t-warn" data-item="A-6"><svg class="i l" aria-hidden="true"><use href="#i-warn"/></svg><div><div class="tt">監視の起点が未設定<b class="pin">A-6</b></div><div class="ds">次の機器は、記録の予定枠を数え始める日時がまだ設定されていません。記録の抜けを調べられていないので、「抜けが 0 件」という意味ではありません: <span class="mono">DL-A01</span></div></div></div>
+<div data-item="A-7"><table class="tbl"><thead><tr><th data-item="C-1">機器<b class="pin">C-1</b></th><th data-item="C-2">ゾーン<b class="pin">C-2</b></th><th data-item="C-3">予定の枠（JST）<b class="pin">C-3</b></th><th data-item="C-4">枠の状態<b class="pin">C-4</b></th><th data-item="C-5">待ち時間<b class="pin">C-5</b></th><th data-item="C-6">あとから届いた記録<b class="pin">C-6</b></th><th data-item="C-7">操作<b class="pin">C-7</b></th></tr></thead><tbody>
+<tr><td class="mono">DL-F01</td><td class="mono">F</td><td>2026/10/05 03:00–03:15 JST</td><td><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-lock"/></svg>クローズ</span></td><td>—</td><td>—</td><td>ロガー交換のため</td></tr>
+<tr><td class="mono">DL-C01</td><td class="mono">C</td><td>2026/10/05 06:30–06:45 JST</td><td><span class="bd t-warn"><svg class="i" aria-hidden="true"><use href="#i-hour"/></svg>確認待ち</span></td><td>3 時間 30 分</td><td>06:44 JST　4.1 °C</td><td><span class="btn pri xs" data-item="C-8">確認してクローズ<b class="pin">C-8</b></span></td></tr>
+<tr><td class="mono">DL-C01</td><td class="mono">C</td><td>2026/10/05 08:15–08:30 JST</td><td><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>記録なし</span></td><td>1 時間 45 分</td><td>—</td><td><span class="btn xs" data-item="C-9">理由を記録してクローズ<b class="pin">C-9</b></span></td></tr>
+</tbody></table><b class="pin">A-7</b> <span class="hint">予定時刻の古い順（同じ時刻は ID 順）。待ち時間は 1 分ごとに変わる。</span></div>
+<div class="row" data-item="A-8"><span class="btn dis" data-item="D-1">前のページ<b class="pin">D-1</b></span><span>1 ページ目</span><span class="btn" data-item="D-2">次のページ<b class="pin">D-2</b></span><b class="pin">A-8</b></div>
+</div></main></div></div></div></figure>
+<div class="grid2">
+<figure class="fig" style="margin:0"><figcaption><span class="tag">PC</span>ダイアログ — 記録なしの枠を閉じる（理由が空だと欄の下に誤り）</figcaption><div class="dim"><div class="bgp"><span class="hint">（HACCP 完全性）</span></div><div class="dlg"><h4>理由を記録してクローズ</h4><div>この枠には記録が届いていません。クローズする理由を入力してください（理由は監査の記録に残ります）。</div><div class="f" data-item="E-1"><label>理由<span class="rq">必須</span><b class="pin">E-1</b></label><div class="in ta err">&nbsp;</div><div class="fe"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>入力してください</div></div><div class="ft"><span class="btn" data-item="E-2">キャンセル<b class="pin">E-2</b></span><span class="btn pri" data-item="E-3">クローズする<b class="pin">E-3</b></span></div></div></div></figure>
+<figure class="fig" style="margin:0"><figcaption><span class="tag">PC</span>状態 B — 一覧の読み込みで DB に届かない（案内と絞り込みは残る）</figcaption><div class="wf"><div class="url"><i></i><i></i><i></i><b>/temperature/haccp</b></div><div class="body"><h1 class="pt">HACCP 完全性</h1><div class="mock"><span class="mt"><svg class="i" aria-hidden="true"><use href="#i-flask"/></svg>模擬</span> <span class="hint">（主画面 A と同じ）</span></div><div class="row"><span class="btn pri">未クローズ</span><span class="btn">すべて</span><div class="in" style="width:150px">機器 ID</div><span class="btn">絞り込む</span></div>
+<div class="ban t-danger"><svg class="i l" aria-hidden="true"><use href="#i-off"/></svg><div><div class="tt">システムを再起動しています。1〜2分後にもう一度お試しください</div><div class="ds">管理者の方へ: Supabase のダッシュボードでプロジェクトを再開（Resume project）してください</div><div class="row" style="margin-top:6px"><span class="btn" data-item="F-1">再試行<b class="pin">F-1</b></span></div></div></div></div></div></figure>
+<div class="ps-box"><span class="ps-tag">本番版で追加（P-S06）</span><div class="hint">390px 幅（スマートフォン）: 操作ボタンを行頭に置き、機器 ID の入力例は幅に収まる長さにする。画面仕様（本文）には 390px 幅の配置の規則がない。</div>
+<div class="ph" style="width:390px"><div class="notch"></div><div class="phh"><span class="sys">HACCP 完全性</span><span class="who">品質管理</span></div><div class="phb">
+<div class="row" style="gap:6px"><span class="btn pri">未クローズ</span><span class="btn">すべて</span></div>
+<div class="f" data-item="P-S06.1"><label>機器 ID<b class="pin ps">P-S06.1</b></label><div class="in">例: DL-C01</div></div><span class="btn">絞り込む</span>
+<div class="col" data-item="P-S06" style="gap:8px"><div class="card" style="gap:4px"><span class="btn pri" style="align-self:flex-start">確認してクローズ</span><span><span class="mono">DL-C01</span> · ゾーン C</span><span>2026/10/05 06:30–06:45 JST</span><span class="row" style="gap:6px"><span class="bd t-warn">確認待ち</span><span class="hint">3 時間 30 分 · 06:44 JST　4.1 °C</span></span></div><div class="card" style="gap:4px"><span class="btn" style="align-self:flex-start">理由を記録してクローズ</span><span><span class="mono">DL-C01</span> · ゾーン C</span><span>2026/10/05 08:15–08:30 JST</span><span class="row" style="gap:6px"><span class="bd t-danger">記録なし</span><span class="hint">1 時間 45 分</span></span></div><b class="pin ps">P-S06</b></div>
+</div></div></div>
+<div class="ps-box"><span class="ps-tag">本番版で追加（P-S22）</span><div data-item="P-S22">予定枠の表に「義務の水準」の列と絞り込みを足す（設計補遺「HACCP 義務の水準」0.1.0 の 4 章 3）。値は <span class="bd t-neutral">手引書で必須</span> ／ <span class="bd t-info">顧客の選択</span>。小規模事業者向けの「HACCP の考え方を取り入れた衛生管理」を適用し、必須の記録の欠けを先に見られるようにする。<b class="pin ps">P-S22</b>
+<div class="row" style="margin-top:6px"><div class="f"><span class="lb">義務の水準</span><div class="in" style="width:160px">すべて <span class="car">▾</span></div></div></div>
+<table class="tbl" style="margin-top:6px"><thead><tr><th>機器</th><th>予定の枠（JST）</th><th>義務の水準</th><th>枠の状態</th></tr></thead><tbody><tr><td class="mono">DL-C01</td><td>2026/10/05 08:15–08:30 JST</td><td><span class="bd t-neutral">手引書で必須</span></td><td><span class="bd t-danger">記録なし</span></td></tr></tbody></table><span class="hint">ロガーの記録そのものは手引書で必須、15 分という間隔は顧客の選択（同補遺 3 章）。ほかの記録リズムの水準は同補遺 3 章の表に従う（区画 J と同時に足す）。</span></div></div>
+<div class="ps-box"><span class="ps-tag">設計補遺で追加（SCR25_HACCP_COMPLETENESS_DESIGN_ADDENDUM.md 4.1 J-1〜K-8）</span><div>設計補遺で追加する区画（この図の対象外）: 区画 J（予定枠の表に「種別」「対象」の列、種別の絞り込み、確認待ちを「不足に戻す」、日次・月次のレビューの記録）と区画 K（タブ「記録の入力」— 衛生記録・入場・退場）。予定枠の並び順（予定時刻の古い順）は変えない。</div></div>
+</div>
+</section>
+<section class="blk" id="s-notes" aria-labelledby="s-notes-h"><h2 id="s-notes-h"><span class="n">2</span>注釈（画面仕様 4.1 の項目）</h2><p class="sub">画面仕様 4.1 の 26 項目と同じ順。入力は 3 つ: 状態（任意）・機器 ID（任意）・理由（必須）。</p><div class="ov"><table class="doc"><thead><tr><th>ID</th><th>項目名（4.1 の Item Name）</th><th>種別</th><th>Required</th><th>画面での表し方・補足</th></tr></thead><tbody>
+<tr><td class="c">A-1</td><td>見出し</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>見出し「HACCP 完全性」。品質管理以外には本文の代わりに権限なしの表示（主画面 A）</td></tr>
+<tr><td class="c">A-2</td><td>模擬の案内（MockNotice）</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>「模擬」+「模擬している部分」「本番で必要なもの」の 2 つの文。画面の先頭（主画面 A）</td></tr>
+<tr><td class="c">A-3</td><td>案内文</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>固定の案内文 2 つ（「ロガーの 15 分ごとの記録が届いていない枠を確認します。…」と「最後の記録から 30 時間までは、…」）</td></tr>
+<tr><td class="c">A-4</td><td>絞り込み</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>状態のボタン（B-1）+ 機器 ID の入力欄（B-2）+「絞り込む」（B-3）の並び</td></tr>
+<tr><td class="c">A-5</td><td>結果のメッセージ</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>クローズのあとの 1 文（緑「クローズしました」/ 赤の失敗の文）。絞り込みと表の間</td></tr>
+<tr><td class="c">A-6</td><td>監視の起点が未設定</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>表の上の警告「監視の起点が未設定」+ 機器 ID。該当がなければ出さない</td></tr>
+<tr><td class="c">A-7</td><td>予定枠の表</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>予定枠の表（C の列）。<b>並び順は予定時刻の古い順、同じ時刻は ID 順</b>（画面仕様 4.1 補足・4.3）。1 ページ 50 件</td></tr>
+<tr><td class="c">A-8</td><td>ページ送り</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>「前のページ」/「n ページ目」/「次のページ」</td></tr>
+<tr><td class="c">B-1</td><td>状態</td><td>ボタン 2 つ（4 値外 — 切り替え）</td><td class="c">任意</td><td>ボタン 2 つ「未クローズ」（既定）/「すべて」。押している方が黒。押すとすぐ適用し 1 ページ目へ。入力の印は「任意」</td></tr>
+<tr><td class="c">B-2</td><td>機器 ID</td><td>Text box</td><td class="c">任意</td><td>ラベル「機器 ID」。入力欄の中の入力例「例: DL-C01（空欄ですべての機器）」。自由入力（64 文字まで）。入力の印は「任意」</td></tr>
+<tr><td class="c">B-3</td><td>絞り込む</td><td>Button</td><td class="c">-</td><td>機器 ID を適用して 1 ページ目へ戻す。Enter でも同じ</td></tr>
+<tr><td class="c">C-1</td><td>機器</td><td>Label（表の列）</td><td class="c">-</td><td>列「機器」— 機器 ID（等幅）</td></tr>
+<tr><td class="c">C-2</td><td>ゾーン</td><td>Label（表の列）</td><td class="c">-</td><td>列「ゾーン」— ないときは「—」</td></tr>
+<tr><td class="c">C-3</td><td>予定の枠（JST）</td><td>Label（表の列）</td><td class="c">-</td><td>列「予定の枠（JST）」—「2026/10/05 06:30–06:45 JST」（終わりは時刻だけ）</td></tr>
+<tr><td class="c">C-4</td><td>枠の状態</td><td>Label（表の列）</td><td class="c">-</td><td>列「枠の状態」— バッジ「記録なし」/「確認待ち」/「クローズ」（アイコン + 文字）</td></tr>
+<tr><td class="c">C-5</td><td>待ち時間</td><td>Label（表の列）</td><td class="c">-</td><td>列「待ち時間」— クローズ前の枠だけ「n 時間 m 分」。クローズ済みは「—」。1 分ごとに更新</td></tr>
+<tr><td class="c">C-6</td><td>あとから届いた記録</td><td>Label（表の列）</td><td class="c">-</td><td>列「あとから届いた記録」—「06:44 JST　4.1 °C」。なければ「—」</td></tr>
+<tr><td class="c">C-7</td><td>操作</td><td>表示ブロック（4 値外 — 行ごとのボタン、クローズ済みは入力された理由の文字）</td><td class="c">-</td><td>列「操作」— 確認待ちは C-8、記録なしは C-9、クローズ済みは入力された理由（なければ「—」）</td></tr>
+<tr><td class="c">C-8</td><td>確認してクローズ</td><td>Button</td><td class="c">-</td><td>確認待ちの行だけの主ボタン。理由なしでクローズ。処理中は「クローズ中…」、ほかの行のボタンも無効</td></tr>
+<tr><td class="c">C-9</td><td>理由を記録してクローズ</td><td>Button</td><td class="c">-</td><td>記録なしの行だけの枠のボタン。押すと理由の入力ダイアログ</td></tr>
+<tr><td class="c">D-1</td><td>前のページ</td><td>Button</td><td class="c">-</td><td>1 ページ目では無効（主画面 A は無効の形）</td></tr>
+<tr><td class="c">D-2</td><td>次のページ</td><td>Button</td><td class="c">-</td><td>次のページがあるときだけ押せる</td></tr>
+<tr><td class="c">E-1</td><td>理由</td><td>Text box（複数行）</td><td class="c">必須</td><td>ダイアログの複数行の入力欄「理由」。空・空白だけは送らず欄の直下に「入力してください」。閉じるたびに空に戻る。入力の印は「必須」</td></tr>
+<tr><td class="c">E-2</td><td>キャンセル</td><td>Button</td><td class="c">-</td><td>ダイアログを閉じる（入力は捨てる）</td></tr>
+<tr><td class="c">E-3</td><td>クローズする</td><td>Button</td><td class="c">-</td><td>理由を検査して、通ればダイアログを閉じてクローズする</td></tr>
+<tr><td class="c">F-1</td><td>再試行</td><td>Button</td><td class="c">-</td><td>一覧の読み込みで DB に届かないときの「再試行」（状態 B）。案内と絞り込みは残る</td></tr>
+<tr><td class="c">P-S06</td><td>390px 幅での操作ボタンの位置</td><td>配置の規則</td><td class="c">-</td><td>PREMISE P-S06: 390px 幅では「確認してクローズ」「理由を記録してクローズ」を行頭（または折り返し）に置き、画面の外に出さない。390px の電話の枠で示した</td></tr>
+<tr><td class="c">P-S06.1</td><td>390px 幅での機器 ID の入力例</td><td>配置の規則</td><td class="c">-</td><td>PREMISE P-S06: 機器 ID の入力例は欄の幅に収まる長さにする（例「例: DL-C01」）</td></tr>
+<tr><td class="c">P-S22</td><td>義務の水準の列と絞り込み（手引書で必須 / 顧客の選択）</td><td>表示の追加</td><td class="c">-</td><td>PREMISE P-S22 と設計補遺「HACCP 義務の水準」（版 0.1.0）4 章 3: 予定枠の表に義務の水準の列と絞り込みを足す。ロガーの記録は手引書で必須（15 分の間隔は顧客の選択）。破線の枠で示した</td></tr>
+</tbody></table></div></section>
+<section class="blk" id="s-states" aria-labelledby="s-states-h"><h2 id="s-states-h"><span class="n">3</span>状態バリエーション</h2><div class="ov"><table class="doc"><thead><tr><th>状態</th><th>表示</th><th>画面仕様</th></tr></thead><tbody>
+<tr><td>開いたとき</td><td>模擬の案内・案内文・絞り込みを先に出し、表の場所は「読み込み中…」。サーバーが予定枠を同期してから「未クローズ」の 1 ページ目を出す</td><td>5 章 A-7・A-6・A-8</td></tr>
+<tr><td>枠が 0 件</td><td>「確認が必要な枠はありません」+「記録の抜けが見つかると、ここに出ます」。起点が未設定の警告は別に出る（空 = 抜けなし、とは限らない）</td><td>5 章 A-7</td></tr>
+<tr><td>起点が未設定</td><td>表の上に警告「監視の起点が未設定」+ 機器 ID</td><td>4.1 A-6</td></tr>
+<tr><td>絞り込みを替える</td><td>「未クローズ」/「すべて」は押すとすぐ、機器 ID は「絞り込む」（または Enter）で、1 ページ目に戻して読み直す</td><td>5 章 B-1・B-2・B-3</td></tr>
+<tr><td>ページを替える</td><td>新しい結果が届くまで「読み込み中…」（表が消える）</td><td>5 章 D-1・D-2</td></tr>
+<tr><td>時計</td><td>待ち時間が 1 分ごとに変わる（ブラウザの時計）</td><td>5 章 C-5</td></tr>
+<tr><td>クローズ中</td><td>押した行のボタンだけ「クローズ中…」、ほかの行のボタンも無効。二重に押しても 2 回目は走らない</td><td>5 章 C-8・C-9・E-3</td></tr>
+<tr><td>クローズの成功</td><td>緑の 1 文「クローズしました」+ 読み直し（「未クローズ」ではその枠が消える）</td><td>5 章 A-5</td></tr>
+<tr><td>最後の 1 件を閉じた（2 ページ目以降）</td><td>「未クローズ」では 1 つ前のページへ戻って読み直す（空のページを出さない）。「すべて」ではページはそのまま</td><td>5 章 A-7・A-8</td></tr>
+<tr><td>クローズの失敗</td><td>赤の 1 文 + 読み直し（ページは戻さない）</td><td>5 章 A-5</td></tr>
+<tr><td>DB に届かない</td><td>一覧: 再試行つきの表示（状態 B）/ クローズ: 同じ文の 1 文</td><td>5 章 F-1・A-5、共通仕様 CS-06</td></tr>
+<tr><td>権限なし</td><td>見出し +「この操作を行う権限がありません」「必要な場合は管理者にお問い合わせください」</td><td>5 章、共通仕様 CS-04</td></tr>
+</tbody></table></div></section>
+<section class="blk" id="s-blocked" aria-labelledby="s-blocked-h"><h2 id="s-blocked-h"><span class="n">4</span>遮断される分岐（失敗の表示）</h2><p class="sub">この画面は処理不可ダイアログ（共通仕様 CS-07 7.4）を使わない。失敗は 1 文で出し（共通仕様 CS-07 7.3）、内部の規則の識別子や応答のコードは画面に出さない。</p><div class="ov"><table class="doc"><thead><tr><th>事象</th><th>画面の出し方</th><th>文言（日本語の原文）</th></tr></thead><tbody>
+<tr><td>「記録なし」の枠を理由なし（空白だけを含む）でクローズしようとした</td><td>ダイアログの欄の直下（送らない）/ 届いた場合は画面の 1 文</td><td>入力してください ／ 記録が届いていない項目をクローズするには、理由が必要です</td></tr>
+<tr><td>別の人が先にクローズしていた</td><td>赤の 1 文 + 読み直し</td><td>この項目はすでにクローズ済みです</td></tr>
+<tr><td>枠が見つからない（ID が違う・消えた）</td><td>赤の 1 文 + 読み直し</td><td>確認項目が見つかりません</td></tr>
+<tr><td>送った内容の形が正しくない（理由が 500 文字を超えるなど。通常の操作では届かない）</td><td>1 文</td><td>入力内容に誤りがあります</td></tr>
+<tr><td>品質管理でない人が操作を直接呼んだ</td><td>1 文</td><td>この操作を行う権限がありません ／ HACCP の記録の確認は品質管理だけが行えます</td></tr>
+<tr><td>DB に届かない</td><td>一覧: 再試行つきの表示（状態 B）/ クローズ: 1 文</td><td>システムを再起動しています。1〜2分後にもう一度お試しください</td></tr>
+<tr><td>「確認待ち」を「記録なし」に戻す・一括でクローズする</td><td>操作そのものがない</td><td>—</td></tr>
+</tbody></table></div></section>
+<section class="blk" id="s-roles" aria-labelledby="s-roles-h"><h2 id="s-roles-h"><span class="n">5</span>ロール別の表示</h2><div class="ov"><table class="doc"><thead><tr><th>ロール</th><th>表示</th></tr></thead><tbody><tr><td>ROLE-003 品質管理</td><td>全部の領域。クローズできる。</td></tr><tr><td>ほかのロール</td><td>メニューに出ない。開くと見出し + 権限なしの表示（記録の入力が範囲外なので ROLE-001 / 002 にも出さない）。</td></tr></tbody></table></div><p class="note">PREMISE P-A30（仮定・図には描かない）: 設計補遺のタブ「記録の入力」を作るとき、品質管理と記録の入力のロールの両方を持つ人には予定枠のタブを先に出し、記録の入力のロールだけの人には「記録の入力」のタブだけを出す。選んだタブは URL のクエリに残す。</p></section>
+<section class="blk" id="s-mock" aria-labelledby="s-mock-h"><h2 id="s-mock-h"><span class="n">6</span>模擬の表示の位置</h2><p>画面の先頭（見出しの下）に 1 つ（主画面 A の A-2）。日次・月次のレビューは試作版では作っていない（模擬の画面・項目もない）。入出庫ごと・衛生・来訪者 / ドライバーの入退・アラームレビューのリズムは試作版にない（画面仕様 6 章 6.3）。</p></section>
+<section class="blk" id="s-src" aria-labelledby="s-src-h"><h2 id="s-src-h"><span class="n">7</span>出典と照合</h2>
+<p>出典: 画面仕様 SCR25_HACCP_COMPLETENESS_SPEC.md（version 0.4.1）の 4.1（26 項目）・4.1 補足（予定枠の表の並び順・ページ送り・ダイアログ）・4.2・5 章・6 章（6.3 模擬・6.4 中核・6.7 仕様との差異・6.8 範囲外）。共通仕様 CS-04・CS-06・CS-07 7.3・CS-08・CS-09。PREMISE P-S06（390px 幅の配置）・P-S22（HACCP の義務の水準 — 設計補遺「HACCP 義務の水準」版 0.1.0）・P-S04（日付の表記）・P-A30（仮定 — 図には描かない）。設計補遺 SCR25_HACCP_COMPLETENESS_DESIGN_ADDENDUM.md（version 0.1.0）の区画 J・K は対象外として枠で示した。</p>
+<p>旧ワイヤーフレームからの主な変更: 理由の欄に「必須」、状態と機器 ID に「任意」の印を付けた（旧図は印なし）。表を予定時刻の古い順に直した（旧図は 03:00 の行が最後）。「未クローズ」を押した図にクローズ済みの行が出ていたので、「すべて」を押した図にした。機器 ID の入力例を欄の中（入力例）に置いた。注釈を画面仕様 4.1 の項目 ID にそろえ、失敗の文から内部の規則の識別子を外した。</p>
+<p>意図的に描かなかったもの: 日次・月次のレビューの項目（作っていない）、一括クローズ、衛生・入退のリズム（範囲外）、「確認待ち → 記録なし」へ戻す操作（画面仕様 6.8 — 操作がない）。</p></section>
+</div><footer class="src"><p>LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR25_HACCP_COMPLETENESS_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></footer></body></html>

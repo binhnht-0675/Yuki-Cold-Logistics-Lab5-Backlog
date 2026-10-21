@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCR-02 入庫検査 — ワイヤーフレーム（2026-10-19 改訂）| Yuki Cold Logistics</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#111;--ink2:#3d3d3d;--ink3:#6b6b6b;--line:#1a1a1a;--line2:#b9b9b9;--line3:#dcdcdc;--paper:#fff;--bg:#e8e8e8;--fill:#efefef;--fill2:#dedede;--fill3:#c9c9c9;--mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--ink);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #111;outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#111;color:#fff;padding:8px 14px;z-index:99}
+.skip:focus{left:8px;top:8px}
+h1,h2,h3,h4{line-height:1.35;margin:0}
+code,.mono{font-family:var(--mono);font-size:.92em}
+/* ---- page chrome ---- */
+.top{background:#111;color:#fff;padding:18px 24px 20px}
+.top .tin{max-width:1280px;margin:0 auto}
+.top .crumb{font-size:12px;opacity:.8;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.top .crumb a{color:#fff}
+.top h1{font-size:28px;margin-top:8px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.top h1 .code{font-family:var(--mono);font-size:18px;border:1.5px solid #fff;border-radius:4px;padding:1px 10px}
+.top .lead{margin:6px 0 0;font-size:13px;opacity:.88;max-width:980px}
+.page{max-width:1280px;margin:0 auto;padding:18px 24px 80px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:0 0 14px;padding:0}
+.meta div{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:8px 12px}
+.meta dt{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.04em}
+.meta dd{margin:2px 0 0;font-size:13px;font-weight:500;word-break:break-word}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.toc a{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:12px;text-decoration:none;background:var(--paper);min-height:28px}
+.toc a:hover{background:#111;color:#fff}
+.pintoggle{margin-left:auto;font-size:12px;display:flex;gap:6px;align-items:center}
+body:has(#hidepins:checked) .pin{display:none}
+.legend{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;margin:0 0 18px;padding:0}
+.legend>summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px}
+.legend .lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 18px;padding:2px 14px 14px}
+.legend .lg div{display:flex;gap:10px;align-items:flex-start;font-size:12px}
+.legend .sw{flex:0 0 74px;min-height:26px;font-size:11px;padding:3px 6px;display:flex;align-items:center;justify-content:center;text-align:center}
+section.blk{margin:0 0 30px}
+section.blk>h2{font-size:20px;display:flex;gap:10px;align-items:center;margin:0 0 6px;padding-bottom:6px;border-bottom:3px solid var(--line)}
+section.blk>h2 .n{background:#111;color:#fff;font-size:13px;border-radius:4px;padding:1px 8px}
+section.blk>.sub{margin:4px 0 12px;color:var(--ink2);font-size:13px;max-width:1000px}
+h3.h3{font-size:15px;margin:20px 0 8px;display:flex;gap:8px;align-items:center}
+h3.h3 small{font-weight:400;color:var(--ink3);font-size:12px}
+.ov{overflow-x:auto;padding-bottom:4px}
+/* ---- tables (docs) ---- */
+table.doc{border-collapse:collapse;width:100%;background:var(--paper);font-size:12.5px;border:1.5px solid var(--line)}
+table.doc th{background:var(--fill3);text-align:left;padding:6px 9px;border:1px solid var(--line2);font-size:12px;white-space:nowrap}
+table.doc td{padding:6px 9px;border:1px solid var(--line3);vertical-align:top}
+table.doc tr:nth-child(even) td{background:#fafafa}
+table.doc td.c{text-align:center;white-space:nowrap}
+table.doc td.mono,table.doc td code{font-family:var(--mono);font-size:11.5px}
+.pinc{width:34px;text-align:center}
+/* ---- pins ---- */
+.pin{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#111;color:#fff;font:700 10.5px/1 var(--mono);margin-left:5px;vertical-align:middle;flex:0 0 auto}
+.col>.pin,.card>.pin,.body>.pin,form>.pin,.phb>.pin{align-self:flex-start}
+.pin.lg{min-width:22px;height:22px;font-size:12px}
+/* ---- wire frames ---- */
+.fig{margin:0 0 18px}
+.fig>figcaption{font-size:12px;font-weight:700;margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fig>figcaption .tag{background:#111;color:#fff;border-radius:3px;padding:0 7px;font-size:11px}
+.fig>figcaption .rt{font-weight:400;color:var(--ink3)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;align-items:start}
+.grid-ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(375px,375px));gap:22px;align-items:start}
+.wf{background:var(--paper);border:2px solid var(--line);border-radius:6px;font-size:12.5px;line-height:1.5;overflow:hidden;position:relative}
+.wf.pcw{min-width:1020px}
+.wf .url{background:var(--fill3);border-bottom:2px solid var(--line);padding:4px 10px;font:11px var(--mono);display:flex;gap:8px;align-items:center}
+.wf .url i{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line)}
+.wf .url b{font-weight:500;background:#fff;border:1px solid var(--line2);border-radius:3px;padding:0 8px;flex:1}
+.shell{display:flex;min-height:420px}
+.shell>.side{flex:0 0 190px;border-right:2px solid var(--line);background:var(--fill);padding:10px 8px;display:flex;flex-direction:column;gap:10px}
+.shell>.side .g{font-size:10.5px;color:var(--ink3);font-weight:700;padding:0 6px}
+.shell>.side a,.shell>.side span.mi{display:block;padding:5px 10px;border-radius:5px;font-size:12px;text-decoration:none;color:var(--ink)}
+.shell>.side .cur{background:#111;color:#fff;font-weight:700}
+.shell>.side .ghost{color:var(--ink3);font-size:11px;border:1px dashed var(--line2);border-radius:5px;padding:4px 8px}
+.shell>.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.hdr{display:flex;gap:16px;align-items:center;padding:6px 12px;border-bottom:2px solid var(--line);background:var(--paper);flex-wrap:wrap}
+.hdr .sys{font-weight:700;font-size:13px}
+.hdr .bc{flex:1;color:var(--ink2);font-size:12px;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.hdr .who{font-size:12px}
+.body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;background:#fff}
+.body h1.pt{font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.body h2.st{font-size:14px;display:flex;gap:6px;align-items:center}
+.body .sp{flex:1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.top{align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:8px}
+.cols{display:grid;gap:14px;align-items:start}
+.cols.c23{grid-template-columns:2fr 3fr}.cols.c32{grid-template-columns:3fr 2fr}.cols.c11{grid-template-columns:1fr 1fr}.cols.c3{grid-template-columns:repeat(3,1fr)}.cols.c2{grid-template-columns:1fr 1fr}.cols.c1{grid-template-columns:1fr}
+.card{border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.card.thick{border-width:3px}
+.card h3{font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:0;font-size:12px}
+.dl dt{color:var(--ink3)}.dl dd{margin:0}
+.dl.two{grid-template-columns:auto 1fr auto 1fr}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f>label,.f>.lb{font-size:12px;font-weight:700;display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.f .rq{font-weight:700}
+.in{border:1.5px solid var(--line);border-radius:4px;background:#fff;min-height:30px;padding:4px 8px;color:var(--ink3);font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.in.val{color:var(--ink)}
+.in.mono,.mono .in{font-family:var(--mono)}
+.in.dis{background:var(--fill);border-style:dashed}
+.in.ta{min-height:58px;align-items:flex-start}
+.in.err{border-width:2.5px}
+.in .car{color:var(--ink);font-size:11px}
+.hint{font-size:11px;color:var(--ink3)}
+.fe{display:flex;gap:5px;align-items:flex-start;font-size:11.5px;font-weight:700;border-left:4px solid #111;padding:1px 0 1px 6px;background:var(--fill)}
+.chk{display:flex;gap:7px;align-items:center;font-size:12px;min-height:26px}
+.chk .bx{width:15px;height:15px;border:1.5px solid var(--line);border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;line-height:1;flex:0 0 auto;background:#fff}
+.chk .bx.on{background:#111;color:#fff}
+.chk .rd{width:15px;height:15px;border:1.5px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:#fff}
+.chk .rd.on::after{content:"";width:7px;height:7px;border-radius:50%;background:#111}
+.chk.dis{color:var(--ink3)}
+.fgrid{display:grid;gap:9px 12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fgrid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.fgrid.g1{grid-template-columns:1fr}
+.fgrid .span2{grid-column:span 2}
+.fset{border:1.5px solid var(--line2);border-radius:5px;padding:8px 10px 10px;margin:0}
+.fset>legend{font-size:12px;font-weight:700;padding:0 6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:4px 14px;border-radius:5px;border:2px solid var(--line);font:700 12px var(--mono);font-family:inherit;background:#fff;color:#111;white-space:nowrap}
+.btn.pri{background:#111;color:#fff}
+.btn.dng{background:#111;color:#fff;outline:2px solid #111;outline-offset:2px}
+.btn.ghost{border-color:var(--line2);font-weight:500}
+.btn.dis{background:var(--fill2);color:var(--ink3);border-style:dashed;border-color:var(--ink3)}
+.btn.lg{min-height:40px;width:100%}
+.btn.t48{min-height:48px}
+.btn.xs{min-height:24px;padding:1px 8px;font-size:11px}
+.btn.tog{font-weight:500}
+.btn .pin{background:#fff;color:#111;border:1.5px solid #111}
+.btn:not(.pri):not(.dng) .pin{background:#111;color:#fff}
+svg.i{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;vertical-align:-2px}
+svg.i.l{width:18px;height:18px}
+/* tones: never colour only -> pattern + icon + text */
+.t-danger{border:2.5px solid #111!important;background:repeating-linear-gradient(135deg,#f6f6f6 0 7px,#e6e6e6 7px 9px)}
+.t-warn{border:2px dashed #111!important;background:#f4f4f4}
+.t-ok{border:1.5px solid #555!important;background:#fafafa}
+.t-info{border:2px dotted #333!important;background:#fff}
+.t-neutral{border:1.5px solid #9a9a9a!important;background:var(--fill)}
+.ban{display:flex;gap:9px;align-items:flex-start;border-radius:5px;padding:7px 10px;font-size:12px}
+.ban .tt{font-weight:700;font-size:12.5px}
+.ban .ds{font-size:12px}
+.ban ul{margin:3px 0 0;padding-left:16px}
+.bd{display:inline-flex;gap:4px;align-items:center;border-radius:999px;padding:0 8px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bd.t-danger,.bd.t-warn,.bd.t-ok,.bd.t-info,.bd.t-neutral{border-width:1.5px!important}
+.bd.strike{text-decoration:line-through}
+.tb-chip{display:inline-flex;gap:4px;align-items:center;border:1.5px solid #111;border-radius:4px;padding:0 7px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.tb-amb{background:#fff}.tb-chl{background:var(--fill2)}.tb-frz{background:var(--fill3)}
+.tbl{border-collapse:collapse;width:100%;font-size:12px;border:1.5px solid var(--line)}
+.tbl th{background:var(--fill3);text-align:left;padding:5px 8px;border-bottom:2px solid var(--line);font-size:11.5px;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:1px solid var(--line3);vertical-align:top}
+.tbl tr.sel td{background:var(--fill2)}
+.tbl td.num,.tbl th.num{text-align:right}
+.tbl td.mono{font-family:var(--mono)}
+.tbl .lnk{text-decoration:underline;font-family:var(--mono)}
+.listbtn{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line2);border-radius:5px;min-height:38px;padding:5px 10px;background:#fff;font-size:12px}
+.listbtn.sel{border:2.5px solid #111;background:var(--fill2)}
+.listbtn .sp{flex:1}
+.tabs{display:flex;gap:0;border-bottom:2px solid #111}
+.tabs span{padding:6px 16px;border:1.5px solid var(--line2);border-bottom:0;border-radius:5px 5px 0 0;font-size:12px;margin-right:3px;background:#fff}
+.tabs span.on{background:#111;color:#fff;font-weight:700;border-color:#111}
+.tabs.seg{border:0;gap:0}
+.tabs.seg span{border:1.5px solid #111;border-radius:0;margin:0}
+.tabs.seg span:first-child{border-radius:5px 0 0 5px}.tabs.seg span:last-child{border-radius:0 5px 5px 0}
+.hatch{background:repeating-linear-gradient(45deg,#f3f3f3 0 8px,#e3e3e3 8px 10px);border:1.5px dashed #777;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:11px;text-align:center;border-radius:4px}
+.thumb{width:62px;height:46px}
+/* mock notice: double rule + tag */
+.mock{border:3px double #111;border-radius:6px;background:repeating-linear-gradient(135deg,#fafafa 0 10px,#f0f0f0 10px 12px);padding:7px 10px;font-size:11.5px;position:relative}
+.mock .mt{display:inline-flex;gap:4px;align-items:center;background:#111;color:#fff;border-radius:999px;padding:0 9px;font-weight:700;font-size:11px;min-height:20px}
+.mock dl{margin:6px 0 0;display:grid;gap:4px}
+.mock dt{font-weight:700}.mock dd{margin:0}
+.mock .mk{position:absolute;right:6px;top:4px;font-size:10px;color:var(--ink3)}
+.dim{position:relative;background:#cfcfcf}
+.dim .bgp{opacity:.35;padding:14px;pointer-events:none;min-height:90px;font-size:11px;color:#444}
+.dlg{width:min(430px,92%);margin:0 auto;background:#fff;border:3px solid #111;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12px;box-shadow:6px 6px 0 #111}
+.dim>.dlg{position:relative;margin:-84px auto 18px}
+.dlg h4{font-size:15px;display:flex;gap:8px;align-items:center}
+.dlg .vals{background:var(--fill);border:1px solid var(--line2);border-radius:4px;padding:6px 9px}
+.dlg .vals dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+.dlg .vals dt{color:var(--ink3)}.dlg .vals dd{margin:0;font-family:var(--mono);word-break:break-all}
+.dlg .ft{display:flex;gap:8px;justify-content:flex-end}
+.dlg .nx{font-size:12px}
+/* phone */
+.ph{width:375px;background:#fff;border:3px solid #111;border-radius:26px;overflow:hidden;font-size:13px;line-height:1.5;position:relative;display:flex;flex-direction:column}
+.ph.tall{min-height:640px}
+.ph .notch{height:16px;background:#111;position:relative}
+.ph .notch::after{content:"";position:absolute;left:50%;top:5px;width:70px;height:6px;border-radius:99px;background:#444;transform:translateX(-50%)}
+.ph .phh{height:48px;display:flex;gap:8px;align-items:center;padding:0 12px;border-bottom:2px solid #111;background:#fff}
+.ph .phh .sys{font-weight:700;font-size:13px;flex:1}
+.ph .phh .who{font-size:11.5px}
+.ph .phb{flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:13px}
+.ph .fix{position:sticky;bottom:0;background:#fff;border-top:2px solid #111;padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.ph .ptabs{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #111}
+.ph .ptabs span{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;text-align:center;border-right:1.5px solid var(--line2);padding:2px 6px}
+.ph .ptabs span:last-child{border-right:0}
+.ph .ptabs span.on{background:#111;color:#fff;font-weight:700}
+.ph .f>label{font-size:13px}
+.ph .in{min-height:44px;font-size:14px}
+.ph .btn{font-size:14px}
+.ph .chk{min-height:48px;font-size:13px}
+.ph .chk .bx,.ph .chk .rd{width:20px;height:20px}
+.ph .dlg{width:92%;margin:0 auto}
+.ph .dim>.dlg{margin:-70px auto 14px}
+.ph .tbl{font-size:11.5px}
+.ph .listbtn{min-height:48px}
+/* diagrams */
+.flow{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap}
+.flow .nd{border:2px solid #111;border-radius:6px;padding:5px 10px;background:#fff;font-size:12px;min-width:92px;text-align:center}
+.flow .nd.ghost{border-style:dashed;color:var(--ink3)}
+.flow .ar{align-self:center;font-weight:700;font-size:13px}
+.flow .ar small{display:block;font-size:10px;font-weight:400;color:var(--ink3);max-width:130px;text-align:center}
+.axis{position:relative;height:96px;margin:8px 6px 0;border-top:3px solid #111}
+.axis .tk{position:absolute;top:-3px;width:0;height:12px;border-left:2px solid #111}
+.axis .tl{position:absolute;top:14px;transform:translateX(-50%);font:11px var(--mono);white-space:nowrap}
+.axis .ev{position:absolute;top:36px;transform:translateX(-50%);border:2px solid #111;border-radius:5px;padding:2px 7px;background:#fff;font-size:11px;white-space:nowrap}
+.axis .ev.x{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#ddd 6px 8px);border-width:2.5px}
+.axis .ev.ok{border-style:solid}
+.tl-bar{display:flex;height:34px;border:2px solid #111;border-radius:5px;overflow:hidden;font-size:10.5px}
+.tl-bar span{display:flex;align-items:center;justify-content:center;border-right:1.5px solid #111;white-space:nowrap;overflow:hidden}
+.tl-bar .dr{background:var(--fill2)}.tl-bar .sv{background:#fff}.tl-bar .bk{background:repeating-linear-gradient(45deg,#fff 0 4px,#d9d9d9 4px 6px)}
+.tl-bar .vi{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#bbb 6px 8px);font-weight:700}
+.note{border-left:5px solid #111;background:var(--paper);padding:8px 12px;font-size:12.5px;margin:8px 0}
+.note.warn{border-left-style:double}
+footer.src{margin-top:30px;border-top:3px solid #111;padding-top:12px;font-size:12px;color:var(--ink2)}
+@media (max-width:760px){.page{padding:12px}.top{padding:14px}.grid2,.grid3{grid-template-columns:1fr}}
+@media print{.top{-webkit-print-color-adjust:exact;print-color-adjust:exact}.toc,.pintoggle{display:none}body{background:#fff}.ov{overflow:visible}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* ---- 2026-10-19 改訂: 項目 ID のピン・必須 / 任意・本番版で追加 ---- */
+.rq,.op{display:inline-flex;align-items:center;border-radius:3px;padding:0 5px;font-size:10.5px;font-weight:700;min-height:17px;margin-left:4px;white-space:nowrap;line-height:1.2}
+.rq{background:#111;color:#fff}
+.op{border:1px solid #777;color:#3d3d3d;font-weight:500;background:#fff}
+.cq{display:inline-flex;align-items:center;border-radius:3px;padding:0 5px;font-size:10.5px;font-weight:700;min-height:17px;margin-left:4px;white-space:nowrap;line-height:1.2;border:1.5px dashed #111;color:#111;background:#fff}
+.ps-box{border:2px dashed #111;border-radius:6px;padding:6px 8px;position:relative;background:#fff;display:flex;flex-direction:column;gap:6px}
+.ps-tag{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;border:1.5px dashed #111;border-radius:999px;padding:0 8px;font-size:10.5px;font-weight:700;background:#fff;white-space:nowrap}
+.pin.ps{background:#fff;color:#111;border:1.5px dashed #111}
+.hid{border:1.5px dotted #777;border-radius:4px;padding:3px 8px;font-size:11px;color:#3d3d3d;background:#fafafa}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+<symbol id="i-open" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017-2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L5 19a1 1 0 001 1h12a1 1 0 001-1l-5-10V3"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.5"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+<symbol id="i-pkg" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+<symbol id="i-off" viewBox="0 0 24 24"><path d="M3 3l18 18M5 12a10 10 0 015-2.7M9 16a5 5 0 016-.9M12 20v.5M2 8.5a15 15 0 015-3"/></symbol>
+<symbol id="i-therm" viewBox="0 0 24 24"><path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/></symbol>
+<symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M4 17L20 7"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></symbol>
+<symbol id="i-load" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+<symbol id="i-hour" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3c0 6 5 6 5 9s-5 3-5 9M17 3c0 6-5 6-5 9s5 3 5 9"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></symbol>
+</defs></svg>
+<a class="skip" href="#s-wire">本文へ移動</a>
+<header class="top"><div class="tin">
+<div class="crumb"><span>ワイヤーフレーム（2026-10-19 改訂）</span><span>›</span><span>SCR-02</span></div>
+<h1><span class="code">SCR-02</span>入庫検査</h1>
+<p class="lead">到着済みの入荷予定の明細を選び、仕入先ロット・数量・日付・実測温度・梱包状態・証拠写真（米・牛はトレースの項目も）を記録して「検品を確定」する。期限種別はマスターから読むだけ。LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR02_RECEIVING_INSPECTION_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></div></header>
+<div class="page">
+<dl class="meta"><div><dt>画面コード</dt><dd>SCR-02</dd></div><div><dt>画面名（日本語）</dt><dd>入庫検査</dd></div><div><dt>試作版での実装</dt><dd>実データで動作（模擬なし）</dd></div><div><dt>端末 · 幅</dt><dd>PC（左 2 : 右 3 の 2 カラム）</dd></div><div><dt>表示対象ロール</dt><dd>ROLE-001 入荷担当者、ROLE-002 センター作業者</dd></div><div><dt>ルート</dt><dd><code>/receiving</code>（単一ページ）</dd></div><div><dt>関連 FT / US</dt><dd>FT-002〜005・007〜009・124 / US-002〜005（FT-006・US-050 は未実装）</dd></div><div><dt>模擬の表示</dt><dd>なし</dd></div><div><dt>本番版で足す部分</dt><dd>PREMISE P-S01（測定時刻）· P-S03（「必須」の表示）· P-S04（日付 YYYY/MM/DD）· P-S12（仕入先ロットのスキャン）· P-S25（理由の必須を条件付きに）· P-S26（日付の送る値と表示）</dd></div></dl>
+<div class="bar"><ul class="toc" aria-label="この画面の目次"><li><a href="#s-wire">ワイヤーフレーム</a></li><li><a href="#s-notes">注釈</a></li><li><a href="#s-states">状態</a></li><li><a href="#s-blocked">処理不可・エラー</a></li><li><a href="#s-roles">ロール別表示</a></li><li><a href="#s-mock">模擬</a></li><li><a href="#s-src">出典</a></li></ul>
+<label class="pintoggle"><input type="checkbox" id="hidepins"> 項目 ID のピンを隠す</label></div>
+<details class="legend" open><summary>凡例（グレースケールのワイヤー。色ではなく線種・柄・文字・アイコンで意味を示す）</summary><div class="lg">
+<div><span class="sw t-danger">危険・ブロック</span><span>太い実線 + 斜線の柄 + アイコン「×」。処理不可・エラー・隔離など。</span></div>
+<div><span class="sw t-warn">警告</span><span>破線。差異承認待ち・DB に届かないなど。</span></div>
+<div><span class="sw t-ok">成功・正常</span><span>細い実線 + チェックのアイコン。確定・一致など。</span></div>
+<div><span class="sw t-neutral">中立</span><span>灰色の枠。未確定・空の一覧など。</span></div>
+<div><span class="sw"><b class="pin" style="margin:0">A-1</b></span><span>項目 ID のピン（画面仕様 4.1 の ID）。「注釈」の表の同じ ID と対応</span></div>
+<div><span class="sw"><span class="rq" style="margin:0">必須</span></span><span>画面仕様 4.1 の Required が「必須」の入力。この画面では、この表示そのものが PREMISE P-S03 で本番版に足す共通の「必須」表示（試作版の画面には印がない）</span></div>
+<div><span class="sw"><span class="op" style="margin:0">任意</span></span><span>Required が「任意」の入力</span></div>
+<div><span class="sw"><span class="cq" style="margin:0">条件付き必須</span></span><span>PREMISE（P-S25）で 4.1 の Required を「条件付き必須」に直す項目。条件は同じ欄の破線の枠に書く</span></div>
+<div><span class="sw"><span class="ps-tag">本番版で追加</span></span><span>画面仕様（本文）にはなく、PREMISE（P-Sxx）または設計補遺で足す部分。破線の枠で示す</span></div>
+<div><span class="sw hid">画面に出ない</span><span>点線の枠は、画面には出ないが 4.1 にある項目（送信キーなど）</span></div>
+<div><span class="sw dim" style="color:#111">ダイアログ</span><span>灰色の背景の上に、黒い影つきの枠で重ねて描く。</span></div>
+<div><span class="sw" style="font-size:12px">例: 2026/09/20</span><span>日付は YYYY/MM/DD、時刻は HH:MM（日本時間。日時には「JST」を付ける）。値はすべて仮の例。</span></div>
+</div></details>
+
+<section class="blk" id="s-wire" aria-labelledby="s-wire-h"><h2 id="s-wire-h"><span class="n">1</span>ワイヤーフレーム（主画面と、項目が出る別の状態）</h2><p class="sub">黒いピンは画面仕様 4.1 の項目 ID、破線のピンと枠は本番版で足す部分（PREMISE）。4.1 の項目はすべてこの節のどこかに描いた。</p>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">PC</span>主画面 — 明細を選んで検品フォームを開いた状態（入荷行は「未確定」）。社内ロット管理のレーンの例</figcaption><div class="ov"><div class="wf pcw"><div class="url"><i></i><i></i><i></i><b>/receiving</b></div>
+<div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">入荷 <span>›</span> 入庫検査</nav><span class="who">氏名 · 入荷担当者</span><span class="btn xs">ログアウト</span></div>
+<div class="shell"><nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">入荷</div><a class="cur" aria-current="page">入庫検査</a></div><span class="ghost">メニューはロールが見られる画面だけ</span></nav>
+<main class="main"><div class="body"><h1 class="pt">入庫検査</h1>
+<div class="cols c23">
+<div class="col"><h2 class="st">入荷予定（到着済み）</h2>
+<div class="card"><div class="row"><b>株式会社みなと食品</b><span class="mono hint">2026/09/20 08:40 JST / IN-01</span></div>
+<div class="listbtn sel" data-item="B-1"><span><b class="mono">SKU-0102</b></span><span>生鮮鶏もも肉 2kg</span><span class="mono hint">120</span><span class="sp"></span><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>未確定</span><b class="pin">B-1</b></div>
+<div class="listbtn"><span><b class="mono">SKU-0215</b></span><span>冷凍餃子（20 個入）</span><span class="mono hint">300</span><span class="sp"></span><span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>確定済み</span></div>
+</div>
+<div class="card"><div class="row"><b>北海道ミート株式会社</b><span class="mono hint">2026/09/20 09:15 JST / IN-02</span></div>
+<div class="listbtn"><span><b class="mono">SKU-0330</b></span><span>国産牛ロース</span><span class="mono hint">80</span><span class="sp"></span><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>確定済み（隔離あり）</span></div>
+</div>
+<span class="hint">到着の早い順・最大 50 件（検索・ページ送りなし）。明細を押すと入荷行を開く（なければ作る）</span>
+</div>
+<div class="col"><div class="card"><h3>入荷行の検査</h3>
+<div class="row"><b class="mono" style="font-size:14px">SKU-0102</b><span>生鮮鶏もも肉 2kg</span><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>未確定</span><span class="tb-chip tb-chl"><svg class="i" aria-hidden="true"><use href="#i-therm"/></svg>冷蔵 0〜5 °C</span></div>
+<dl class="dl"><dt data-item="A-8">期限種別（マスター・変更不可）<b class="pin">A-8</b></dt><dd>消費期限</dd><dt>トレーサビリティ</dt><dd>社内ロット管理</dd><dt>事前通知</dt><dd><span class="mono">120 kg / LOT-A-0420 / 2026/09/18 〜 2026/09/23</span></dd></dl>
+<div class="hint" style="border:1px dashed #9a9a9a;border-radius:4px;padding:2px 8px">（エラーサマリーは、送信がエラーを返したときだけここに出る — 3 章の図）</div>
+<fieldset class="fset"><legend>数量と日付</legend><div class="fgrid g3">
+<div class="f" style="grid-column:span 3"><div class="f" data-item="A-1"><label>仕入先ロット<span class="rq">必須</span><b class="pin">A-1</b></label><div class="in mono val"><span>LOT-A-0420</span></div></div>
+<div class="ps-box" data-item="P-S12"><span class="ps-tag">本番版で追加（P-S12）</span><div class="row"><span class="btn xs tog"><svg class="i" aria-hidden="true"><use href="#i-text"/></svg>スキャンモード: オフ</span><span class="hint">バーコードスキャナで仕入先ロットを読み取れるようにする（手入力も残す）</span><b class="pin ps">P-S12</b></div></div></div>
+<div class="f" data-item="A-2"><label>受入数量<span class="rq">必須</span><b class="pin">A-2</b></label><div class="in mono val"><span>120</span></div></div>
+<div class="f" data-item="A-3"><label>却下数量<span class="op">任意</span><b class="pin">A-3</b></label><div class="in mono"><span></span></div></div>
+<div class="f" data-item="A-4"><label>保留数量<span class="op">任意</span><b class="pin">A-4</b></label><div class="in mono"><span></span></div></div>
+<div class="f" style="grid-column:span 3" data-item="A-5"><label>理由<span class="cq">条件付き必須</span><b class="pin">A-5</b></label><div class="in"><span></span></div><div class="hint">却下・保留の数量があるときは必須です</div><div class="ps-box" data-item="P-S25"><span class="ps-tag">本番版で変更（P-S25）</span><div class="hint">［注］画面の「必須」の印は、却下数量か保留数量が 0 を超えたときだけ出す。どちらも空（0）なら印は出ず、理由は空のまま確定できる（画面仕様 4.2 A-5）<b class="pin ps">P-S25</b></div></div></div>
+<div class="f" data-item="A-6"><label>製造日<span class="rq">必須</span><b class="pin">A-6</b></label><div class="in mono val"><span>2026/09/18</span><span class="car">▭</span></div></div>
+<div class="f" data-item="A-7"><label>期限日<span class="rq">必須</span><b class="pin">A-7</b></label><div class="in mono val"><span>2026/09/23</span><span class="car">▭</span></div></div>
+<div></div>
+</div></fieldset>
+<fieldset class="fset"><legend>温度と梱包</legend><div class="fgrid">
+<div class="f" data-item="A-9"><label>実測温度（°C）<span class="rq">必須</span><b class="pin">A-9</b></label><div class="in mono val"><span>4.0</span></div><div class="hint">小数 1 桁まで（例: 4.0、-18.0）</div></div>
+<div class="ps-box" data-item="P-S01"><span class="ps-tag">本番版で追加（P-S01）</span><div class="f"><label>測定時刻（JST）<span class="rq">必須</span><b class="pin ps">P-S01</b></label><div class="in mono val"><span>08:52</span><span class="car">▭</span></div><div class="hint">実測温度を測った時刻。逸脱ケースの記録に使う</div></div></div>
+<div class="f" style="grid-column:span 2" data-item="A-10"><label>梱包状態<span class="rq">必須</span><b class="pin">A-10</b></label><div class="in"><span></span></div></div>
+</div></fieldset>
+<div class="hint">社内ロット管理のレーン: 追加の項目なし（米・牛のレーンの欄は次の図）</div>
+<div class="f" data-item="A-11"><div class="lb">証拠写真<span class="rq">必須</span><b class="pin">A-11</b></div>
+<div class="row"><span class="btn"><svg class="i" aria-hidden="true"><use href="#i-cam"/></svg>ファイルを選択</span><span class="hint">JPEG / PNG / WebP。長辺 1600 px に縮小して送信します</span></div>
+<div class="listbtn" style="min-height:28px;padding:2px 10px"><span class="mono">IMG_0412.jpg</span><span class="sp"></span><span class="btn xs ghost" aria-label="IMG_0412.jpg 削除">×</span></div>
+<div class="listbtn" style="min-height:28px;padding:2px 10px"><span class="mono">IMG_0413.jpg</span><span class="sp"></span><span class="btn xs ghost" aria-label="IMG_0413.jpg 削除">×</span></div></div>
+<div class="chk" data-item="A-12"><span class="bx"></span><span>ラベルの期限種別がマスターと異なる</span><span class="op">任意</span><b class="pin">A-12</b></div>
+<div class="hid" data-item="A-15">画面に出ない: 送信キー（画面が自動で作る。同じ内容の再送は同じキー）<span class="rq">必須</span><b class="pin">A-15</b></div>
+<div class="row"><span class="btn pri" role="button" data-item="B-2">検品を確定<b class="pin">B-2</b></span></div>
+</div></div>
+</div>
+</div></main></div>
+</div></div></figure>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">レーン</span>米のレーン / 牛のレーンだけに出る欄（温度と梱包の後、証拠写真の前に出る）</figcaption><div class="grid2">
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="col" data-item="A-13"><div class="row"><b>米のレーン</b><b class="pin">A-13</b></div><div class="fgrid g3">
+<div class="f"><label>取引 ID<span class="rq">必須</span></label><div class="in mono val"><span>RICE-2026-0420</span></div><div class="hint">事前通知: RICE-2026-0420</div></div>
+<div class="f"><label>取引先<span class="rq">必須</span></label><div class="in"><span></span></div><div class="hint">事前通知: 新潟米穀株式会社</div></div>
+<div class="f"><label>産地<span class="rq">必須</span></label><div class="in"><span></span></div><div class="hint">事前通知: 新潟県</div></div>
+</div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="f" data-item="A-14"><label>牛の個体識別番号（10 桁）<span class="rq">必須</span><b class="pin">A-14</b></label><div class="in mono val"><span>0123456789</span></div><div class="hint">事前通知: 0123456789</div></div></div></div>
+</div></figure>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">状態</span>「再試行」が出る 2 つの状態 — 入荷行を開けなかった（右欄）/ 予定の一覧を読み込めない（左欄、DB に届かない）</figcaption><div class="grid2">
+<div class="wf"><div class="body" style="padding:10px 12px"><h2 class="st">入荷行の検査</h2><div class="ban t-danger" role="alert"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg><div class="tt" style="font-weight:500">入荷予定の明細が見つかりません</div></div>
+<div class="row"><span class="btn" role="button" data-item="B-3">再試行<b class="pin">B-3</b></span><span class="hint">その明細にだけ出す。DB に届かないときは右の図と同じ表示 + 再試行</span></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><h2 class="st">入荷予定（到着済み）</h2><div class="ban t-warn" role="alert"><svg class="i" aria-hidden="true"><use href="#i-off"/></svg><div><div class="tt">システムを再起動しています。1〜2分後にもう一度お試しください</div><div class="hint">管理者の方へ: Supabase のダッシュボードでプロジェクトを再開（Resume project）してください</div>
+<div style="margin-top:6px"><span class="btn" role="button" data-item="B-4">再試行<b class="pin">B-4</b></span></div></div></div></div></div>
+</div></figure>
+
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">処理不可</span>「ラベルの期限種別がマスターと異なる」にチェックして確定したとき — 例外イベントを記録して止める。ダイアログに「ルールコード」の行は出さない（業務ルール番号ではないため — 共通仕様 CS-07 7.4、画面仕様 5 章 A-12）</figcaption><div class="grid2">
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="chk"><span class="bx on">✓</span><span>ラベルの期限種別がマスターと異なる</span></div>
+<div class="fe" role="alert"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg><span>ラベルの期限種別がマスターと異なるため確定できません（例外として記録します）</span></div>
+<div class="row"><span class="btn pri" role="button">検品を確定</span></div>
+<div class="hint">チェックを外せば確定できる。例外イベントは残り、ロット状態管理（SCR-10）の「入荷の例外」に読み取り専用で出る</div></div></div>
+<div class="dim"><div class="bgp">（背景の画面）</div>
+<div class="dlg" role="alertdialog" aria-label="処理不可"><h4><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg>処理不可</h4><div>ラベルの期限種別がマスターと一致しないため、この入荷行は確定できません（例外として記録しました）</div>
+<div class="vals"><div style="font-weight:700;margin-bottom:3px">比較した値</div><dl><dt>マスターの期限種別</dt><dd>消費期限</dd></dl></div>
+<div class="nx"><b>次の対応：</b>ラベルの期限種別を確認し、品質管理へ連絡してください</div>
+<div class="hint">例外イベントを記録済み</div>
+<div class="ft"><span class="btn pri" role="button">閉じて続ける</span></div></div></div>
+</div></figure>
+
+<div class="ps-box"><span class="ps-tag">設計補遺で追加（SCR02_RECEIVING_INSPECTION_DESIGN_ADDENDUM.md 4.1 E-1〜E-7）</span><div style="font-size:12px">設計補遺で追加する区画（この図の対象外）: 区画 E「差異承認待ち」— 承認の権限を持つ人だけに、明細の一覧の上のタブとして出す。差異承認待ちの表・選んだ行の詳細・決定の理由・承認・差戻し・結果通知・差戻しの表示。区画 E を作ると、結果通知の「差異承認待ち（承認の画面は本プロトタイプの範囲外です）」は「差異承認待ち」だけになる。</div></div>
+</section>
+
+<section class="blk" id="s-notes" aria-labelledby="s-notes-h"><h2 id="s-notes-h"><span class="n">2</span>注釈（画面仕様 4.1 の項目）</h2><p class="sub">1 行 = 4.1 の 1 項目。項目名・種別・Required は 4.1 のとおり（A-5 の Required だけは PREMISE P-S25 で直した値）。最後の行は本番版で足す部分（PREMISE）。</p>
+<div class="ov"><table class="doc"><thead><tr><th>ID</th><th>項目名（4.1 の Item Name）</th><th>種別</th><th>Required</th><th>画面での表し方・補足</th></tr></thead><tbody>
+<tr><td>A-1</td><td>仕入先ロット</td><td>Text box</td><td>必須</td><td>空で始まる（事前通知の値は入れない）。200 文字以内（見えない文字を除いて整えた後の値で数える）。事前通知と違うとトレース不一致として自動で隔離（大文字小文字は区別しない）。</td></tr>
+<tr><td>A-2</td><td>受入数量</td><td>Text box</td><td>必須</td><td>0〜999999999.999、小数 3 桁まで。0 でも可（全数却下・全数保留）。</td></tr>
+<tr><td>A-3</td><td>却下数量</td><td>Text box</td><td>任意</td><td>空 = 0。0 より大きいと理由（A-5）が必須。</td></tr>
+<tr><td>A-4</td><td>保留数量</td><td>Text box</td><td>任意</td><td>空 = 0。0 より大きいと保留分のロットを別に作り、常に隔離する。</td></tr>
+<tr><td>A-5</td><td>理由</td><td>Text box</td><td>条件付き必須</td><td>Required は PREMISE P-S25 の「後」（4.1 では「必須」）。200 文字以内の自由入力（コード表なし）。却下・保留の数量が 0 より大きいときだけ必須 — 欄の下のヒント「却下・保留の数量があるときは必須です」。</td></tr>
+<tr><td>A-6</td><td>製造日</td><td>日付入力（4 値外）</td><td>必須</td><td>送る値は YYYY-MM-DD、画面の表示は YYYY/MM/DD（PREMISE P-S04・P-S26）。</td></tr>
+<tr><td>A-7</td><td>期限日</td><td>日付入力（4 値外）</td><td>必須</td><td>製造日より前は不可（「期限日が製造日より前になっています」）。期限の種別は入力させない（A-8）。送る値は YYYY-MM-DD、画面の表示は YYYY/MM/DD（PREMISE P-S26）。</td></tr>
+<tr><td>A-8</td><td>期限種別（マスター・変更不可）</td><td>Label</td><td>-</td><td>賞味期限 / 消費期限を SKU マスターから表示するだけ。</td></tr>
+<tr><td>A-9</td><td>実測温度（°C）</td><td>Text box</td><td>必須</td><td>小数 1 桁まで、−60.0〜+60.0（丸めない）。ヒント「小数 1 桁まで（例: 4.0、-18.0）」。温度帯の方針の外 → ロットを自動で隔離 + 逸脱ケース（境界は適合）。</td></tr>
+<tr><td>A-10</td><td>梱包状態</td><td>Text box</td><td>必須</td><td>200 文字以内の自由入力。</td></tr>
+<tr><td>A-11</td><td>証拠写真</td><td>ファイル選択（4 値外）</td><td>必須</td><td>1〜10 枚。「ファイルを選択」→ 縮小して送信 → ファイル名の行（× で外す）。送信中はボタンが「アップロード中…」で、「検品を確定」も押せない。</td></tr>
+<tr><td>A-12</td><td>ラベルの期限種別がマスターと異なる</td><td>チェックボックス（4 値外）</td><td>任意</td><td>保存しない。チェックして確定すると止めて例外イベントを 1 件記録し、処理不可ダイアログを出す（1 章の最後の図）。</td></tr>
+<tr><td>A-13</td><td>取引 ID / 取引先 / 産地（**米レーンのみ**）</td><td>Text box</td><td>必須</td><td>米のレーンだけ。3 つとも必須（欠けると「米の取引 ID・取引先・産地をすべて入力してください」）。欄の下に「事前通知: …」。</td></tr>
+<tr><td>A-14</td><td>牛の個体識別番号（10 桁）（**牛レーンのみ**）</td><td>Text box</td><td>必須</td><td>牛のレーンだけ。数字 10 桁（全角数字は半角に直して受ける）。欄の下に「事前通知: …」。</td></tr>
+<tr><td>A-15</td><td>（非表示）送信キー</td><td>非表示（4 値外）</td><td>必須</td><td>画面には出ない。画面が自動で作り、同じ内容の再送では同じキー、内容を直したら新しいキーにする（二重のロット作成を防ぐ）。</td></tr>
+<tr><td>B-1</td><td>明細の行</td><td>Button</td><td>-</td><td>SKU・品名・事前通知の数量・入荷行の状態（入荷行がなければ「未確定」）。選択中は太枠。押すと入荷行を開く（なければ作る）。</td></tr>
+<tr><td>B-2</td><td>検品を確定</td><td>Button</td><td>-</td><td>送信中は「確認中…」で押せない。写真のアップロード中も押せない。</td></tr>
+<tr><td>B-3</td><td>再試行（入荷行を開く）</td><td>Button</td><td>-</td><td>入荷行を開けなかったとき、その明細の右欄に理由 1 文 +「再試行」。DB に届かないときは「システムを再起動しています…」の表示の再試行。</td></tr>
+<tr><td>B-4</td><td>再試行（一覧の読み込み）</td><td>Button</td><td>-</td><td>予定の一覧の読み込みで DB に届かないときの「再試行」。</td></tr>
+<tr><td>P-S01</td><td>測定時刻（本番版で追加）</td><td>時刻入力</td><td>必須（PREMISE P-S01: 測定時刻を逸脱ケースの記録に必ず渡す）</td><td>実測温度を測った時刻（JST）。温度逸脱で自動で作る逸脱ケースに、到着時刻ではなくこの時刻を記録する。ゾーンと記録者（検品の操作者）は画面の入力ではなく、確定の処理が渡す。</td></tr>
+<tr><td>P-S12</td><td>仕入先ロットのスキャン（本番版で追加）</td><td>スキャン入力の切り替え</td><td>-</td><td>仕入先ロット（A-1）をバーコードスキャナでも入れられるようにする。手入力も残す。部品の形は棚入れ（SCR-05）のスキャン入力に合わせる想定（仮の図）。</td></tr>
+<tr><td>P-S03</td><td>「必須」の共通表示（本番版で追加）</td><td>表示</td><td>-</td><td>この図の「必須」の黒いラベルが P-S03 で足す表示。試作版の画面には必須の印がない。</td></tr>
+<tr><td>P-S04</td><td>日付の表記（本番版で統一）</td><td>表示の決まり</td><td>-</td><td>画面に出す日付は YYYY/MM/DD（製造日・期限日の欄、事前通知の日付）。</td></tr>
+<tr><td>P-S25</td><td>理由の「必須」の印（条件付き）</td><td>表示の決まり（本番版で変更）</td><td>-</td><td>PREMISE P-S25。却下・保留のどちらかが 0 を超えたときだけ A-5 に「必須」の印を出す。</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="blk" id="s-states" aria-labelledby="s-states-h"><h2 id="s-states-h"><span class="n">3</span>状態バリエーション</h2>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">状態</span>読み込み中 / 到着済みの予定が 0 件 / 明細を選んでいない</figcaption><div class="grid3">
+<div class="wf"><div class="body" style="padding:10px 12px"><h2 class="st">入荷予定（到着済み）</h2><p role="status" class="row" style="color:#6b6b6b"><svg class="i" aria-hidden="true"><use href="#i-load"/></svg>読み込み中…</p></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="card t-neutral" style="align-items:center;text-align:center;padding:16px"><svg class="i l" aria-hidden="true"><use href="#i-file"/></svg><div style="font-weight:700">到着済みの入荷予定はありません</div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><h2 class="st">入荷行の検査</h2><p class="hint" style="font-size:12px">左の一覧から、検品する明細を選んでください</p></div></div>
+</div></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">状態</span>項目エラー — 入力欄のある項目は先頭のサマリー（項目名は欄へのリンク）+ 欄の直下。入力は残す。フォーカスをサマリーへ移すのは送信がエラーを返したときだけ</figcaption><div class="wf"><div class="body" style="padding:10px 12px">
+<div class="ban t-danger" role="alert"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg><div><div class="tt">入力内容に誤りがあります</div><ul><li><u>仕入先ロット</u>：入力してください</li><li><u>期限日</u>：期限日が製造日より前になっています</li><li><u>実測温度（°C）</u>：温度は小数 1 桁までで入力してください（四捨五入はしません）</li><li><u>証拠写真</u>：見つかりません</li></ul></div></div>
+<div class="fgrid g3">
+<div class="f"><label>仕入先ロット</label><div class="in err"><span></span></div><div class="fe" role="alert"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg><span>入力してください</span></div></div>
+<div class="f"><label>期限日</label><div class="in mono err val"><span>2026/09/17</span><span class="car">▭</span></div><div class="fe" role="alert"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg><span>期限日が製造日より前になっています</span></div></div>
+<div class="f"><label>実測温度（°C）</label><div class="in mono err val"><span>4.25</span></div><div class="hint">小数 1 桁まで（例: 4.0、-18.0）</div><div class="fe" role="alert"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg><span>温度は小数 1 桁までで入力してください（四捨五入はしません）</span></div></div>
+</div>
+<div class="hint">項目を直すと、その項目のエラーだけ消える。</div>
+</div></div></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">状態</span>送信中 / 写真のアップロード中 / 項目エラーのない失敗・入力欄のない項目の失敗</figcaption><div class="grid3">
+<div class="wf"><div class="body" style="padding:10px 12px"><span class="btn dis" role="button" aria-disabled="true">確認中…</span><span class="hint">押せない。二重送信も無視する</span></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="lb" style="font-size:12px;font-weight:700">証拠写真</div><div class="row"><span class="btn dis" role="button" aria-disabled="true">アップロード中…</span></div><span class="btn dis" role="button" aria-disabled="true">検品を確定</span><span class="hint">送り終わるまで確定できない（Enter でも送らない）</span></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-danger" role="alert"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg><div class="tt" style="font-weight:500">この入荷行はすでに確定済みです</div></div><div class="ban t-danger" role="alert"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg><div class="tt" style="font-weight:500">通知数量：入力してください</div></div><span class="hint">フォームの上に 1 文。欄のない項目は「項目名：文言」を「／」でつなぐ</span></div></div>
+</div></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">結果</span>確定の結果（右欄の上に出す）— 状況ごとの文言。ロットへのリンクはセンター作業者（ROLE-002）にだけ出す</figcaption><div class="grid2">
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-ok" role="status"><div style="width:100%"><div class="row"><span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>確定済み</span><b>検品を確定し、ロットを作成しました</b></div><div class="row hint" style="margin-top:4px">ロット ID：<span class="mono">3f2a91c0…</span> <u>棚入れ へ</u></div></div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-danger" role="status"><div style="width:100%"><div class="row"><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>確定済み（隔離あり）</span><b>検品を確定し、ロットを作成しました</b></div><div style="margin-top:4px;font-weight:700">検査の結果、このロットを自動で隔離しました。品質管理の判定が出るまで引当・出荷できません。</div><div class="row hint" style="margin-top:4px">ロット ID：<span class="mono">91be07d2…</span> <u>棚入れ へ</u></div></div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-danger" role="status"><div style="width:100%"><div class="row"><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg>確定済み（隔離あり）</span><b>検品を確定し、ロットを作成しました</b></div><div style="margin-top:4px;font-weight:700">保留分のロットは自動で隔離しました。受入分のロットは、検査（温度・トレース）の結果によって隔離されることがあります。各ロットの状態は「ロット状態管理」で確認してください。品質管理の判定が出るまで引当・出荷できません。</div><div class="hint">（ロット 2 件 — 受入分と保留分）</div></div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-ok" role="status"><div style="width:100%"><div class="row"><span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>確定済み</span><b>全数を却下として確定しました（ロットは作成されていません）</b></div></div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-warn" role="status"><div style="width:100%"><div class="row"><span class="bd t-warn"><svg class="i" aria-hidden="true"><use href="#i-hour"/></svg>差異承認待ち</span><b>差異承認待ち（承認の画面は本プロトタイプの範囲外です）</b></div><div>受入・却下・保留の数量が事前通知の数量と一致しません。数量差異の承認は本プロトタイプの範囲外の機能のため、この入荷行は承認待ちのまま止まり、ロットは作成されていません。</div></div></div></div></div>
+<div class="wf"><div class="body" style="padding:10px 12px"><div class="ban t-ok" role="status"><div style="width:100%"><div class="row"><span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>確定済み</span><b>すでに確定済みです（同じ内容の再送）</b></div></div></div></div></div>
+</div>
+<p class="hint">リンクの名前は棚入れの画面名（PREMISE P-S05 で「棚入れ」に統一）。品質管理（ROLE-003）はこの画面を開けないため、ロット状態管理へのリンクは実際には出ない。確定の後、右欄はフォームではなく読み取り専用の要約（SKU・状態・期限種別・トレーサビリティ・事前通知）になり、一覧を読み直す。</p></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">権限</span>権限なし（ROLE-001 / 002 以外が開いたとき、または API が権限なしを返したとき）</figcaption><div class="wf" style="max-width:560px"><div class="body" style="padding:10px 12px"><h1 class="pt">入庫検査</h1><div class="ban t-danger" role="alert"><svg class="i" aria-hidden="true"><use href="#i-shield"/></svg><div><div class="tt">この操作を行う権限がありません</div><div class="ds">必要な場合は管理者にお問い合わせください</div></div></div><span class="hint">見出しは出し、本文は出さない。メニューにも出ない。</span></div></div></figure>
+<figure class="fig" style="margin:0 0 18px"><figcaption><span class="tag">表</span>確定の結果の組合せ（画面仕様 5.1「確定結果の組合せと結果通知」）</figcaption><div class="ov"><table class="doc"><thead><tr><th>入荷の状況</th><th>入荷行の状態</th><th>作られるロット</th><th>隔離元</th><th>逸脱ケース</th></tr></thead><tbody>
+<tr><td>数量差異（受入 + 却下 + 保留 と通知の差がしきい値 0 を超える）</td><td>差異承認待ち</td><td>なし</td><td>—</td><td>—</td></tr>
+<tr><td>合格（保留 0）</td><td>確定済み</td><td>受入ロット 1 件（利用可能）</td><td>—</td><td>—</td></tr>
+<tr><td>温度逸脱</td><td>確定済み（隔離あり）</td><td>受入ロット（隔離）</td><td>温度逸脱 1 件</td><td>入荷検品 1 件</td></tr>
+<tr><td>トレース不一致</td><td>確定済み（隔離あり）</td><td>受入ロット（隔離）</td><td>入荷検品 1 件</td><td>なし</td></tr>
+<tr><td>温度逸脱 + トレース不一致</td><td>確定済み（隔離あり）</td><td>受入ロット（隔離）</td><td>2 件</td><td>1 件</td></tr>
+<tr><td>保留数量あり</td><td>確定済み（隔離あり）</td><td>受入ロット + 保留ロット（常に隔離）</td><td>保留ロットに入荷検品（温度逸脱なら + 温度逸脱）</td><td>温度逸脱のときだけ 1 件</td></tr>
+<tr><td>受入 0・保留 0（全数却下）</td><td>確定済み</td><td>なし</td><td>—</td><td>温度が範囲外でも作らない</td></tr>
+</tbody></table></div></figure>
+</section>
+
+<section class="blk" id="s-blocked" aria-labelledby="s-blocked-h"><h2 id="s-blocked-h"><span class="n">4</span>処理不可・エラー（画面仕様 5 章のエラー制御）</h2><p class="sub">利用者に見える文言だけを書く。内部のコードは画面に出さない（共通仕様 CS-07 7.3・7.4）。処理不可ダイアログを出すのは #4 だけ。</p>
+<div class="ov"><table class="doc"><thead><tr><th>#</th><th>止まる状況</th><th>画面の表示</th><th>利用者に残る操作</th><th>画面仕様</th></tr></thead><tbody>
+<tr><td>1</td><td>必須の欠落・形式・桁・範囲・米 / 牛の不正</td><td>項目ごとの文言 + 先頭のサマリー「入力内容に誤りがあります」。行は未確定のまま</td><td>直して再送信（入力は残る）</td><td>5 章 B-2</td></tr>
+<tr><td>2</td><td>写真が見つからない / 本人のアップロードでない / 内容が一致しない / この行の写真でない</td><td>証拠写真の欄に「見つかりません」「本人がアップロードしたファイルではありません」「アップロードしたファイルの内容と一致しません」「入力の形式が正しくありません」</td><td>写真を選び直す</td><td>5 章 A-11</td></tr>
+<tr><td>3</td><td>入荷予定が未到着</td><td>この入荷予定はまだ到着していません</td><td>なし（一覧は到着済みだけなので通常は起きない）</td><td>5 章 B-2</td></tr>
+<tr><td>4</td><td>ラベルの期限種別がマスターと異なる（チェックあり）</td><td>処理不可ダイアログ（理由・比較した値「マスターの期限種別」・次の対応・「例外イベントを記録済み」・「閉じて続ける」。ルールコードの行なし）+ チェックボックスの直下の文言</td><td>チェックを外せば確定できる。例外は SCR-10 に読み取り専用で出る（品質管理が処理する操作はまだない）</td><td>5 章 A-12</td></tr>
+<tr><td>5</td><td>確定済みの行を別の送信で再確定</td><td>この入荷行はすでに確定済みです</td><td>なし（要約の表示に替わっている）</td><td>5 章 B-2</td></tr>
+<tr><td>6</td><td>同じ送信キーで別の行を確定</td><td>同じ送信キーで内容の違う確定が送られました。画面を更新してやり直してください</td><td>画面を更新</td><td>5 章 B-2</td></tr>
+<tr><td>7</td><td>数量差異</td><td>（止めずに保留）差異承認待ち（承認の画面は本プロトタイプの範囲外です）</td><td>なし（差異承認は未実装 — 設計補遺）</td><td>5 章 A-2・A-3・A-4</td></tr>
+<tr><td>8</td><td>温度逸脱・トレース不一致</td><td>（止めずに隔離）検査の結果、このロットを自動で隔離しました。…</td><td>品質管理が SCR-10 で判定</td><td>5 章 A-9・A-1</td></tr>
+<tr><td>9</td><td>ロールが足りない / 別のサイトからの送信</td><td>この操作を行う権限がありません</td><td>—</td><td>5 章 エラー制御</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="blk" id="s-roles" aria-labelledby="s-roles-h"><h2 id="s-roles-h"><span class="n">5</span>ロール別の表示（画面仕様 6.1）</h2><div class="ov"><table class="doc"><thead><tr><th>ロール</th><th>画面を見られるか</th><th>出ない / 押せない項目</th><th>API</th></tr></thead><tbody>
+<tr><td>ROLE-001 入荷担当者</td><td>はい（メニュー「入荷 › 入庫検査」）</td><td>結果通知のロットへのリンクは出ない</td><td>入荷の読み込み・入荷行の作成・確定・写真の送信をすべて許可</td></tr>
+<tr><td>ROLE-002 センター作業者</td><td>はい（ロットを作れる）</td><td>結果通知には棚入れ（SCR-05）へのリンクだけ出る</td><td>同上</td></tr>
+<tr><td>ROLE-003 品質管理</td><td><b>いいえ</b> — 権限なしの表示</td><td>本文すべて（検品写真は SCR-10 で見られる）</td><td>不可</td></tr>
+<tr><td>そのほか（ROLE-004〜009、営業・契約管理）</td><td>いいえ</td><td>本文すべて</td><td>不可</td></tr>
+</tbody></table></div></section>
+
+<section class="blk" id="s-mock" aria-labelledby="s-mock-h"><h2 id="s-mock-h"><span class="n">6</span>模擬の表示の位置</h2><div class="note"><b>模擬なし</b> — 実データで動く画面で、模擬の表示は置かない。数量差異の承認（FT-006）は未実装で、差異が出た行は「差異承認待ち」で止まる（承認の区画は設計補遺で設計）。</div></section>
+
+<section class="blk" id="s-src" aria-labelledby="s-src-h"><h2 id="s-src-h"><span class="n">7</span>出典</h2>
+<p>LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR02_RECEIVING_INSPECTION_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p>
+<p><b>読んだもの:</b> 画面仕様 SCR02_RECEIVING_INSPECTION_SPEC.md 0.4.1（4.1 項目一覧・4.2 入力規則・5 章イベント・5.1 状態・5.3 文言・6.1 ロール別・6.7 既知の制約）、設計補遺 SCR02_RECEIVING_INSPECTION_DESIGN_ADDENDUM.md 0.1.0（区画 E — この図の対象外）、共通仕様 CS-06（DB に届かない）・CS-07 7.3 / 7.4（却下の 1 文・処理不可ダイアログ）・CS-08（日時の表示）、PREMISE P-S01・P-S03・P-S04・P-S12・P-S25・P-S26。ボタン・見出し・メッセージの文言は試作版の画面の日本語の文言と照らした。</p>
+<div class="note"><b>前の版から直した点:</b> 処理不可ダイアログの「ルールコード」の行（内部のコード）を消した · 必須の印をアスタリスクから 4.1 の Required どおりの「必須」/「任意」に替えた（送信キーも 4.1 では必須。理由は PREMISE P-S25 の条件付き必須）· 欄の下のヒントを画面の実際の文言だけにした · 証拠写真をサムネイルではなくファイル名の行（×で外す）にした · 米 / 牛の欄を証拠写真の前に置いた · 結果通知の文言を実際の文言にし、リンクを「棚入れ へ」（ROLE-002 だけ）にした · 日付を YYYY/MM/DD にそろえた · 測定時刻（P-S01）と仕入先ロットのスキャン（P-S12）を破線の枠で足した。</div>
+</section>
+</div>
+<footer class="src"><p>LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR02_RECEIVING_INSPECTION_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。必須の表示（「必須」）は PREMISE P-S03 で本番版に足すもの。</p></footer></body></html>

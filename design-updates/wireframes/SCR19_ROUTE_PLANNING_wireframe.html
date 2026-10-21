@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SCR-19 ルート計画 — ワイヤーフレーム（2026-10-19 改訂）| Yuki Cold Logistics</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--ink:#111;--ink2:#3d3d3d;--ink3:#6b6b6b;--line:#1a1a1a;--line2:#b9b9b9;--line3:#dcdcdc;--paper:#fff;--bg:#e8e8e8;--fill:#efefef;--fill2:#dedede;--fill3:#c9c9c9;--mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",Meiryo,system-ui,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--ink);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #111;outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#111;color:#fff;padding:8px 14px;z-index:99}
+.skip:focus{left:8px;top:8px}
+h1,h2,h3,h4{line-height:1.35;margin:0}
+code,.mono{font-family:var(--mono);font-size:.92em}
+/* ---- page chrome ---- */
+.top{background:#111;color:#fff;padding:18px 24px 20px}
+.top .tin{max-width:1280px;margin:0 auto}
+.top .crumb{font-size:12px;opacity:.8;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.top .crumb a{color:#fff}
+.top h1{font-size:28px;margin-top:8px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.top h1 .code{font-family:var(--mono);font-size:18px;border:1.5px solid #fff;border-radius:4px;padding:1px 10px}
+.top .lead{margin:6px 0 0;font-size:13px;opacity:.88;max-width:980px}
+.page{max-width:1280px;margin:0 auto;padding:18px 24px 80px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:0 0 14px;padding:0}
+.meta div{background:var(--paper);border:1.5px solid var(--line);border-radius:6px;padding:8px 12px}
+.meta dt{font-size:11px;color:var(--ink3);font-weight:700;letter-spacing:.04em}
+.meta dd{margin:2px 0 0;font-size:13px;font-weight:500;word-break:break-word}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.toc{display:flex;gap:6px;flex-wrap:wrap;margin:0;padding:0;list-style:none}
+.toc a{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:12px;text-decoration:none;background:var(--paper);min-height:28px}
+.toc a:hover{background:#111;color:#fff}
+.pintoggle{margin-left:auto;font-size:12px;display:flex;gap:6px;align-items:center}
+body:has(#hidepins:checked) .pin{display:none}
+.legend{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;margin:0 0 18px;padding:0}
+.legend>summary{cursor:pointer;padding:10px 14px;font-weight:700;font-size:13px}
+.legend .lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 18px;padding:2px 14px 14px}
+.legend .lg div{display:flex;gap:10px;align-items:flex-start;font-size:12px}
+.legend .sw{flex:0 0 74px;min-height:26px;font-size:11px;padding:3px 6px;display:flex;align-items:center;justify-content:center;text-align:center}
+section.blk{margin:0 0 30px}
+section.blk>h2{font-size:20px;display:flex;gap:10px;align-items:center;margin:0 0 6px;padding-bottom:6px;border-bottom:3px solid var(--line)}
+section.blk>h2 .n{background:#111;color:#fff;font-size:13px;border-radius:4px;padding:1px 8px}
+section.blk>.sub{margin:4px 0 12px;color:var(--ink2);font-size:13px;max-width:1000px}
+h3.h3{font-size:15px;margin:20px 0 8px;display:flex;gap:8px;align-items:center}
+h3.h3 small{font-weight:400;color:var(--ink3);font-size:12px}
+.ov{overflow-x:auto;padding-bottom:4px}
+/* ---- tables (docs) ---- */
+table.doc{border-collapse:collapse;width:100%;background:var(--paper);font-size:12.5px;border:1.5px solid var(--line)}
+table.doc th{background:var(--fill3);text-align:left;padding:6px 9px;border:1px solid var(--line2);font-size:12px;white-space:nowrap}
+table.doc td{padding:6px 9px;border:1px solid var(--line3);vertical-align:top}
+table.doc tr:nth-child(even) td{background:#fafafa}
+table.doc td.c{text-align:center;white-space:nowrap}
+table.doc td.mono,table.doc td code{font-family:var(--mono);font-size:11.5px}
+.pinc{width:34px;text-align:center}
+/* ---- pins ---- */
+.pin{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:#111;color:#fff;font:700 10.5px/1 var(--mono);margin-left:5px;vertical-align:middle;flex:0 0 auto}
+.col>.pin,.card>.pin,.body>.pin,form>.pin,.phb>.pin{align-self:flex-start}
+.pin.lg{min-width:22px;height:22px;font-size:12px}
+/* ---- wire frames ---- */
+.fig{margin:0 0 18px}
+.fig>figcaption{font-size:12px;font-weight:700;margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fig>figcaption .tag{background:#111;color:#fff;border-radius:3px;padding:0 7px;font-size:11px}
+.fig>figcaption .rt{font-weight:400;color:var(--ink3)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:18px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;align-items:start}
+.grid-ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(375px,375px));gap:22px;align-items:start}
+.wf{background:var(--paper);border:2px solid var(--line);border-radius:6px;font-size:12.5px;line-height:1.5;overflow:hidden;position:relative}
+.wf.pcw{min-width:1020px}
+.wf .url{background:var(--fill3);border-bottom:2px solid var(--line);padding:4px 10px;font:11px var(--mono);display:flex;gap:8px;align-items:center}
+.wf .url i{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line)}
+.wf .url b{font-weight:500;background:#fff;border:1px solid var(--line2);border-radius:3px;padding:0 8px;flex:1}
+.shell{display:flex;min-height:420px}
+.shell>.side{flex:0 0 190px;border-right:2px solid var(--line);background:var(--fill);padding:10px 8px;display:flex;flex-direction:column;gap:10px}
+.shell>.side .g{font-size:10.5px;color:var(--ink3);font-weight:700;padding:0 6px}
+.shell>.side a,.shell>.side span.mi{display:block;padding:5px 10px;border-radius:5px;font-size:12px;text-decoration:none;color:var(--ink)}
+.shell>.side .cur{background:#111;color:#fff;font-weight:700}
+.shell>.side .ghost{color:var(--ink3);font-size:11px;border:1px dashed var(--line2);border-radius:5px;padding:4px 8px}
+.shell>.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.hdr{display:flex;gap:16px;align-items:center;padding:6px 12px;border-bottom:2px solid var(--line);background:var(--paper);flex-wrap:wrap}
+.hdr .sys{font-weight:700;font-size:13px}
+.hdr .bc{flex:1;color:var(--ink2);font-size:12px;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.hdr .who{font-size:12px}
+.body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:12px;background:#fff}
+.body h1.pt{font-size:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.body h2.st{font-size:14px;display:flex;gap:6px;align-items:center}
+.body .sp{flex:1}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.top{align-items:flex-start}
+.col{display:flex;flex-direction:column;gap:8px}
+.cols{display:grid;gap:14px;align-items:start}
+.cols.c23{grid-template-columns:2fr 3fr}.cols.c32{grid-template-columns:3fr 2fr}.cols.c11{grid-template-columns:1fr 1fr}.cols.c3{grid-template-columns:repeat(3,1fr)}.cols.c2{grid-template-columns:1fr 1fr}.cols.c1{grid-template-columns:1fr}
+.card{border:1.5px solid var(--line);border-radius:6px;padding:10px 12px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.card.thick{border-width:3px}
+.card h3{font-size:13px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:0;font-size:12px}
+.dl dt{color:var(--ink3)}.dl dd{margin:0}
+.dl.two{grid-template-columns:auto 1fr auto 1fr}
+.f{display:flex;flex-direction:column;gap:3px;min-width:0}
+.f>label,.f>.lb{font-size:12px;font-weight:700;display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.f .rq{font-weight:700}
+.in{border:1.5px solid var(--line);border-radius:4px;background:#fff;min-height:30px;padding:4px 8px;color:var(--ink3);font-size:12px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.in.val{color:var(--ink)}
+.in.mono,.mono .in{font-family:var(--mono)}
+.in.dis{background:var(--fill);border-style:dashed}
+.in.ta{min-height:58px;align-items:flex-start}
+.in.err{border-width:2.5px}
+.in .car{color:var(--ink);font-size:11px}
+.hint{font-size:11px;color:var(--ink3)}
+.fe{display:flex;gap:5px;align-items:flex-start;font-size:11.5px;font-weight:700;border-left:4px solid #111;padding:1px 0 1px 6px;background:var(--fill)}
+.chk{display:flex;gap:7px;align-items:center;font-size:12px;min-height:26px}
+.chk .bx{width:15px;height:15px;border:1.5px solid var(--line);border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;line-height:1;flex:0 0 auto;background:#fff}
+.chk .bx.on{background:#111;color:#fff}
+.chk .rd{width:15px;height:15px;border:1.5px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:#fff}
+.chk .rd.on::after{content:"";width:7px;height:7px;border-radius:50%;background:#111}
+.chk.dis{color:var(--ink3)}
+.fgrid{display:grid;gap:9px 12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.fgrid.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.fgrid.g1{grid-template-columns:1fr}
+.fgrid .span2{grid-column:span 2}
+.fset{border:1.5px solid var(--line2);border-radius:5px;padding:8px 10px 10px;margin:0}
+.fset>legend{font-size:12px;font-weight:700;padding:0 6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:32px;padding:4px 14px;border-radius:5px;border:2px solid var(--line);font:700 12px var(--mono);font-family:inherit;background:#fff;color:#111;white-space:nowrap}
+.btn.pri{background:#111;color:#fff}
+.btn.dng{background:#111;color:#fff;outline:2px solid #111;outline-offset:2px}
+.btn.ghost{border-color:var(--line2);font-weight:500}
+.btn.dis{background:var(--fill2);color:var(--ink3);border-style:dashed;border-color:var(--ink3)}
+.btn.lg{min-height:40px;width:100%}
+.btn.t48{min-height:48px}
+.btn.xs{min-height:24px;padding:1px 8px;font-size:11px}
+.btn.tog{font-weight:500}
+.btn .pin{background:#fff;color:#111;border:1.5px solid #111}
+.btn:not(.pri):not(.dng) .pin{background:#111;color:#fff}
+svg.i{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;vertical-align:-2px}
+svg.i.l{width:18px;height:18px}
+/* tones: never colour only -> pattern + icon + text */
+.t-danger{border:2.5px solid #111!important;background:repeating-linear-gradient(135deg,#f6f6f6 0 7px,#e6e6e6 7px 9px)}
+.t-warn{border:2px dashed #111!important;background:#f4f4f4}
+.t-ok{border:1.5px solid #555!important;background:#fafafa}
+.t-info{border:2px dotted #333!important;background:#fff}
+.t-neutral{border:1.5px solid #9a9a9a!important;background:var(--fill)}
+.ban{display:flex;gap:9px;align-items:flex-start;border-radius:5px;padding:7px 10px;font-size:12px}
+.ban .tt{font-weight:700;font-size:12.5px}
+.ban .ds{font-size:12px}
+.ban ul{margin:3px 0 0;padding-left:16px}
+.bd{display:inline-flex;gap:4px;align-items:center;border-radius:999px;padding:0 8px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bd.t-danger,.bd.t-warn,.bd.t-ok,.bd.t-info,.bd.t-neutral{border-width:1.5px!important}
+.bd.strike{text-decoration:line-through}
+.tb-chip{display:inline-flex;gap:4px;align-items:center;border:1.5px solid #111;border-radius:4px;padding:0 7px;min-height:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.tb-amb{background:#fff}.tb-chl{background:var(--fill2)}.tb-frz{background:var(--fill3)}
+.tbl{border-collapse:collapse;width:100%;font-size:12px;border:1.5px solid var(--line)}
+.tbl th{background:var(--fill3);text-align:left;padding:5px 8px;border-bottom:2px solid var(--line);font-size:11.5px;white-space:nowrap}
+.tbl td{padding:5px 8px;border-bottom:1px solid var(--line3);vertical-align:top}
+.tbl tr.sel td{background:var(--fill2)}
+.tbl td.num,.tbl th.num{text-align:right}
+.tbl td.mono{font-family:var(--mono)}
+.tbl .lnk{text-decoration:underline;font-family:var(--mono)}
+.listbtn{display:flex;gap:10px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line2);border-radius:5px;min-height:38px;padding:5px 10px;background:#fff;font-size:12px}
+.listbtn.sel{border:2.5px solid #111;background:var(--fill2)}
+.listbtn .sp{flex:1}
+.tabs{display:flex;gap:0;border-bottom:2px solid #111}
+.tabs span{padding:6px 16px;border:1.5px solid var(--line2);border-bottom:0;border-radius:5px 5px 0 0;font-size:12px;margin-right:3px;background:#fff}
+.tabs span.on{background:#111;color:#fff;font-weight:700;border-color:#111}
+.tabs.seg{border:0;gap:0}
+.tabs.seg span{border:1.5px solid #111;border-radius:0;margin:0}
+.tabs.seg span:first-child{border-radius:5px 0 0 5px}.tabs.seg span:last-child{border-radius:0 5px 5px 0}
+.hatch{background:repeating-linear-gradient(45deg,#f3f3f3 0 8px,#e3e3e3 8px 10px);border:1.5px dashed #777;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:11px;text-align:center;border-radius:4px}
+.thumb{width:62px;height:46px}
+/* mock notice: double rule + tag */
+.mock{border:3px double #111;border-radius:6px;background:repeating-linear-gradient(135deg,#fafafa 0 10px,#f0f0f0 10px 12px);padding:7px 10px;font-size:11.5px;position:relative}
+.mock .mt{display:inline-flex;gap:4px;align-items:center;background:#111;color:#fff;border-radius:999px;padding:0 9px;font-weight:700;font-size:11px;min-height:20px}
+.mock dl{margin:6px 0 0;display:grid;gap:4px}
+.mock dt{font-weight:700}.mock dd{margin:0}
+.mock .mk{position:absolute;right:6px;top:4px;font-size:10px;color:var(--ink3)}
+.dim{position:relative;background:#cfcfcf}
+.dim .bgp{opacity:.35;padding:14px;pointer-events:none;min-height:90px;font-size:11px;color:#444}
+.dlg{width:min(430px,92%);margin:0 auto;background:#fff;border:3px solid #111;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12px;box-shadow:6px 6px 0 #111}
+.dim>.dlg{position:relative;margin:-84px auto 18px}
+.dlg h4{font-size:15px;display:flex;gap:8px;align-items:center}
+.dlg .vals{background:var(--fill);border:1px solid var(--line2);border-radius:4px;padding:6px 9px}
+.dlg .vals dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 12px}
+.dlg .vals dt{color:var(--ink3)}.dlg .vals dd{margin:0;font-family:var(--mono);word-break:break-all}
+.dlg .ft{display:flex;gap:8px;justify-content:flex-end}
+.dlg .nx{font-size:12px}
+/* phone */
+.ph{width:375px;background:#fff;border:3px solid #111;border-radius:26px;overflow:hidden;font-size:13px;line-height:1.5;position:relative;display:flex;flex-direction:column}
+.ph.tall{min-height:640px}
+.ph .notch{height:16px;background:#111;position:relative}
+.ph .notch::after{content:"";position:absolute;left:50%;top:5px;width:70px;height:6px;border-radius:99px;background:#444;transform:translateX(-50%)}
+.ph .phh{height:48px;display:flex;gap:8px;align-items:center;padding:0 12px;border-bottom:2px solid #111;background:#fff}
+.ph .phh .sys{font-weight:700;font-size:13px;flex:1}
+.ph .phh .who{font-size:11.5px}
+.ph .phb{flex:1;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:13px}
+.ph .fix{position:sticky;bottom:0;background:#fff;border-top:2px solid #111;padding:8px 12px;display:flex;flex-direction:column;gap:6px}
+.ph .ptabs{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid #111}
+.ph .ptabs span{min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11.5px;text-align:center;border-right:1.5px solid var(--line2);padding:2px 6px}
+.ph .ptabs span:last-child{border-right:0}
+.ph .ptabs span.on{background:#111;color:#fff;font-weight:700}
+.ph .f>label{font-size:13px}
+.ph .in{min-height:44px;font-size:14px}
+.ph .btn{font-size:14px}
+.ph .chk{min-height:48px;font-size:13px}
+.ph .chk .bx,.ph .chk .rd{width:20px;height:20px}
+.ph .dlg{width:92%;margin:0 auto}
+.ph .dim>.dlg{margin:-70px auto 14px}
+.ph .tbl{font-size:11.5px}
+.ph .listbtn{min-height:48px}
+/* diagrams */
+.flow{display:flex;gap:6px;align-items:stretch;flex-wrap:wrap}
+.flow .nd{border:2px solid #111;border-radius:6px;padding:5px 10px;background:#fff;font-size:12px;min-width:92px;text-align:center}
+.flow .nd.ghost{border-style:dashed;color:var(--ink3)}
+.flow .ar{align-self:center;font-weight:700;font-size:13px}
+.flow .ar small{display:block;font-size:10px;font-weight:400;color:var(--ink3);max-width:130px;text-align:center}
+.axis{position:relative;height:96px;margin:8px 6px 0;border-top:3px solid #111}
+.axis .tk{position:absolute;top:-3px;width:0;height:12px;border-left:2px solid #111}
+.axis .tl{position:absolute;top:14px;transform:translateX(-50%);font:11px var(--mono);white-space:nowrap}
+.axis .ev{position:absolute;top:36px;transform:translateX(-50%);border:2px solid #111;border-radius:5px;padding:2px 7px;background:#fff;font-size:11px;white-space:nowrap}
+.axis .ev.x{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#ddd 6px 8px);border-width:2.5px}
+.axis .ev.ok{border-style:solid}
+.tl-bar{display:flex;height:34px;border:2px solid #111;border-radius:5px;overflow:hidden;font-size:10.5px}
+.tl-bar span{display:flex;align-items:center;justify-content:center;border-right:1.5px solid #111;white-space:nowrap;overflow:hidden}
+.tl-bar .dr{background:var(--fill2)}.tl-bar .sv{background:#fff}.tl-bar .bk{background:repeating-linear-gradient(45deg,#fff 0 4px,#d9d9d9 4px 6px)}
+.tl-bar .vi{background:repeating-linear-gradient(135deg,#f6f6f6 0 6px,#bbb 6px 8px);font-weight:700}
+.note{border-left:5px solid #111;background:var(--paper);padding:8px 12px;font-size:12.5px;margin:8px 0}
+.note.warn{border-left-style:double}
+footer.src{margin-top:30px;border-top:3px solid #111;padding-top:12px;font-size:12px;color:var(--ink2)}
+@media (max-width:760px){.page{padding:12px}.top{padding:14px}.grid2,.grid3{grid-template-columns:1fr}}
+@media print{.top{-webkit-print-color-adjust:exact;print-color-adjust:exact}.toc,.pintoggle{display:none}body{background:#fff}.ov{overflow:visible}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+/* ---- 2026-10-19 改訂: 項目 ID のピン・必須 / 任意・本番版で追加 ---- */
+.rq,.op{display:inline-flex;align-items:center;border-radius:3px;padding:0 5px;font-size:10.5px;font-weight:700;min-height:17px;margin-left:4px;white-space:nowrap;line-height:1.2}
+.rq{background:#111;color:#fff}
+.op{border:1px solid #777;color:#3d3d3d;font-weight:500;background:#fff}
+.ps-box{border:2px dashed #111;border-radius:6px;padding:6px 8px;position:relative;background:#fff;display:flex;flex-direction:column;gap:6px}
+.ps-tag{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;border:1.5px dashed #111;border-radius:999px;padding:0 8px;font-size:10.5px;font-weight:700;background:#fff;white-space:nowrap}
+.pin.ps{background:#fff;color:#111;border:1.5px dashed #111}
+.hid{border:1.5px dotted #777;border-radius:4px;padding:3px 8px;font-size:11px;color:#3d3d3d;background:#fafafa}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8z"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+<symbol id="i-open" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 017-2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13"/></symbol>
+<symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L5 19a1 1 0 001 1h12a1 1 0 001-1l-5-10V3"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.5"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-truck" viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 9h4l4 4v3h-8z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></symbol>
+<symbol id="i-pkg" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></symbol>
+<symbol id="i-cam" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z"/><circle cx="12" cy="14" r="4"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-5L16 4l4 4L9 19z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-12a7 7 0 10-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></symbol>
+<symbol id="i-off" viewBox="0 0 24 24"><path d="M3 3l18 18M5 12a10 10 0 015-2.7M9 16a5 5 0 016-.9M12 20v.5M2 8.5a15 15 0 015-3"/></symbol>
+<symbol id="i-therm" viewBox="0 0 24 24"><path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/></symbol>
+<symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M4 17L20 7"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0112 0v6l2 2H4zM10 21h4"/></symbol>
+<symbol id="i-load" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></symbol>
+<symbol id="i-hour" viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M7 3c0 6 5 6 5 9s-5 3-5 9M17 3c0 6-5 6-5 9s5 3 5 9"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-text" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></symbol>
+</defs></svg>
+<a class="skip" href="#s-wire">本文へ移動</a>
+<header class="top"><div class="tin">
+<div class="crumb"><span>ワイヤーフレーム（2026-10-19 改訂）</span><span>›</span><span>SCR-19</span></div>
+<h1><span class="code">SCR-19</span>ルート計画</h1>
+<p class="lead">配送計画者が運行日の受注を選んでルートを作り、運転時間（改善基準告示 2024 の 13 の規則）をチェックして公開する画面。違反は時間帯つきで示し、公開はチェックに合格した下書きだけ。走行距離・所要時間は地図の模擬。LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR19_ROUTE_PLANNING_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></div></header>
+<div class="page">
+<dl class="meta"><div><dt>画面コード</dt><dd>SCR-19</dd></div><div><dt>画面名（日本語）</dt><dd>ルート計画</dd></div><div><dt>試作版での実装</dt><dd>実データで実装。地図（FT-101）だけ模擬</dd></div><div><dt>端末 · 幅</dt><dd>PC</dd></div><div><dt>表示対象ロール</dt><dd>ROLE-004 配送計画者 のみ</dd></div><div><dt>ルート</dt><dd><code>/routes</code>、<code>/routes/[routeId]</code></dd></div><div><dt>関連 FT / US</dt><dd>FT-053〜057・101（模擬）・102 / US-028 AC1〜AC5（AC4 未実装）</dd></div><div><dt>模擬の表示</dt><dd>あり — 地図（一覧と詳細の両方）</dd></div><div><dt>特有の制約</dt><dd>運転時間 2024（改善基準告示）13 規則 · 車両の温度帯 = SKU の温度帯 · 公開は合格のチェックのあとだけ · 規則セットの版を公開で固定</dd></div></dl>
+<div class="bar"><ul class="toc" aria-label="この画面の目次"><li><a href="#s-wire">ワイヤーフレーム</a></li><li><a href="#s-notes">注釈</a></li><li><a href="#s-states">状態</a></li><li><a href="#s-blocked">遮断される分岐</a></li><li><a href="#s-roles">ロール別表示</a></li><li><a href="#s-mock">模擬</a></li><li><a href="#s-src">出典・照合</a></li></ul>
+<label class="pintoggle"><input type="checkbox" id="hidepins"> 項目 ID のピンを隠す</label></div>
+<details class="legend" open><summary>凡例（グレースケールのワイヤー。色ではなく線種・柄・文字・アイコンで意味を示す）</summary><div class="lg">
+<div><span class="sw t-danger">危険・ブロック</span><span>太い実線 + 斜線の柄 + アイコン「×」。処理不可・エラー・不合格など。</span></div>
+<div><span class="sw t-warn">警告</span><span>破線。再チェックの案内・DB に届かない・警告など。</span></div>
+<div><span class="sw t-ok">成功・正常</span><span>細い実線 + チェックのアイコン。作成・保存・合格・公開済など。</span></div>
+<div><span class="sw t-info">情報</span><span>点線。引当済・ピック済などの状態。</span></div>
+<div><span class="sw t-neutral">中立</span><span>灰色の枠。下書き・検証済・折りたたみなど。</span></div>
+<div><span class="sw" style="border:3px double #111">模擬</span><span>二重線 + 黒の「模擬」タグ。MockNotice（本物ではない統合）の置き場所。</span></div>
+<div><span class="sw"><b class="pin" style="margin:0">A-1</b></span><span>項目 ID のピン（画面仕様 4.1 の ID）。「注釈」の表の同じ ID と対応</span></div>
+<div><span class="sw"><span class="rq">必須</span></span><span>画面仕様 4.1 の Required が「必須」の入力</span></div>
+<div><span class="sw"><span class="op">任意</span></span><span>Required が「任意」の入力</span></div>
+<div><span class="sw"><span class="ps-tag">本番版で追加</span></span><span>画面仕様（本文）にはなく、PREMISE（P-Sxx）または設計補遺で足す部分。破線の枠で示す</span></div>
+<div><span class="sw" style="font-size:12px">▾ ▭ ☐</span><span>選択リスト / 日付欄 / チェックボックス。</span></div>
+<div><span class="sw dim" style="color:#111">ダイアログ</span><span>灰色の背景の上に、黒い影つきの枠で重ねて描く。</span></div>
+<div><span class="sw" style="font-size:12px">例: 2026/10/20</span><span>画面に出ている値はすべてワイヤー用の仮の値（日付は YYYY/MM/DD、時刻は HH:MM の JST）。</span></div>
+</div></details>
+<section class="blk" id="s-wire" aria-labelledby="s-wire-h"><h2 id="s-wire-h"><span class="n">1</span>ワイヤーフレーム（主画面）</h2>
+<p class="sub">画面仕様 4.1 の 39 項目（A: <code>/routes</code> ルート計画、B: <code>/routes/&lt;ルート ID&gt;</code> ルート詳細）を、5 つの枠に分けて描いた。破線の枠は PREMISE で本番版に足す部分。</p>
+
+<figure class="fig">
+<figcaption><span class="tag">PC</span>枠 1 — /routes ルート計画（A-1〜A-16）。受注を 2 件選んで入力している表示。作成の結果（A-6）は、直前に作ったルートの例</figcaption>
+<div class="ov"><div class="wf pcw">
+<div class="url"><i></i><i></i><i></i><b>/routes</b></div>
+<div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">ルート・配送 <span>›</span> ルート計画</nav><span class="who">氏名 · 配送計画者</span><span class="btn xs">ログアウト</span></div>
+<div class="shell">
+<nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">受注・出荷</div><a>注文作成</a><a>引当結果</a></div><div class="gp"><div class="g">ルート・配送</div><a class="cur" aria-current="page">ルート計画</a></div><span class="ghost">未実装の画面はメニューに出さない（グレーアウトもしない）</span></nav>
+<main class="main"><div class="body">
+<h1 class="pt">ルート計画</h1>
+<aside class="mock" role="note" aria-label="模擬" data-item="A-1"><span class="mt"><svg class="i" aria-hidden="true"><use href="#i-flask"/></svg>模擬</span><b class="pin">A-1</b>
+<dl><div><dt>模擬している部分</dt><dd>走行距離と所要時間は、データベースの固定表（デポと顧客の納品先の間の区間）から取っています。実際の道路や渋滞は反映しません。</dd></div><div><dt>本番で必要なもの</dt><dd>地図サービスとの連携（IF-MAP-01）。ライセンスが必要です。</dd></div></dl></aside>
+<div class="card t-neutral" data-item="A-2"><div class="row"><b>▸ このプロトタイプで確認する範囲と、確認しないこと</b><span class="hint">（折りたたみ。開くと 4 項目 — 「状態」の節）</span><b class="pin">A-2</b></div></div>
+<div class="row" style="align-items:flex-start">
+<div class="f" style="width:260px" data-item="A-3"><label>運行日<span class="rq">必須</span><b class="pin">A-3</b></label><div class="in mono val"><span>2026/10/20</span><span class="car">▭</span></div><span class="hint">既定は明日です。この日に納品する受注を計画します</span></div>
+<div class="ps-box" style="max-width:520px" data-item="P-S02"><span class="ps-tag">本番版で追加（P-S02）</span><div style="font-size:12px">運行日を URL のクエリに載せる（例 <code>/routes?serviceDate=2026-10-20</code>）。戻る・再読込・リンクの共有で同じ運行日の表示に戻る。<b class="pin ps">P-S02</b></div></div>
+</div>
+<div class="col" data-item="A-4"><h2 class="st">未割当の受注<b class="pin">A-4</b></h2>
+<table class="tbl"><thead><tr><th data-item="A-8">選択<span class="rq">必須</span><b class="pin">A-8</b></th><th>受注</th><th>顧客</th><th>SKU</th><th class="num">数量</th><th>SKU の温度帯</th><th>受注の状態</th><th>前回、割り当てられなかった理由</th></tr></thead>
+<tbody>
+<tr><td><div class="chk"><span class="bx on">✓</span><b class="mono">1</b></div></td><td class="mono">ORD-1020-03</td><td class="mono">CUS-003</td><td class="mono">SKU-F12</td><td class="num">12</td><td><span class="tb-chip tb-frz"><svg class="i" aria-hidden="true"><use href="#i-snow"/></svg>冷凍 −18 °C 以下</span></td><td><span class="bd t-info"><svg class="i" aria-hidden="true"><use href="#i-pkg"/></svg>引当済</span></td><td class="hint">まだ計画していません</td></tr>
+<tr><td><div class="chk"><span class="bx on">✓</span><b class="mono">2</b></div></td><td class="mono">ORD-1020-02</td><td class="mono">CUS-002</td><td class="mono">SKU-F12</td><td class="num">40</td><td><span class="tb-chip tb-frz"><svg class="i" aria-hidden="true"><use href="#i-snow"/></svg>冷凍 −18 °C 以下</span></td><td><span class="bd t-info"><svg class="i" aria-hidden="true"><use href="#i-pkg"/></svg>ピック済</span></td><td class="hint">まだ計画していません</td></tr>
+<tr><td><div class="chk"><span class="bx"></span></div></td><td class="mono">ORD-1020-07</td><td class="mono">CUS-004</td><td class="mono">SKU-C05</td><td class="num">30</td><td><span class="tb-chip tb-chl"><svg class="i" aria-hidden="true"><use href="#i-therm"/></svg>冷蔵 0〜5 °C</span></td><td><span class="bd t-info"><svg class="i" aria-hidden="true"><use href="#i-pkg"/></svg>引当済</span></td><td>車両の温度帯が、SKU の温度帯と一致しません（SKU の温度帯 冷蔵 · 車両の温度帯 冷凍）</td></tr>
+<tr><td><div class="chk"><span class="bx"></span></div></td><td class="mono">ORD-1020-08</td><td class="mono">CUS-004</td><td class="mono">SKU-C05</td><td class="num">10</td><td><span class="tb-chip tb-chl"><svg class="i" aria-hidden="true"><use href="#i-therm"/></svg>冷蔵 0〜5 °C</span></td><td><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>検証済</span></td><td>引当済みではありません（受注の状態 検証済）</td></tr>
+</tbody></table>
+<span class="hint">チェックを入れた順に番号が付き、その順がそのまま停車の順になる</span></div>
+<div class="card" data-item="A-5"><h3>ルートを作る<b class="pin">A-5</b></h3>
+<div class="col" data-item="A-6"><div class="row"><b style="font-size:12px">作成の結果</b><b class="pin">A-6</b></div>
+<div class="ban t-ok" role="status"><svg class="i l" aria-hidden="true"><use href="#i-ok"/></svg><div><div class="tt">ルート R-20261020-7C3E1A を作成しました（配送 2 件） <u data-item="A-15">詳細を開く<b class="pin">A-15</b></u></div></div></div>
+<div class="ban t-warn" role="status"><svg class="i l" aria-hidden="true"><use href="#i-warn"/></svg><div><div class="tt">1 件の受注は、次の理由でルートに入りませんでした</div><ul><li>車両の温度帯が、SKU の温度帯と一致しません</li></ul></div></div></div>
+<div class="hint" style="color:#111">選択中の受注: 2 件（停車地はこの順番で並びます。詳細で入れ替えられます）</div>
+<div class="fgrid">
+<div class="f" data-item="A-9"><label>ドライバー<span class="rq">必須</span><b class="pin">A-9</b></label><div class="in val"><span>D3　ドライバー D3</span><span class="car">▾</span></div></div>
+<div class="f" data-item="A-10"><label>車両<span class="rq">必須</span><b class="pin">A-10</b></label><div class="row"><div class="in val" style="flex:1"><span>VH-F01　冷凍車 1 号</span><span class="car">▾</span></div><span class="tb-chip tb-frz"><svg class="i" aria-hidden="true"><use href="#i-snow"/></svg>冷凍 −18 °C 以下</span></div></div>
+<div class="f" data-item="A-11"><label>出発するデポ<span class="rq">必須</span><b class="pin">A-11</b></label><div class="in val"><span>DEPOT-01　センター（デポ、模擬）</span><span class="car">▾</span></div></div>
+<div class="f" data-item="A-12"><label>計画の封印番号<span class="rq">必須</span><b class="pin">A-12</b></label><div class="in mono val"><span>S-4475</span></div><div class="hint">積込のとき、この番号と照合します</div></div>
+<div class="f" data-item="A-13"><label>出発時刻（JST）<span class="rq">必須</span><b class="pin">A-13</b></label><div class="in mono val" style="width:160px"><span>09:00</span></div><div class="hint">運行日の時刻です。ドライバーの前日の勤務は 22:00 に終わる設定のため、9:00 以降を目安にしてください</div></div>
+</div>
+<div class="row"><span class="btn pri" role="button" data-item="A-14">ルートを作成<b class="pin">A-14</b></span><span class="hint">送信中は「作成中…」で押せない</span></div>
+<span class="hint">作成に成功すると、選んだ受注と封印番号を空にして一覧を読み直す（結果の帯はフォームの先頭に出る）</span>
+</div>
+<div class="col" data-item="A-7"><h2 class="st">この日のルート<b class="pin">A-7</b></h2>
+<table class="tbl"><thead><tr><th>ルート</th><th>ルートの状態</th><th class="num">版</th><th>ドライバー</th><th>車両</th><th>封印</th><th>出発</th><th>配送</th></tr></thead>
+<tbody>
+<tr><td><span class="lnk" data-item="A-16">R-20261020-7C3E1A<b class="pin">A-16</b></span></td><td><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>下書き</span></td><td class="num">1</td><td class="mono">D1</td><td class="mono">VH-F01</td><td class="mono">S-4471</td><td class="mono">2026/10/20 09:00 JST</td><td>2 件</td></tr>
+<tr><td><span class="lnk">R-20261020-B42D90</span></td><td><span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>公開済</span></td><td class="num">1</td><td class="mono">D2</td><td class="mono">VH-C01</td><td class="mono">S-4480</td><td class="mono">2026/10/20 09:30 JST</td><td>3 件</td></tr>
+</tbody></table></div>
+</div></main></div></div></div>
+</figure>
+
+<figure class="fig">
+<figcaption><span class="tag">PC</span>枠 2 — 読み込みで DB に届かないとき（A-17: 一覧、B-12: 詳細）</figcaption>
+<div class="grid2">
+<div class="wf"><div class="url"><i></i><i></i><i></i><b>/routes</b></div><div class="body"><h1 class="pt">ルート計画</h1><span class="hint">（模擬の案内・確認する範囲・運行日はそのまま出る。その下の一覧の部分）</span>
+<div class="ban t-warn" role="alert" data-item="A-17"><svg class="i l" aria-hidden="true"><use href="#i-warn"/></svg><div><div class="tt">システムを再起動しています。1〜2分後にもう一度お試しください</div><div class="ds">管理者の方へ: Supabase のダッシュボードでプロジェクトを再開（Resume project）してください</div><div style="margin-top:6px"><span class="btn" role="button">再試行</span><b class="pin">A-17</b></div></div></div></div></div>
+<div class="wf"><div class="url"><i></i><i></i><i></i><b>/routes/&lt;ルート ID&gt;</b></div><div class="body"><u>ルート計画へ戻る</u>
+<div class="ban t-warn" role="alert" data-item="B-12"><svg class="i l" aria-hidden="true"><use href="#i-warn"/></svg><div><div class="tt">システムを再起動しています。1〜2分後にもう一度お試しください</div><div class="ds">管理者の方へ: Supabase のダッシュボードでプロジェクトを再開（Resume project）してください</div><div style="margin-top:6px"><span class="btn" role="button">再試行</span><b class="pin">B-12</b></div></div></div><span class="hint">（その下に「確認する範囲」の折りたたみが出る）</span></div></div>
+</div>
+</figure>
+
+<figure class="fig">
+<figcaption><span class="tag">PC</span>枠 3 — /routes/&lt;ルート ID&gt; ルート詳細・編集できる版（B-1〜B-7、B-9〜B-11、B-13〜B-20）。不合格のチェックのあと、停車地の休憩を変えてまだ保存していない状態</figcaption>
+<div class="ov"><div class="wf pcw">
+<div class="url"><i></i><i></i><i></i><b>/routes/&lt;ルート ID&gt;</b></div>
+<div class="hdr"><span class="sys">Yuki Cold Logistics</span><nav class="bc" aria-label="パンくずリスト">ルート・配送 <span>›</span> ルート計画</nav><span class="who">氏名 · 配送計画者</span><span class="btn xs">ログアウト</span></div>
+<div class="shell">
+<nav class="side" aria-label="メニュー"><div class="gp"><a>ホーム</a></div><div class="gp"><div class="g">受注・出荷</div><a>注文作成</a><a>引当結果</a></div><div class="gp"><div class="g">ルート・配送</div><a class="cur" aria-current="page">ルート計画</a></div></nav>
+<main class="main"><div class="body">
+<div class="row"><u data-item="B-1">ルート計画へ戻る<b class="pin">B-1</b></u></div>
+<div class="card" data-item="B-2"><dl class="dl two"><dt>ルート</dt><dd class="mono"><b style="font-size:14px">R-20261020-7C3E1A</b></dd><dt>ルートの状態</dt><dd><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>下書き</span></dd><dt>版</dt><dd class="mono">1</dd><dt>運行日</dt><dd class="mono">2026/10/20</dd><dt>下書きの番号</dt><dd class="mono">3</dd><dt>使った規則セット</dt><dd class="mono">第 1 版</dd></dl><b class="pin">B-2</b></div>
+<aside class="mock" role="note" aria-label="模擬" data-item="B-3"><span class="mt"><svg class="i" aria-hidden="true"><use href="#i-flask"/></svg>模擬</span><b class="pin">B-3</b>
+<dl><div><dt>模擬している部分</dt><dd>走行距離と所要時間は、データベースの固定表（デポと顧客の納品先の間の区間）から取っています。実際の道路や渋滞は反映しません。</dd></div><div><dt>本番で必要なもの</dt><dd>地図サービスとの連携（IF-MAP-01）。ライセンスが必要です。</dd></div></dl></aside>
+<h2 class="st">停車地</h2>
+<div class="col" data-item="B-4"><div class="row"><b style="font-size:12px">下書きの項目</b><span class="hint">（見出しは画面に出ない。編集できる版だけ入力欄）</span><b class="pin">B-4</b></div>
+<div class="fgrid">
+<div class="f" data-item="B-13"><label>ドライバー<span class="rq">必須</span><b class="pin">B-13</b></label><div class="in val"><span>D1　ドライバー D1</span><span class="car">▾</span></div></div>
+<div class="f" data-item="B-14"><label>車両<span class="rq">必須</span><b class="pin">B-14</b></label><div class="row"><div class="in val" style="flex:1"><span>VH-F01　冷凍車 1 号</span><span class="car">▾</span></div><span class="tb-chip tb-frz"><svg class="i" aria-hidden="true"><use href="#i-snow"/></svg>冷凍 −18 °C 以下</span></div></div>
+<div class="f" data-item="B-15"><label>出発するデポ<span class="rq">必須</span><b class="pin">B-15</b></label><div class="in val"><span>DEPOT-01　センター（デポ、模擬）</span><span class="car">▾</span></div></div>
+<div class="f" data-item="B-16"><label>計画の封印番号<span class="rq">必須</span><b class="pin">B-16</b></label><div class="in mono val"><span>S-4471</span></div></div>
+<div class="f" data-item="B-17"><label>出発時刻（JST）<span class="rq">必須</span><b class="pin">B-17</b></label><div class="in mono val" style="width:160px"><span>09:00</span></div></div>
+</div></div>
+<div class="col" data-item="B-5"><div class="row"><b style="font-size:12px">停車地（表）</b><b class="pin">B-5</b></div>
+<table class="tbl"><thead><tr><th class="num">順</th><th>受注</th><th>顧客</th><th>到着予定</th><th>走行（地図の見積り）</th><th data-item="B-18">荷役（分）<span class="rq">必須</span><b class="pin">B-18</b></th><th data-item="B-19">休憩（分）<span class="rq">必須</span><b class="pin">B-19</b></th><th data-item="B-20">並べ替え<b class="pin">B-20</b></th></tr></thead>
+<tbody>
+<tr><td class="num mono">1</td><td class="mono">ORD-1020-03</td><td class="mono">CUS-003</td><td class="mono">2026/10/20 10:00 JST</td><td>1時間0分</td><td><span class="in mono val" style="display:inline-flex;min-height:24px;min-width:56px;padding:0 6px">20</span></td><td><span class="in mono val" style="display:inline-flex;min-height:24px;min-width:56px;padding:0 6px;border-width:2.5px">30</span></td><td><span class="btn dis xs" role="button" aria-disabled="true">↑</span> <span class="btn ghost xs" role="button">↓</span></td></tr>
+<tr><td class="num mono">2</td><td class="mono">ORD-1020-02</td><td class="mono">CUS-002</td><td class="mono">2026/10/20 11:50 JST</td><td>1時間30分</td><td><span class="in mono val" style="display:inline-flex;min-height:24px;min-width:56px;padding:0 6px">20</span></td><td><span class="in mono val" style="display:inline-flex;min-height:24px;min-width:56px;padding:0 6px">0</span></td><td><span class="btn ghost xs" role="button">↑</span> <span class="btn dis xs" role="button" aria-disabled="true">↓</span></td></tr>
+</tbody></table>
+<div class="hint" style="color:#111">デポへ戻る走行（地図の見積り）：<span class="mono">2時間0分</span></div>
+<div class="hint">到着予定は、保存してチェックしたあとの内容です　0〜1440 の整数</div>
+<span class="hint">受注の追加・削除はできない。先頭の「前へ」・末尾の「後ろへ」は押せない。1 行目の休憩を 0 → 30 に変えた（未保存）</span>
+<div class="ps-box" data-item="P-S09"><span class="ps-tag">本番版で追加（P-S09）</span>
+<table class="tbl"><thead><tr><th class="num">順</th><th>受注</th><th>顧客</th><th>到着予定</th><th>走行（地図の見積り）</th></tr></thead><tbody><tr><td class="num mono">3</td><td class="mono">ORD-1020-05</td><td class="mono">CUS-004</td><td>未確定</td><td>未確定（見積なし）</td></tr></tbody></table>
+<div style="font-size:12px">所要時間の見積がない区間は 0 分として進めず「未確定」にする（その後の到着予定も未確定）。チェックでブロックし、公開させない。<b class="pin ps">P-S09</b></div></div>
+</div>
+<p class="ban t-warn" role="status" data-item="B-6" style="margin:0"><svg class="i l" aria-hidden="true"><use href="#i-warn"/></svg><span class="tt">下書きを変更しました。もう一度チェックしてください</span><b class="pin">B-6</b></p>
+<div class="col" data-item="B-7"><div class="row"><span class="btn" role="button">保存（下書き）</span><span class="btn dis" role="button" aria-disabled="true">運転時間をチェック</span><span class="btn dis" role="button" aria-disabled="true">公開</span><b class="pin">B-7</b></div>
+<span class="hint" style="color:#111">保存していない変更があるため、公開できません</span>
+<span class="hint">↑ 公開できない理由の文（公開ボタンと aria-describedby で結ぶ）。変更があるので「運転時間をチェック」は無効</span></div>
+<div class="ps-box" data-item="P-S08"><span class="ps-tag">本番版で追加（P-S08）</span>
+<div class="ban t-warn" role="status"><svg class="i l" aria-hidden="true"><use href="#i-warn"/></svg><div><div class="tt">ほかのルートの公開などで、ドライバーの勤務履歴が変わりました</div><div class="ds">もう一度チェックしてから公開してください</div></div></div>
+<div style="font-size:12px">チェックのあとで同じドライバーの勤務履歴が変わったときは、公開を押す前に画面でも知らせる（いまは公開を押したときのダイアログだけで分かる。サーバーの照合は変えない）。<b class="pin ps">P-S08</b></div></div>
+<section class="col" aria-label="運転時間のチェック結果" data-item="B-9"><div class="row"><p class="ban t-danger" role="status" style="margin:0;flex:1"><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg><span class="tt">不合格</span></p><b class="pin">B-9</b></div>
+<span class="hint" style="color:#111">使った規則セット: 第 1 版　2026/10/19 17:05 JST · 配送 太郎</span>
+<dl class="dl two"><dt>勤務の開始</dt><dd class="mono">2026/10/20 09:00 JST</dd><dt>勤務の終了</dt><dd class="mono">2026/10/20 14:10 JST</dd><dt>運転時間</dt><dd class="mono">4時間30分</dd><dt>拘束時間</dt><dd class="mono">5時間10分</dd><dt>走行時間の合計（地図）</dt><dd class="mono">4時間30分</dd></dl>
+<table class="tbl"><thead><tr><th>規則</th><th>時間帯（開始–終了）</th><th>実際の値</th><th>基準</th><th>区分</th></tr></thead><tbody>
+<tr><td><b>連続運転時間</b></td><td class="mono">2026/10/20 09:00–14:10 JST</td><td class="mono">4時間30分</td><td class="mono">4時間0分（上限）</td><td><span class="bd t-danger"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg>ブロック</span></td></tr>
+</tbody></table>
+<span class="hint">区分は文字 + アイコン + 色で示す。警告は公開を止めない。合格の結果は「合格（違反はありません）」</span>
+<div class="ps-box" data-item="P-S07"><span class="ps-tag">本番版で追加（P-S07）</span>
+<table class="tbl"><thead><tr><th>規則</th><th>時間帯（開始–終了）</th><th>実際の値</th><th>基準</th><th>区分</th></tr></thead><tbody><tr><td><b>休息期間</b></td><td>—</td><td>—</td><td class="mono">9時間0分（下限）</td><td><span class="bd t-neutral">検査していない</span></td></tr></tbody></table>
+<div style="font-size:12px">前の勤務の記録がない運行日は、休息期間を「検査していない」と出す（合格に見せない）。運行日の既定（明日）は変えない。<b class="pin ps">P-S07</b></div></div>
+</section>
+<div class="col" data-item="B-10"><h2 class="st">版の履歴<b class="pin">B-10</b></h2>
+<table class="tbl"><thead><tr><th class="num">版</th><th>ルートの状態</th><th>作成</th><th>最新のチェック</th></tr></thead><tbody>
+<tr><td class="num mono">1　最新</td><td><span class="bd t-neutral"><svg class="i" aria-hidden="true"><use href="#i-file"/></svg>下書き</span></td><td class="mono">2026/10/19 16:40 JST</td><td>不合格（規則セット 第 1 版）</td></tr>
+</tbody></table><span class="hint">新しい順。先頭が最新（編集・チェック・公開の対象）</span></div>
+<div class="card t-neutral" data-item="B-11"><div class="row"><b>▸ このプロトタイプで確認する範囲と、確認しないこと</b><span class="hint">（ページの末尾。折りたたみ）</span><b class="pin">B-11</b></div></div>
+</div></main></div></div></div>
+</figure>
+
+<figure class="fig">
+<figcaption><span class="tag">PC</span>枠 4 — 公開済み / 運行中の版（B-8 再点検）。計画は読むだけ</figcaption>
+<div class="ov"><div class="wf pcw">
+<div class="url"><i></i><i></i><i></i><b>/routes/&lt;ルート ID&gt;</b></div>
+<div class="body">
+<u>ルート計画へ戻る</u>
+<div class="card"><dl class="dl two"><dt>ルート</dt><dd class="mono"><b style="font-size:14px">R-20261020-B42D90</b></dd><dt>ルートの状態</dt><dd><span class="bd t-ok"><svg class="i" aria-hidden="true"><use href="#i-ok"/></svg>公開済</span></dd><dt>版</dt><dd class="mono">1</dd><dt>運行日</dt><dd class="mono">2026/10/20</dd><dt>下書きの番号</dt><dd class="mono">2</dd><dt>使った規則セット</dt><dd class="mono">第 1 版</dd></dl></div>
+<span class="hint">（模擬の案内は枠 3 と同じ）</span>
+<h2 class="st">停車地</h2>
+<div class="ban t-ok" role="status"><svg class="i l" aria-hidden="true"><use href="#i-lock"/></svg><div class="tt">この版は公開済みのため、変更できません（変更するときは新しい版を作ります）</div></div>
+<dl class="dl two"><dt>ドライバー</dt><dd>D2　ドライバー D2</dd><dt>車両</dt><dd>VH-C01　冷蔵車 1 号 <span class="tb-chip tb-chl"><svg class="i" aria-hidden="true"><use href="#i-therm"/></svg>冷蔵 0〜5 °C</span></dd><dt>出発するデポ</dt><dd>DEPOT-01　センター（デポ、模擬）</dd><dt>計画の封印番号</dt><dd class="mono">S-4480</dd><dt>出発時刻（JST）</dt><dd class="mono">09:30</dd></dl>
+<span class="hint">（停車地の表は読むだけ。荷役・休憩は数字で出し、並べ替えの列は出さない）</span>
+<div class="col" data-item="B-8"><div class="row"><span class="btn" role="button">再点検</span><b class="pin">B-8</b><span class="hint">処理中は「再点検中…」。保存・チェック・公開のボタンの代わりに出す</span></div>
+<span class="hint" style="color:#111">公開後に、同じドライバーのほかのルートを公開するなどで勤務履歴が変わったときは、出発の前に再点検します。不合格のときは出発できません</span>
+<div class="ban t-ok" role="status"><svg class="i l" aria-hidden="true"><use href="#i-ok"/></svg><div class="tt">再点検に合格しました（規則セット 第 1 版）。出発できます</div></div>
+<span class="hint">不合格は緑にせず、エラーの色の 1 文: 再点検しました。違反が 1 件あります。このままでは出発できません。ルートの見直しが必要です</span></div>
+<div class="ps-box"><span class="ps-tag">設計補遺で追加（SCR19_ROUTE_PLANNING_DESIGN_ADDENDUM.md 4.1 F-1〜F-6・G-1〜G-2）</span><div style="font-size:12px"><b>設計補遺で追加する区画（この図の対象外）:</b> 公開済み / 運行中の版の「変更する（新しい版）」・変更の理由（必須）・「この理由で新しい版を作る」、版の履歴の列「前の版」「変更理由」、変えられない配送の表示、「ルートを取消」（F-1〜F-6）。地図の本番化では模擬の案内を「見積の提供元・取得日時」「見積の状態」（G-1・G-2）に置き換える。</div></div>
+</div></div></div>
+</figure>
+
+<figure class="fig">
+<figcaption><span class="tag">PC</span>枠 5 — 処理不可のダイアログ（A-18・A-19）。例: 枠 1 の入力で「ルートを作成」→ 車両がほかのルートで使用中。詳細画面でも同じ</figcaption>
+<div class="ov"><div class="wf pcw"><div class="url"><i></i><i></i><i></i><b>/routes</b></div>
+<div class="dim"><div class="bgp">（背景: ルート計画の画面。ダイアログを閉じると一覧を読み直す）</div>
+<div class="dlg" role="alertdialog" aria-label="処理不可" data-item="A-18"><h4><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg>処理不可<b class="pin">A-18</b></h4>
+<div>この車両は、同じ運行日にほかの未完了のルートがあります</div>
+<div class="vals"><b style="font-size:11.5px">比較した値</b><dl><dt>運行日</dt><dd>2026/10/20</dd><dt>車両</dt><dd>VH-F01</dd><dt>すでにあるルート</dt><dd>R-20261020-7C3E1A</dd><dt>そのルートの状態</dt><dd>下書き</dd></dl></div>
+<div class="nx"><b>次の対応：</b>別の車両を選ぶか、先のルートが終わってから計画してください</div>
+<div class="ft"><span class="btn pri" role="button" data-item="A-19">閉じて続ける<b class="pin">A-19</b></span></div>
+<span class="hint">「ルールコード」の行は出さない（内部の規則名のため）。右上の × はない</span>
+</div></div></div></div>
+</figure>
+</section>
+
+<section class="blk" id="s-notes" aria-labelledby="s-notes-h"><h2 id="s-notes-h"><span class="n">2</span>注釈（画面仕様 4.1 の項目）</h2><p class="sub">4.1 の 39 項目を 1 行ずつ（項目名・Required は 4.1 のまま）。最後の 4 行は PREMISE で本番版に足す部分。設計補遺の F-1〜F-6・G-1〜G-2 は図の対象外（枠 4 の破線の枠に要約）。</p><div class="ov"><table class="doc"><thead><tr><th>ID</th><th>項目名（4.1 の Item Name）</th><th>種別</th><th>Required</th><th>画面での表し方・補足</th></tr></thead><tbody><tr><td class="mono">A-1</td><td>模擬の案内（MockNotice）</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>枠 1 の先頭。「模擬」+ 模擬している部分 + 本番で必要なもの（地図の文言）。</td></tr>
+<tr><td class="mono">A-2</td><td>確認する範囲（折りたたみ）</td><td>折りたたみ（4 値外 — `&lt;details&gt;`）</td><td class="c">-</td><td>折りたたみ。開いたときの 4 項目は「状態」の節。</td></tr>
+<tr><td class="mono">A-3</td><td>運行日</td><td>日付入力（4 値外 — `&lt;input type="date"&gt;`）</td><td class="c">必須</td><td>日付入力。既定は明日（JST）。変えると選択と前の結果を消す。処理中は無効。表示は YYYY/MM/DD。</td></tr>
+<tr><td class="mono">A-4</td><td>未割当の受注（表）</td><td>表示ブロック（4 値外 — 表。選ぶ操作は「受注の選択」）</td><td class="c">-</td><td>列: 選択 / 受注 / 顧客 / SKU / 数量 / SKU の温度帯 / 受注の状態 / 前回、割り当てられなかった理由（なければ「まだ計画していません」）。</td></tr>
+<tr><td class="mono">A-5</td><td>ルートを作る（フォーム）</td><td>表示ブロック（4 値外 — フォームの枠。入力項目は「受注の選択」「ドライバー」「車両」「出発するデポ」「計画の封印番号」「出発時刻」）</td><td class="c">-</td><td>フォームの枠。先頭に作成の結果（A-6）、選択中の件数、5 つの入力欄、「ルートを作成」。</td></tr>
+<tr><td class="mono">A-6</td><td>作成の結果</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>フォームの先頭に出る。「ルート R-… を作成しました（配送 n 件）」+「詳細を開く」。入らなかった受注は件数 + 理由の一覧。</td></tr>
+<tr><td class="mono">A-7</td><td>この日のルート（表）</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>列: ルート / ルートの状態 / 版 / ドライバー / 車両 / 封印 / 出発（「2026/10/20 09:00 JST」）/ 配送（「n 件」）。</td></tr>
+<tr><td class="mono">A-8</td><td>受注の選択</td><td>チェックボックス（4 値外）</td><td class="c">必須</td><td>表の先頭の列。チェック + 選んだ順の番号（= 停車の順）。1 件以上。</td></tr>
+<tr><td class="mono">A-9</td><td>ドライバー</td><td>選択リスト（4 値外）</td><td class="c">必須</td><td>選択リスト。先頭は「選んでください」。選択肢は「コード　名前」。</td></tr>
+<tr><td class="mono">A-10</td><td>車両</td><td>選択リスト（4 値外）</td><td class="c">必須</td><td>選択リスト。選ぶと温度帯のチップを横に出す。</td></tr>
+<tr><td class="mono">A-11</td><td>出発するデポ</td><td>選択リスト（4 値外）</td><td class="c">必須</td><td>選択リスト。</td></tr>
+<tr><td class="mono">A-12</td><td>計画の封印番号</td><td>Text box</td><td class="c">必須</td><td>テキスト（等幅）。補足「積込のとき、この番号と照合します」。</td></tr>
+<tr><td class="mono">A-13</td><td>出発時刻</td><td>時刻入力（4 値外 — `&lt;input type="time"&gt;`）</td><td class="c">必須</td><td>時刻入力。ラベル「出発時刻（JST）」、既定 09:00、補足の文あり。</td></tr>
+<tr><td class="mono">A-14</td><td>ルートを作成</td><td>Button</td><td class="c">-</td><td>送信ボタン。送信中は「作成中…」で押せない。</td></tr>
+<tr><td class="mono">A-15</td><td>詳細を開く</td><td>リンク（4 値外）</td><td class="c">-</td><td>作成の結果の中のリンク。ルート詳細へ移る。</td></tr>
+<tr><td class="mono">A-16</td><td>ルートのコード（詳細へのリンク）</td><td>リンク（4 値外）</td><td class="c">-</td><td>「この日のルート」の「ルート」列のリンク。ルート詳細へ移る。</td></tr>
+<tr><td class="mono">A-17</td><td>再試行</td><td>Button</td><td class="c">-</td><td>枠 2。一覧の読み込みで DB に届かないときの表示 +「再試行」。</td></tr>
+<tr><td class="mono">A-18</td><td>処理不可のダイアログ</td><td>ダイアログ（4 値外）</td><td class="c">-</td><td>枠 5。タイトル「処理不可」・理由 1 文・比較した値・次の対応。「ルールコード」の行は業務規則の番号のときだけ（共通仕様 CS-07 7.4）。</td></tr>
+<tr><td class="mono">A-19</td><td>閉じて続ける</td><td>Button</td><td class="c">-</td><td>枠 5。ダイアログの唯一のボタン（右上の × はない）。</td></tr>
+<tr><td class="mono">B-1</td><td>ルート計画へ戻る</td><td>リンク（4 値外）</td><td class="c">-</td><td>枠 3 の先頭のリンク。/routes へ戻る。</td></tr>
+<tr><td class="mono">B-2</td><td>見出し</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>ルート / ルートの状態 / 版 / 運行日 / 下書きの番号 / 使った規則セット（「第 n 版」）。</td></tr>
+<tr><td class="mono">B-3</td><td>MockNotice</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>一覧と同じ地図の模擬の案内。</td></tr>
+<tr><td class="mono">B-4</td><td>下書きの項目</td><td>表示ブロック（4 値外 — 5 つの入力欄を並べる枠。入力項目は下の「ドライバー」「車両」「出発するデポ」「計画の封印番号」「出発時刻」）</td><td class="c">-</td><td>5 つの欄の枠（画面に見出しは出ない）。編集できる版は入力欄、公開済みなどは読むだけ（枠 4）。</td></tr>
+<tr><td class="mono">B-5</td><td>停車地（表）</td><td>表示ブロック（4 値外 — 表。入力項目は「荷役（分）」「休憩（分）」と「並べ替えボタン（↑↓）」）</td><td class="c">-</td><td>列: 順 / 受注 / 顧客 / 到着予定 / 走行（地図の見積り）/ 荷役（分）/ 休憩（分）/ 並べ替え。下に「デポへ戻る走行（地図の見積り）」。</td></tr>
+<tr><td class="mono">B-6</td><td>再チェックの案内</td><td>Label</td><td class="c">-</td><td>黄の案内。3 つの文の出し分けは「状態」の節。</td></tr>
+<tr><td class="mono">B-7</td><td>操作ボタン</td><td>Button</td><td class="c">-</td><td>「保存（下書き）」「運転時間をチェック」「公開」。公開できない理由の文をボタンの下に出す。</td></tr>
+<tr><td class="mono">B-8</td><td>「再点検」（フェーズ 08 — T2）</td><td>Button</td><td class="c">-</td><td>枠 4。公開済み / 運行中の版だけ、保存・チェック・公開の代わりに出す。補足の文あり。</td></tr>
+<tr><td class="mono">B-9</td><td>チェック結果</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>合否・使った規則セット・日時 · チェックした人・要約・違反と警告の表（規則 / 時間帯 / 実際の値 / 基準 / 区分）。</td></tr>
+<tr><td class="mono">B-10</td><td>版の履歴</td><td>表示ブロック（4 値外）</td><td class="c">-</td><td>列: 版（最新に「最新」）/ ルートの状態 / 作成 / 最新のチェック。新しい順。</td></tr>
+<tr><td class="mono">B-11</td><td>確認する範囲（折りたたみ・末尾）</td><td>折りたたみ（4 値外 — `&lt;details&gt;`）</td><td class="c">-</td><td>ページの末尾の折りたたみ（A-2 と同じ文言）。</td></tr>
+<tr><td class="mono">B-12</td><td>再試行</td><td>Button</td><td class="c">-</td><td>枠 2。詳細の読み込みで DB に届かないときの表示 +「再試行」。</td></tr>
+<tr><td class="mono">B-13</td><td>ドライバー</td><td>選択リスト（4 値外）</td><td class="c">必須</td><td>編集できる版だけ入力欄。</td></tr>
+<tr><td class="mono">B-14</td><td>車両</td><td>選択リスト（4 値外）</td><td class="c">必須</td><td>編集できる版だけ入力欄。温度帯のチップを出す。</td></tr>
+<tr><td class="mono">B-15</td><td>出発するデポ</td><td>選択リスト（4 値外）</td><td class="c">必須</td><td>編集できる版だけ入力欄。</td></tr>
+<tr><td class="mono">B-16</td><td>計画の封印番号</td><td>Text box</td><td class="c">必須</td><td>編集できる版だけ入力欄（等幅）。</td></tr>
+<tr><td class="mono">B-17</td><td>出発時刻</td><td>時刻入力（4 値外 — `&lt;input type="time"&gt;`）</td><td class="c">必須</td><td>編集できる版だけ入力欄。値は JST の HH:MM。</td></tr>
+<tr><td class="mono">B-18</td><td>荷役（分）</td><td>Text box</td><td class="c">必須</td><td>停車地の各行の入力欄。0〜1440 の整数。</td></tr>
+<tr><td class="mono">B-19</td><td>休憩（分）</td><td>Text box</td><td class="c">必須</td><td>停車地の各行の入力欄。その停車地の荷役のあとの休憩。0〜1440 の整数。</td></tr>
+<tr><td class="mono">B-20</td><td>並べ替えボタン（↑↓）</td><td>Button</td><td class="c">-</td><td>各行の「1 つ前へ」「1 つ後ろへ」。先頭の前へ・末尾の後ろへは無効。編集できる版だけ。</td></tr>
+<tr><td class="mono">P-S02</td><td>運行日を URL のクエリに載せる</td><td>本番版で追加</td><td class="c">-</td><td>PREMISE P-S02。戻る・再読込・リンクの共有で同じ運行日に戻る（枠 1）。</td></tr>
+<tr><td class="mono">P-S09</td><td>見積のない区間を「未確定」にする</td><td>本番版で追加</td><td class="c">-</td><td>PREMISE P-S09。0 分で進めず、到着予定も未確定。チェックでブロックし公開させない（枠 3）。</td></tr>
+<tr><td class="mono">P-S08</td><td>勤務履歴が変わったことの案内</td><td>本番版で追加</td><td class="c">-</td><td>PREMISE P-S08。チェックのあとで勤務履歴が変わったら画面でも知らせる。サーバーの照合は変えない（枠 3）。</td></tr>
+<tr><td class="mono">P-S07</td><td>休息期間の「検査していない」</td><td>本番版で追加</td><td class="c">-</td><td>PREMISE P-S07。前の勤務がない日は休息期間を「検査していない」と出す。運行日の既定は変えない（枠 3）。</td></tr></tbody></table></div></section>
+<section class="blk" id="s-states" aria-labelledby="s-states-h"><h2 id="s-states-h"><span class="n">3</span>状態バリエーション</h2>
+<p class="sub">主画面の枠に描かなかった状態。文言はアプリの画面の文言どおり（画面仕様 5 章）。</p>
+<div class="grid2">
+<figure class="fig"><figcaption><span class="tag">状態</span>一覧の読み込み中 / 空 / 権限なし</figcaption><div class="wf"><div class="body">
+<div class="ban t-neutral" role="status"><svg class="i l" aria-hidden="true"><use href="#i-load"/></svg><div class="tt">読み込み中…</div></div>
+<div class="ban t-neutral"><svg class="i l" aria-hidden="true"><use href="#i-info"/></svg><div><div class="tt">この日に、ルートへ入れられる受注はありません</div><div class="ds">受注を登録して引当を済ませると、ここに出ます</div></div></div>
+<div class="ban t-neutral"><svg class="i l" aria-hidden="true"><use href="#i-info"/></svg><div><div class="tt">この日のルートはまだありません</div><div class="ds">上の受注を選んで、ルートを作ってください</div></div></div>
+<div class="ban t-danger" role="alert"><svg class="i l" aria-hidden="true"><use href="#i-shield"/></svg><div class="tt">この操作を行う権限がありません</div></div>
+<span class="hint">権限なし: 配送計画者（ROLE-004）以外。見出し + この表示だけで、メニューにも出ない</span>
+</div></div></figure>
+<figure class="fig"><figcaption><span class="tag">状態</span>確認する範囲（折りたたみを開いたとき — A-2・B-11 共通）</figcaption><div class="wf"><div class="body">
+<div class="card t-neutral"><b>▾ このプロトタイプで確認する範囲と、確認しないこと</b>
+<ul style="margin:0;padding-left:18px;font-size:12px"><li>連続運転 4 時間・休憩・休息・拘束時間・平均の運転時間を、規則セットの数値で確認します。確認だけで、最適な順番は提案しません。</li><li>サービスエリア・パーキングエリアが満車のときの延長（4 時間 30 分）は扱いません。</li><li>宿泊を伴う長距離運行の休息 8 時間は扱いません。</li><li>10 分未満の休憩は、休憩として数えません。</li></ul></div>
+</div></div></figure>
+<figure class="fig"><figcaption><span class="tag">状態</span>公開ボタンが押せない理由（B-7 の下の 1 文）</figcaption><div class="wf"><div class="body">
+<table class="tbl"><thead><tr><th>条件</th><th>ボタンの下に出す文</th></tr></thead><tbody>
+<tr><td>公開済み · 運行中など（編集できない版）</td><td>公開済みのルートは、もう公開できません</td></tr>
+<tr><td>保存していない変更がある</td><td>保存していない変更があるため、公開できません</td></tr>
+<tr><td>チェックがまだない</td><td>チェックに合格するまで、公開できません</td></tr>
+<tr><td>チェックのあとに下書きを保存した</td><td>下書きを変更したため、もう一度チェックするまで公開できません</td></tr>
+<tr><td>最新のチェックが不合格</td><td>違反があるため、公開できません</td></tr>
+</tbody></table>
+<span class="hint">押せるのは、編集できる版 · 変更なし · 最新のチェックが今の下書きのもの · 合格 · 状態がチェック済のときだけ。本当の門はサーバー側の公開の処理</span>
+</div></div></figure>
+<figure class="fig"><figcaption><span class="tag">状態</span>再チェックの案内（B-6 の 3 つの文）</figcaption><div class="wf"><div class="body">
+<p class="ban t-warn" style="margin:0"><span class="tt">下書きを変更しました。もう一度チェックしてください</span></p><span class="hint">チェックの結果があり、下書きを変えた（未保存、または保存して結果が古い）</span>
+<p class="ban t-warn" style="margin:0"><span class="tt">変更を保存してから、チェックしてください</span></p><span class="hint">チェックの結果がまだなく、変更がある</span>
+<p class="ban t-warn" style="margin:0"><span class="tt">まだチェックしていません。公開するには、チェックに合格する必要があります</span></p><span class="hint">チェックの結果がまだなく、変更もない</span>
+</div></div></figure>
+<figure class="fig"><figcaption><span class="tag">状態</span>書込みの結果の 1 文（合格・成功だけ緑。不合格はエラーの色）</figcaption><div class="wf"><div class="body">
+<div class="ban t-ok"><svg class="i l" aria-hidden="true"><use href="#i-ok"/></svg><div class="tt">下書きを保存しました（下書きの番号 4）。もう一度チェックしてください</div></div>
+<div class="ban t-ok"><svg class="i l" aria-hidden="true"><use href="#i-ok"/></svg><div class="tt">チェックに合格しました（規則セット 第 1 版）</div></div>
+<div class="ban t-ok"><svg class="i l" aria-hidden="true"><use href="#i-ok"/></svg><div class="tt">ルートを公開しました</div></div>
+<div class="ban t-danger" role="alert"><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg><div class="tt">チェックしました。違反が 1 件あります。直して保存し、もう一度チェックしてください</div></div>
+<div class="ban t-danger" role="alert"><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg><div class="tt">再点検しました。違反が 1 件あります。このままでは出発できません。ルートの見直しが必要です</div></div>
+</div></div></figure>
+<figure class="fig"><figcaption><span class="tag">状態</span>チェック結果: 合格 / 前の下書きの結果</figcaption><div class="wf"><div class="body">
+<p class="ban t-ok" style="margin:0"><svg class="i l" aria-hidden="true"><use href="#i-ok"/></svg><span class="tt">合格（違反はありません）</span></p>
+<span class="hint" style="color:#111">使った規則セット: 第 1 版　2026/10/19 17:30 JST · 配送 太郎</span>
+<div class="ban t-neutral">違反も警告もありません</div>
+<hr style="border:0;border-top:1px dashed #999;width:100%">
+<p class="ban t-danger" style="margin:0"><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg><span class="tt">不合格</span></p>
+<div class="ban t-danger" role="alert"><div class="tt">この結果は、前の下書きのものです</div></div>
+<span class="hint">最新のチェックの下書きの番号が、版の下書きの番号と違うときだけ出る（未保存の変更だけでは出ない）</span>
+</div></div></figure>
+<figure class="fig"><figcaption><span class="tag">状態</span>処理中 / 欄の誤り</figcaption><div class="wf"><div class="body">
+<div class="row"><span class="btn dis" role="button" aria-busy="true">保存中…</span><span class="btn dis" role="button">運転時間をチェック</span><span class="btn dis" role="button">公開</span></div>
+<span class="hint">書込み（作成・保存・チェック・公開）は同時に 1 つだけ。送信中と読み直しが届くまで、運行日・受注の選択・入力欄・停車地・ボタンはすべて無効。押したボタンは「…中…」</span>
+<div class="ban t-danger" role="alert"><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg><div><div class="tt">入力内容に誤りがあります</div><ul><li><u>2 件目の荷役（分）</u>：値の範囲が正しくありません</li></ul></div></div>
+<div class="f" style="max-width:200px"><label>荷役（分）</label><div class="in mono val err"><span>1500</span></div><div class="fe">値の範囲が正しくありません</div><div class="hint">0〜1440 の整数</div></div>
+<span class="hint">欄の誤りはダイアログにせず、欄の直下とフォーム先頭のまとめに出す（読み直さない）。誤りの文は項目エラーの文言</span>
+</div></div></figure>
+<figure class="fig"><figcaption><span class="tag">遮断</span>処理不可のダイアログ — 公開できない受注がある</figcaption><div class="wf"><div class="dim"><div class="bgp">（背景: ルート詳細）</div>
+<div class="dlg"><h4><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg>処理不可</h4><div>公開できない受注が含まれています</div>
+<div class="vals"><b style="font-size:11.5px">比較した値</b><dl><dt>ORD-1020-02</dt><dd>受注の状態（検証済）が公開の条件を満たしていません</dd><dt>ORD-1020-03</dt><dd>引当が不足しています（引当 8 / 受注 12）</dd></dl></div>
+<div class="nx"><b>次の対応：</b>ルートは変更されていません。受注の引当をやり直すか、欠品出荷を確認してから、もう一度公開してください</div>
+<div class="ft"><span class="btn pri" role="button">閉じて続ける</span></div></div></div></div></figure>
+<figure class="fig"><figcaption><span class="tag">遮断</span>処理不可のダイアログ — 車両の温度帯が受注の SKU と合わない（「ルールコード」の行が出る唯一の分岐）</figcaption><div class="wf"><div class="dim"><div class="bgp">（背景: ルート詳細）</div>
+<div class="dlg"><h4><svg class="i l" aria-hidden="true"><use href="#i-x"/></svg>処理不可</h4><div>ロットの温度帯が、保管場所または車両の温度帯と一致しません</div>
+<div class="vals"><dl><dt>ルールコード</dt><dd><span class="mono">BR-TEMP-02</span></dd></dl></div>
+<div class="vals"><b style="font-size:11.5px">比較した値</b><dl><dt>車両</dt><dd>VH-C01</dd><dt>車両の温度帯</dt><dd>冷蔵</dd><dt>対象の受注</dt><dd>1 件</dd></dl></div>
+<div class="nx"><b>次の対応：</b>SKU の温度帯に合う車両を選んでください</div>
+<div class="ft"><span class="btn pri" role="button">閉じて続ける</span></div></div></div></div></figure>
+</div>
+<h3 class="h3">業務ルール — 運転時間の 13 の規則（規則セット 第 1 版の値）<small>判定の値はすべて規則セットから読む。区分はブロックが基本で、警告になるのは休息期間と 1 日の拘束時間だけ</small></h3>
+<div class="ov"><table class="doc"><thead><tr><th>規則（画面の規則名）</th><th>しきい値（第 1 版）</th><th>区分</th><th>時間帯の取り方</th></tr></thead><tbody>
+<tr><td>連続運転時間</td><td>240 分（4 時間）</td><td>ブロック</td><td>区間の最初の運転の開始 – 最後の運転の終了</td></tr>
+<tr><td>休憩の取り方（4 時間ごとの合計）</td><td>4 時間ごとに合計 30 分・1 回 10 分以上</td><td>ブロック</td><td>枠の最初の運転の開始 – 最後の運転の終了</td></tr>
+<tr><td>休息期間</td><td>下限 9 時間（540 分）/ 目標 11 時間（660 分）</td><td>540 分未満 ブロック・660 分未満 警告</td><td>休息の区間（前の勤務・次の勤務を別々に判定）</td></tr>
+<tr><td>1 日の拘束時間</td><td>13 時間で警告 / 15 時間でブロック</td><td>警告 / ブロック</td><td>始業 + しきい値 – 終業</td></tr>
+<tr><td>1 か月の拘束時間</td><td>284 時間（17,040 分）</td><td>ブロック</td><td>月初 00:00 – 翌月初 00:00</td></tr>
+<tr><td>1 年の拘束時間</td><td>3,300 時間（198,000 分）</td><td>ブロック</td><td>年度（4/1〜3/31）</td></tr>
+<tr><td>2 日平均の運転時間</td><td>540 分（9 時間）</td><td>ブロック</td><td>前日 00:00 – 翌々日 00:00</td></tr>
+<tr><td>2 週平均の運転時間</td><td>2,640 分（44 時間）</td><td>ブロック</td><td>14 日の固定ブロック</td></tr>
+<tr><td>年間の時間外労働</td><td>960 時間（57,600 分）</td><td>ブロック</td><td>年度</td></tr>
+<tr><td>地図の走行時間の合計（24 時間）</td><td>1,440 分（ちょうど 24 時間は合格）</td><td>ブロック</td><td>始業 – 終業</td></tr>
+<tr><td>地図に区間がない</td><td>見積のない区間ごとに 1 行</td><td>ブロック</td><td>その区間の出発時刻</td></tr>
+<tr><td>納品日</td><td>到着の日付（JST）= 指定納品日</td><td>ブロック</td><td>到着 – 出発</td></tr>
+<tr><td>デポの営業時間</td><td>05:00–23:00（設定の値）</td><td>ブロック</td><td>出発 – 開始 / 終了 – 帰庫</td></tr>
+</tbody></table></div>
+<h3 class="h3">未割当の理由 4 種<small>作成で入らなかった受注は理由つきで一覧に残す（黙って落とさない）</small></h3>
+<table class="doc"><thead><tr><th>画面の文言</th><th>条件</th></tr></thead><tbody>
+<tr><td>引当済みではありません</td><td>受注が引当済・ピック済でない、または有効な引当がない</td></tr>
+<tr><td>納品日が運行日と一致しません</td><td>指定納品日 ≠ 運行日</td></tr>
+<tr><td>車両の温度帯が、SKU の温度帯と一致しません</td><td>車両の温度帯 ≠ 受注の SKU の温度帯</td></tr>
+<tr><td>顧客の納品先が、地図の表にありません</td><td>顧客に地図の地点がない</td></tr>
+</tbody></table>
+</section>
+
+<section class="blk" id="s-blocked" aria-labelledby="s-blocked-h"><h2 id="s-blocked-h"><span class="n">4</span>遮断される分岐（処理不可・エラー）</h2>
+<p class="sub">画面仕様 5 章「エラー制御」の処理不可の 16 分岐。どれも共通仕様 CS-07 7.4 の「処理不可」ダイアログ（理由 1 文・比較した値・次の対応・「閉じて続ける」）で出し、閉じると読み直す。内部の規則名と API のコードは画面に出さない。「ルールコード」の行は業務規則の番号のときだけで、この画面では 8（温度帯）だけ。運転時間の違反（13 の規則）はダイアログではなく「チェック結果」の表に出す。</p>
+<div class="ov"><table class="doc"><thead><tr><th>#</th><th>遮断される状況</th><th>理由（ダイアログの 1 文）</th><th>比較した値</th><th>次の対応</th></tr></thead><tbody>
+<tr><td>1</td><td>作成: 受注がすでに配送を持つ（全体を却下）</td><td>すでにルートに入っている受注が含まれています</td><td>対象の受注 n 件</td><td>その受注は別のルートに入っています。一覧を読み直して、まだ割り当てていない受注を選んでください</td></tr>
+<tr><td>2</td><td>車両 / ドライバーが同じ運行日に未完了の別のルートを持つ（作成はいつも、保存は替えるときだけ確かめる）</td><td>この車両は、同じ運行日にほかの未完了のルートがあります / このドライバーは、同じ運行日にほかの未完了のルートがあります</td><td>運行日・車両（ドライバー）・すでにあるルート・そのルートの状態</td><td>別の車両を選ぶか、先のルートが終わってから計画してください / 別のドライバーを選ぶか、先のルートが終わってから計画してください</td></tr>
+<tr><td>3</td><td>作成: 絞り込みのあと入れられる受注が 0 件（未割当の行は残す）</td><td>ルートに入れられる受注がありません（すべて割り当てられませんでした）</td><td>割り当てられなかった理由ごとの件数</td><td>受注の状態・納品日・車両の温度帯を確認して、もう一度選んでください</td></tr>
+<tr><td>4</td><td>保存: 版が下書きでない（公開済みなど）。チェックの記録: 運行を終えた版</td><td>このルートは下書きではないため、変更・点検できません。画面を更新してください</td><td>いまの状態</td><td>公開済みのルートは変更できません。最新の内容を読み込みました</td></tr>
+<tr><td>5</td><td>保存・チェック: 送った下書きの番号が古い。公開: ロックを待つ間にドライバー / 下書きが替わった</td><td>下書きがほかの操作で更新されています。最新の内容を読み込んでから、やり直してください</td><td>最新の下書きの番号・送った下書きの番号</td><td>ほかの操作で下書きが更新されました。最新の内容を読み込んだので、内容を確かめてから、もう一度操作してください（公開する前には、もう一度チェックが必要なことがあります）</td></tr>
+<tr><td>6</td><td>保存: 停車地の配送の集合が版と違う</td><td>停車地の一覧が、保存されている配送と一致しません（受注の追加・削除はできません）</td><td>不足している停車地 n 件・余分な停車地 n 件</td><td>停車地の一覧が古くなっています。最新の内容を読み込んだので、もう一度編集してください</td></tr>
+<tr><td>7</td><td>保存: 車両・封印を替えるのに、荷が棚を離れた受注がある</td><td>ピッキング・積込が始まっている荷があるため、車両と封印番号は変更できません</td><td>対象の受注 n 件・車両・いまの封印番号</td><td>ピッキング・積込が始まった荷があるため、車両と封印は変えられません。荷を戻してから変更してください</td></tr>
+<tr><td>8</td><td>保存: 車両の温度帯 ≠ 受注の SKU の温度帯（「ルールコード」の行に業務規則の番号を出す）</td><td>ロットの温度帯が、保管場所または車両の温度帯と一致しません</td><td>車両・車両の温度帯・対象の受注 n 件</td><td>SKU の温度帯に合う車両を選んでください</td></tr>
+<tr><td>9</td><td>チェック: 運行日に有効な規則セットがない</td><td>運行日に有効な運転時間の規則セットがないため、チェックできません</td><td>運行日</td><td>運行日に有効な運転時間の規則セットがありません。管理者に連絡してください</td></tr>
+<tr><td>10</td><td>チェック: 版に出発時刻 / ドライバーがない</td><td>出発時刻とドライバーが未入力のため、チェックできません</td><td>出発時刻・ドライバー</td><td>出発時刻とドライバーを入力して、下書きを保存してからチェックしてください</td></tr>
+<tr><td>11</td><td>チェックの記録・公開: 結果の規則セットが運行日に有効な版でない</td><td>チェックに使った規則セットが、運行日に有効な規則セットではなくなりました。もう一度チェックしてください</td><td>運行日</td><td>規則セットが更新されました。もう一度チェックしてください</td></tr>
+<tr><td>12</td><td>公開: チェック済でない / 今の下書きのチェックがない / 不合格</td><td>運転時間のチェックに合格していないため、公開できません / いまの下書きに対するチェックがないため、公開できません。もう一度チェックしてください / 運転時間のチェックで違反があったため、公開できません</td><td>いまの状態 / 最新の下書きの番号・最新のチェックの下書き番号 / 違反 n 件</td><td>運転時間をチェックして、合格してから公開してください / 下書きを変更したあと、まだチェックしていません。もう一度チェックしてください / 違反を直して保存し、もう一度チェックしてください</td></tr>
+<tr><td>13</td><td>公開: 今の地図で計算し直した走行時間の合計が、チェックの値と違う</td><td>チェックのあとで、地図の走行時間の見積りが変わりました。もう一度チェックしてください</td><td>チェック時の走行時間の合計・いまの走行時間の合計</td><td>地図の見積りが変わりました。もう一度チェックしてください</td></tr>
+<tr><td>14</td><td>公開: 走行時間の合計 &gt; 24 時間</td><td>走行時間の合計が上限（24 時間）を超えているため、公開できません</td><td>走行時間の合計・上限</td><td>走行時間の合計が上限を超えています。停車地を減らすか、ルートを分けてください</td></tr>
+<tr><td>15</td><td>チェックの記録・公開: 同じドライバーの勤務履歴が、チェックの入力を読んだあとで変わった</td><td>ほかのルートの公開などで、ドライバーの勤務履歴が変わりました</td><td>ドライバー</td><td>もう一度チェックしてから公開してください</td></tr>
+<tr><td>16</td><td>公開: 出荷できない受注がある（ルートは変えず、受注も外さない）</td><td>公開できない受注が含まれています</td><td>受注ごとに 1 行「受注コード → 理由」</td><td>ルートは変更されていません。受注の引当をやり直すか、欠品出荷を確認してから、もう一度公開してください</td></tr>
+</tbody></table></div>
+<p class="note">ダイアログにしないもの: 入力の誤り（欄の直下 + まとめ。読み直さない）、権限なし・DB に届かない・想定外のエラー（1 文。読み直さない）。ページの読み込みで未ログインならログイン画面へ移る。</p>
+</section>
+
+<section class="blk" id="s-roles" aria-labelledby="s-roles-h"><h2 id="s-roles-h"><span class="n">5</span>ロール別の表示</h2>
+<table class="doc"><thead><tr><th>ロール</th><th>画面</th><th>API</th></tr></thead><tbody>
+<tr><td>ROLE-004 配送計画者</td><td>一覧・作成・詳細・保存・チェック・公開・再点検</td><td>使える</td></tr>
+<tr><td>ほかのロール</td><td>「この操作を行う権限がありません」の表示だけ。メニューにも出ない</td><td>すべて 403（拒否は監査に残る）</td></tr>
+</tbody></table>
+<p class="note">乗務履歴（ドライバーの勤務の記録）を読めるのは配送計画者だけ。画面は表を直接読まない（画面仕様 6.1）。</p>
+</section>
+
+<section class="blk" id="s-mock" aria-labelledby="s-mock-h"><h2 id="s-mock-h"><span class="n">6</span>模擬の表示の位置</h2>
+<p class="note">模擬している統合: 地図サービス（IF-MAP-01 / FT-101）。走行距離・所要時間はデータベースの固定表の値で、実際の道路・渋滞は反映しない。MockNotice は <code>/routes</code>（A-1）と <code>/routes/&lt;ルート ID&gt;</code>（B-3）の両方に出す。チェックの数値（規則セット）は模擬ではなく実データ。本番化の設計は設計補遺の G-1・G-2（画面仕様 6.3）。</p>
+</section>
+
+<section class="blk" id="s-src" aria-labelledby="s-src-h"><h2 id="s-src-h"><span class="n">7</span>出典と照合</h2>
+<p class="note">LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR19_ROUTE_PLANNING_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p>
+<p class="note">出典: 画面仕様 SCR19_ROUTE_PLANNING_SPEC.md（version 0.4.1）の 4.1（項目 39）・4.2（入力規則）・5 章（イベント・エラー制御）・6 章（6.3 模擬、6.4 運転時間の規則、6.7 仕様との差異、6.8 範囲外）、設計補遺 SCR19_ROUTE_PLANNING_DESIGN_ADDENDUM.md（version 0.1.1）の 4.1、共通仕様 CS-06（DB に届かないとき）・CS-07 7.4（処理不可ダイアログ）・CS-08（JST の時刻）・CS-09（模擬）、PREMISE P-S02・P-S04・P-S07・P-S08・P-S09。画面の文言はアプリの日本語の文言ファイル（ルート計画・規則名・却下の理由・模擬の案内）と同じ。</p>
+<p class="note">図に描かないもの: 規則ごとの算法・チェックの入力と履歴の範囲・作成 / 保存 / 公開の処理の順・ロックと同時実行（画面仕様 6.4〜6.5。画面に出るのは違反の表と処理不可の文だけ）。告示の特例（サービスエリア・パーキングエリア満車の延長・宿泊を伴う休息 8 時間・分割休息・2 人乗務・フェリー）は画面仕様 6.8 の範囲外。</p>
+</section>
+<footer class="src"><p>LAB-4（詳細設計、2026-10-12 提出）に対する講師講評（2026-10-19）の指摘に基づき、画面仕様 SCR19_ROUTE_PLANNING_SPEC.md（version 0.4.1）の 4.1・4.2・5・6 章から作り直した。画面仕様（本文）を正とする。表示している値は仮の例。</p></footer>
+</div></body></html>
