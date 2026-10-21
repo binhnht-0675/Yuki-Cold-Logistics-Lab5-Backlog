@@ -50,7 +50,7 @@ def parse_args(argv):
     p.add_argument("--only-level", help="epic,story,task のうち対象 level（カンマ区切り）")
     p.add_argument("--max-writes", type=int, help="1 回の実行での書き込み上限（バッチ）")
     p.add_argument("--keys", help="close-and-mark / update-body の対象キー（カンマ区切り）")
-    p.add_argument("--force-body", action="store_true", help="update-body で依存以外の差分（手編集）も上書きする")
+    p.add_argument("--force-body", action="store_true", help="update-body で #番号の付け替え以外の差分（手編集）も上書きする")
     p.add_argument("--close-label", default="廃止")
     p.add_argument("--include-closed", action="store_true",
                    help="close-and-mark: 既にクローズ済みの issue も not planned + 廃止ラベルに変える（既定は変えない）")

@@ -13,6 +13,7 @@ from backlog_model import BodyContext, render_body
 from backlog_push_executor import BatchLimit
 from gh_runner import EXIT_RATE_LIMIT_STOP, GhError, RateLimitStop
 from key_map import build_key_map, list_repo_issues, save_key_map
+from key_refs import unlink_keys
 from project_fields import load_field_map
 from write_log import WriteLog
 
@@ -27,7 +28,7 @@ def context(ns, kmap) -> BodyContext:
 
 def content_entries(ns, items):
     """Every string the commands can send to GitHub (all items, whatever --only-level says)."""
-    ctx = context(ns, {})  # issue numbers in 依存 cannot add findings; render without them
+    ctx = context(ns, {})  # issue references (#n) cannot add findings; render the bare keys without them
     for i in items:
         k = i.get("key")
         yield k, "title", i.get("titleJa") or ""
@@ -81,17 +82,6 @@ def cmd_rebuild(ns, runner, P):
     return 0
 
 
-def _without_deps(body: str) -> str:
-    """Body minus the 依存 section (the part update-body is meant to refresh)."""
-    out, skip = [], False
-    for line in body.split("\n"):
-        if line.startswith("## ") or line.startswith("---"):
-            skip = line.strip() == "## 依存"
-        if not skip:
-            out.append(line)
-    return "\n".join(out)
-
-
 class MaintenanceWrites:
     """--max-writes gate + write-ahead log (pending -> done / failed with exit code), like the apply executor."""
 
@@ -135,8 +125,8 @@ def cmd_update_body(ns, items, runner, P):
         old = current[entry["number"]]
         if new == old:
             continue
-        if _without_deps(new) != _without_deps(old) and not ns.force_body:
-            print(f"WARN {item['key']} #{entry['number']}: 依存以外も異なる（手で編集された可能性）ため更新しません。"
+        if unlink_keys(new) != unlink_keys(old) and not ns.force_body:  # whole body: only #n references may differ
+            print(f"WARN {item['key']} #{entry['number']}: #番号の付け替え以外にも違いがある（手で編集された可能性）ため更新しません。"
                   "上書きするなら --force-body")
             continue
         try:

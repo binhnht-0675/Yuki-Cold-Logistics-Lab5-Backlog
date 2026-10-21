@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 from key_map import KEY_CHARS, is_valid_key, marker
+from key_refs import link_keys
 
 LEVEL_RANK = {"epic": 0, "story": 1, "task": 2}
 LEVEL_JA = {"epic": "エピック", "story": "ストーリー", "task": "タスク"}
@@ -80,8 +81,7 @@ def _ref_line(ref: dict, ctx: BodyContext) -> str:
 
 
 def _dep_line(dep: str, ctx: BodyContext) -> str:
-    num = ctx.numbers.get(dep)
-    return f"- #{num}（{dep}）" if num else f"- {dep}"
+    return f"- {link_keys(dep, ctx.numbers)}"
 
 
 def _section(name: str, value, ctx: BodyContext) -> Optional[str]:
@@ -100,6 +100,8 @@ def _section(name: str, value, ctx: BodyContext) -> Optional[str]:
         lines = [f"- {v}" for v in value]
     else:
         lines = [str(value)]
+    if name not in ("参照", "依存"):  # file paths / already 「#n（key）」; every other section links its keys
+        lines = [link_keys(line, ctx.numbers) for line in lines]
     return "\n".join([head] + lines)
 
 

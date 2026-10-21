@@ -25,7 +25,7 @@ metadata:
 | `fetch-field-map` | なし（読み取り） | Project のフィールド ID・選択肢 ID・イテレーション ID を `state/field-map.json` に保存 |
 | `apply` | `--apply` 時のみ | 最初の書き込みの前に field-map を検査（下記）し、現状を読み取って足りない分だけ作成・接続・追加・設定。`--apply` なしは dry-run |
 | `rebuild-key-map` | なし（読み取り） | リポジトリの全 issue を列挙し、キー → #番号 を `state/key-map.json` に再構築（重複キーは exit 1） |
-| `update-body` | `--apply` 時のみ | 本文を再生成し、変わった issue だけ更新（依存キーを #番号 に置き換える用途）。改行コード（CRLF）の違いは差分とみなさない。`依存` 以外も違う issue は手で編集された可能性があるため WARN を出して飛ばす（上書きは `--force-body`、対象を絞るなら `--keys`）。`--max-writes` の対象 |
+| `update-body` | `--apply` 時のみ | 本文を再生成し、変わった issue だけ更新（本文中のキーを #番号 に置き換える用途。対象は 参照 以外のすべての節。依存 は `#番号（キー）`、ほかの節は括弧の外なら `#番号（キー）`、すでに「（…）」の中なら `#番号 キー`。マーカーと末尾の「キー:」行はキーのまま）。差分の判定は #番号 をキーに戻してから比べるため、番号の付け替えだけの違いは上書きし、それ以外の違い（依存の行の追加・削除を含む）は手で編集されたものとみなす。制約: 人が本文に `#番号 キー` や `#番号（キー）` の形で書いた文字列も参照とみなされ、番号が付け替えられる。改行コード（CRLF）の違いは差分とみなさない。`依存` 以外も違う issue は手で編集された可能性があるため WARN を出して飛ばす（上書きは `--force-body`、対象を絞るなら `--keys`）。`--max-writes` の対象 |
 | `close-and-mark` | `--apply` 時のみ | `--keys` の issue をクローズ（not planned）し、`廃止` ラベルを付ける。削除はしない。**既にクローズ済みの issue は変えない**（WARN を出して飛ばす。完了でクローズした issue のクローズ理由を not planned に変えないため）。クローズ済みも not planned と `廃止` にするときだけ `--include-closed` を付ける。`廃止` が既に付いていれば付け直さない。`--max-writes` の対象 |
 
 主なオプション: `--repo owner/name`、`--project 番号`、`--owner`、`--ref-style permalink|text`、
@@ -44,7 +44,7 @@ metadata:
 4. 人の承認後、`apply --apply --only-level epic` で最初のバッチを流し、GitHub 上で 1〜2 件を目視確認。
 5. 問題なければ `--only-level story`、`--only-level task` と進める。`--max-writes` で区切ってもよい。
    数百件以上は数時間かかる（下記「レート制限と所要時間」）。途中で止まったら「冪等性と再開」の手順で続ける。
-6. 最後に `rebuild-key-map` で件数・親子・Project 追加数を確認する。依存の #番号 化は `update-body`。
+6. 最後に `rebuild-key-map` で件数・親子・Project 追加数を確認する。本文中のキーの #番号 化（依存とほかの節）は `update-body`。
 
 ## field-map の検査（`apply` は最初の書き込みの前、`plan` は field-map があるとき）
 次のどれかに当たれば、GitHub への書き込み 0 件のまま exit 2 で止まる（`apply` は GitHub に接続する前に検査し、
@@ -156,6 +156,8 @@ GitHub には内容を作る要求（issue・sub-issue・コメントなど）�
 ## 本文の形式
 見出しは `bodyJa` のキー名（`概要`・`対象機能（FT）`・`参照（詳細設計）`・`規模の手がかり`・
 `完了の定義`（チェックボックス）・`依存`・`備考`）。末尾に「種別・層・担当（仮）・キー」の 1 行。
+`参照` 以外の節に書いたキーは、issue 番号が分かれば `#番号（キー）`（「（…）」の中では `#番号 キー`）にする
+（`../_shared/key_refs.py`。PREMISE などの Markdown は同じ関数で `[#番号](…/issues/番号)` の形）。
 `--ref-style permalink` は `https://github.com/<repo>/blob/<ref>/<specs-root>/<path>` へのリンク、
 `text` はファイル名＋節＋版表示（リンクなし。公開リポジトリから非公開リポジトリへリンクしない場合）。
 
