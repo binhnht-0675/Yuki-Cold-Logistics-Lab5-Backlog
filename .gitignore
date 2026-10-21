@@ -22,3 +22,14 @@ AGENTS.md
 # Local scratch
 _tmp*/
 *.log
+
+# Python / test caches and the untranslated original SWP report (kept outside the repo)
+__pycache__/
+*.pyc
+.pytest_cache/
+private/
+
+# Skill working state (logs, snapshots, key map) — never published
+state/
+snapshots/
+*.csv
