@@ -94,6 +94,14 @@ class NewRulesTest(unittest.TestCase):
             with self.subTest(text=t):
                 self.assertEqual(cg.scan_text(t, ALLOWED), [])
 
+    def test_percent_encoded_tail_of_allowed_url_is_scanned_decoded(self):
+        """Review 21/10 phase 07 (team 2): the tail was decoded only for the `..` check, so an encoded path slipped."""
+        for t in [GH + ALLOWED + "/blob/main%2fplan" + "s%2fhidden", GH + ALLOWED + "/blob/main%252fplan" + "s%252fx",
+                  GH + ALLOWED + "/tree/x?p=%7e%2f" + "Claude"]:
+            with self.subTest(text=t):
+                self.assertIn("path", cats(t))
+        self.assertEqual(cg.scan_text(GH + ALLOWED + "/issues?q=is%3Aopen%20label%3Abug", ALLOWED), [])
+
     def test_allow_repo_list(self):
         url = GH + "example-org/sample-repo/issues/1"
         self.assertEqual(cg.scan_text(url, [ALLOWED, "example-org/sample-repo"]), [])

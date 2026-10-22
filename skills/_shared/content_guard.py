@@ -12,9 +12,10 @@ Each line is checked on its NFKC view with the invisible characters removed (ful
 soft hyphens, tag characters ... cannot hide a match); `ctrl` is checked on the original line and
 reported positions are columns of the original line.
 For a GitHub URL to an allowed repo (`--repo`, compared case-insensitively) only the
-`https://github.com/<owner>/<repo>` part is exempt; the path / query after it is still scanned and a
-`/..` that climbs out of the repo is blocked. `github.com/users|orgs/<owner>/projects/N` is allowed
-for the owner of an allowed repo.
+`https://github.com/<owner>/<repo>` part is exempt; the path / query after it is still scanned, both as
+written and percent-decoded (all layers), and a `/..` that climbs out of the repo is blocked.
+`github.com/users|orgs/<owner>/projects/N` is allowed for the owner of an allowed repo.
+A bare allowed `owner/name` token (not inside a URL) is exempt too.
 Secrets, emails and internal URLs are never echoed (rule + length only).
 The patterns live in content_guard_rules.py (re-exported here).
 """
@@ -78,19 +79,54 @@ def _allowed(allow_repo: AllowRepo) -> Tuple[set, set]:
     return repos, {r.split("/", 1)[0] for r in repos}
 
 
-def _github_urls(view: str, repos: set, owners: set) -> Tuple[str, list]:
-    """Blank the exempt part of allowed GitHub URLs; return (cleaned view, [(start, label)] of other repos)."""
-    clean, other = view, []
+def _fully_unquoted(text: str) -> str:
+    """Percent-decode until stable (at most 4 layers, so %252f cannot hide a slash)."""
+    for _ in range(4):
+        decoded = urllib.parse.unquote(text)
+        if decoded == text:
+            break
+        text = decoded
+    return text
+
+
+def _github_urls(view: str, repos: set, owners: set) -> Tuple[str, list, list]:
+    """Blank the exempt part of allowed GitHub URLs.
+
+    -> (cleaned view, [(start, label)] of other repos, [(start, decoded tail)] of allowed URLs whose tail
+    changes when percent-decoded: the rules scan that decoded form too)."""
+    clean, other, decoded = view, [], []
     for m in GITHUB_URL_RX.finditer(view):
         first, second = m.group(1).lower(), m.group(2).lower()
         ok = (first in PROJECT_OWNER_SEGMENTS and second in owners) or f"{first}/{second}" in repos
-        tail = urllib.parse.unquote(re.match(r"\S*", view[m.end():]).group(0))  # the rest of this URL
+        raw = re.match(r"\S*", view[m.end():]).group(0)  # the rest of this URL
+        tail = _fully_unquoted(raw)
         if ok and not TRAVERSAL_RX.search(tail.split("#", 1)[0].split("?", 1)[0]):
             clean = clean[:m.start()] + " " * (m.end() - m.start()) + clean[m.end():]
+            if tail != raw:
+                decoded.append((m.end(), normalized_view(tail)[0]))
         else:
             owner = m.group(2) if first in PROJECT_OWNER_SEGMENTS else m.group(1)
             other.append((m.start(), f"（{owner}/… 許可リポジトリ外）"))
-    return clean, other
+    return clean, other, decoded
+
+
+def _blank_repo_names(view: str, repos: set) -> str:
+    """Blank a bare allowed `owner/name` token (e.g. a recorded `--repo` value): the repo is public by design, so its
+    own name must not trip a term rule (the submission repo name itself contains a course term). Whole tokens only."""
+    for repo in repos:
+        rx = re.compile(r"(?<![\w./-])" + re.escape(repo) + r"(?![\w-])", re.I)
+        view = rx.sub(lambda m: " " * len(m.group(0)), view)
+    return view
+
+
+def _first_hit(category: str, rx, targets):
+    """(text, tail start or None, match) of the first match of `rx` over `targets`, or None."""
+    for text, at in targets:
+        for m in rx.finditer(text):
+            if category == "email" and EMAIL_OK_RX.search(m.group(0)):
+                continue
+            return text, at, m
+    return None
 
 
 def scan_text(text: str, allow_repo: AllowRepo = None) -> List[Tuple[str, str, int, int, str, str]]:
@@ -104,16 +140,24 @@ def scan_text(text: str, allow_repo: AllowRepo = None) -> List[Tuple[str, str, i
             section = line[3:].strip()
         view, idx = normalized_view(line)
         col = (lambda p: p + 1) if idx is None else (lambda p: idx[p] + 1)
-        clean, other = _github_urls(view, repos, owners)
+        clean, other, decoded = _github_urls(view, repos, owners)
+        clean = _blank_repo_names(clean, repos)
         out += [("internal", "github-other-repo", n, col(s), section, label) for s, label in other]
         for category, rule, rx in RULES:
-            target = line if category == "ctrl" else clean
-            for m in rx.finditer(target):
-                if category == "email" and EMAIL_OK_RX.search(m.group(0)):
-                    continue
-                pos = m.start() + 1 if category == "ctrl" else col(m.start())
-                out.append((category, rule, n, pos, section, _excerpt(category, view, m.start(), m.end(), m.group(0))))
-                break
+            if category == "ctrl":
+                targets = [(line, None)]
+            else:
+                targets = [(clean, None)] + [(tail, at) for at, tail in decoded]
+            hit = _first_hit(category, rx, targets)
+            if hit:
+                text, at, m = hit
+                if at is None:
+                    pos = m.start() + 1 if category == "ctrl" else col(m.start())
+                    excerpt = _excerpt(category, view, m.start(), m.end(), m.group(0))
+                else:  # found only in a percent-decoded URL tail: report the tail's column
+                    pos = col(at)
+                    excerpt = _excerpt(category, text, m.start(), m.end(), m.group(0))
+                out.append((category, rule, n, pos, section, excerpt))
     return out
 
 
