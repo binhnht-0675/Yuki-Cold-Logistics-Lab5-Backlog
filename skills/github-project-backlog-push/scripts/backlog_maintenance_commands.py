@@ -113,6 +113,7 @@ def cmd_update_body(ns, items, runner, P):
     issues = list_repo_issues(runner, ns.repo)
     kmap = build_key_map(issues)
     current = {i["number"]: (i.get("body") or "").replace("\r\n", "\n") for i in issues}  # UI edits use CRLF
+    titles = {i["number"]: i.get("title") or "" for i in issues}
     ctx, changed = context(ns, kmap), 0
     w = MaintenanceWrites(WriteLog(P["log"], SKILL, "update-body"), ns.apply, ns.max_writes)
     only = set(k for k in (ns.keys or "").split(",") if k)
@@ -121,21 +122,23 @@ def cmd_update_body(ns, items, runner, P):
         entry = kmap.get(item["key"])
         if not entry or (only and item["key"] not in only):
             continue
-        new = render_body(item, ctx)
-        old = current[entry["number"]]
-        if new == old:
+        new, title = render_body(item, ctx), item.get("titleJa") or ""
+        old, old_title = current[entry["number"]], titles[entry["number"]]
+        if new == old and title == old_title:
             continue
         if unlink_keys(new) != unlink_keys(old) and not ns.force_body:  # whole body: only #n references may differ
             print(f"WARN {item['key']} #{entry['number']}: #番号の付け替え以外にも違いがある（手で編集された可能性）ため更新しません。"
                   "上書きするなら --force-body")
             continue
+        patch = {"body": new} if title == old_title else {"title": title, "body": new}  # one PATCH, one write
         try:
-            w.write(item["key"], entry["number"], "body", h(old), h(new), lambda n=entry["number"], b=new:
-                    runner.api_json(f"repos/{ns.repo}/issues/{n}", "PATCH", {"body": b}, write=True))
+            w.write(item["key"], entry["number"], "body" if len(patch) == 1 else "title+body", h(old), h(new),
+                    lambda n=entry["number"], b=patch: runner.api_json(f"repos/{ns.repo}/issues/{n}", "PATCH", b, write=True))
         except BatchLimit:
             return batch_stop(ns, item["key"])
         changed += 1
-        print(("" if ns.apply else "[dry-run] ") + f"本文更新 {item['key']} #{entry['number']} {h(old)} → {h(new)}")
+        print(("" if ns.apply else "[dry-run] ") + f"本文更新 {item['key']} #{entry['number']} {h(old)} → {h(new)}"
+              + ("" if len(patch) == 1 else f"・題名「{old_title}」→「{title}」"))
     print(f"本文更新: {changed} 件" + ("" if ns.apply else "（dry-run）"))
     return 0
 
