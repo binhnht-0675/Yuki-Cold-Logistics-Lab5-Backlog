@@ -24,7 +24,7 @@
     {
       "id": 4,
       "prompt": "代表 issue について、スキルの評価と担当者の確定、調整の理由を日本語版で見せて。",
-      "expected_output": "日本語版の「校正（代表 issue の確認）」表に issue・選定理由・スキルの評価（Scope × Complexity → SWP）・担当者の確定（同）・調整の理由が並ぶ。確定や理由が埋め込みデータにない場合は「—」で、照合表の代表 issue 表にも同じ内容が出る。全数値に data-v があり check は合格。",
+      "expected_output": "日本語版の「校正（代表 issue の確認）」表に issue・選定理由・スキルの評価（SWP）・担当者の確定（SWP）・調整の理由が並ぶ。確定や理由が埋め込みデータにない場合は「—」で、照合表の代表 issue 表にも同じ内容が出る。全数値に data-v があり check は合格。",
       "files": [
         "../_shared/tests/fixtures/example-estimate-swp-original.html"
       ]

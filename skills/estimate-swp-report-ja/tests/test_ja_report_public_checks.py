@@ -51,30 +51,33 @@ class PublicChecksTest(RenderJaBase):
         self.write(tr, json.dumps({"x": NFD_VI}))
         self.assertEqual(self.render("--translations", tr, "--force").returncode, 2)
 
-    def test_scope_complexity_and_person_columns(self):
-        def confirm(d):
-            d["corrections"] = [{"representative": {"sourceType": "github", "issueRef": REP}, "approvedScope": 2,
-                                 "approvedComplexity": 1, "issueSpecific": False, "rationale": "チームの基準どおり"}]
-            rep = next(i for i in d["issues"] if i["issueRef"] == REP)
-            rep["calibration"].update(status="approved", approvedScope=2, approvedComplexity=1)
-        alt = self.variant(confirm)
-        self.assertEqual(self.render(original=alt).returncode, 0)
-        r = self.check(original=alt)
+    def test_person_columns_as_swp_and_axes_only_in_the_verification_table(self):
+        # Decision 2A: the report shows SWP only; S x C stays in the embedded payload and the 照合表.
+        self.render()
+        r = self.check()
         self.assertEqual(r.returncode, 0, r.stdout)
+        self.assertIn("PASS 表示部に Scope × Complexity の表記", r.stdout)
         doc = self.read(self.ja)
-        for head in ("スキルの評価（Scope × Complexity → SWP）", "担当者の確定（Scope × Complexity → SWP）", "調整の理由"):
+        for head in ("スキルの評価（SWP）", "担当者の確定（SWP）", "調整の理由"):
             self.assertIn(head, doc)
-        self.assertIn(f'data-v="rep|{REP}|ascope">2<', doc)
-        self.assertIn(f'data-v="rep|{REP}|acomplexity">1<', doc)
+        self.assertIn(f'data-v="rep|{REP}|initial">3<', doc)
+        self.assertIn(f'data-v="rep|{REP}|final">3<', doc)
         self.assertIn("チームの基準どおり", doc)
-        for n in range(4, 9):
-            self.assertIn(f'data-v="issue|example-org/sample-repo#{n}|fscope">', doc)
-            self.assertIn(f'data-v="issue|example-org/sample-repo#{n}|icomplexity">', doc)
+        self.assertNotRegex(doc, r'data-v="[^"]*\|(i|f|a)(scope|complexity)"')
         self.assertIn("| #5 | 2 × 1 → 3 | 2 × 1 → 3 | チームの基準どおり |", self.read(self.md))
 
     def test_missing_reason_shows_dash_and_is_noted(self):
-        self.render()
-        self.assertEqual(self.check().returncode, 0)
+        # Without the correction the source schema rejects an accepted run: only that item fails.
+        def drop(d):
+            d["corrections"] = []
+            rep = next(i for i in d["issues"] if i["issueRef"] == REP)
+            rep["calibration"].update(status="unchanged", approvedScope=None, approvedComplexity=None)
+        alt = self.variant(drop)
+        self.assertEqual(self.render(original=alt).returncode, 0)
+        r = self.check(original=alt)
+        self.assertEqual(r.returncode, 1, r.stdout)
+        self.assertEqual([x for x in r.stdout.splitlines() if x.startswith("FAIL")],
+                         ["FAIL 埋め込みデータ（全項目）が原本スキルの validate_payload に合格 missing-correction corrections"])
         self.assertIn("| #5 | 2 × 1 → 3 | — | —（埋め込みデータに理由なし） |", self.read(self.md))
 
     def test_issue_term_replaces_kadai(self):

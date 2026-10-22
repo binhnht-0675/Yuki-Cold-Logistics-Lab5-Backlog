@@ -1,39 +1,40 @@
 """Checks for the JA report (lang, no Vietnamese, numbers = payload, no bare numbers, sums, provenance,
-offline) + 照合表."""
+offline, no Scope x Complexity in the visible part, the embedded payload) + 照合表."""
 from __future__ import annotations
 
 import hashlib
 import json
 import re
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from estimate_swp_payload import REVIEWED_CALIBRATION
+from ja_report_axis_guard import visible_axis_errors
+from ja_report_block_numbers import block_row_name
+from ja_report_enum_values import enum_values
 from ja_report_html import render
+from ja_report_interaction import SCRIPT
 from ja_report_layout_check import layout_errors, translation_errors, value_keys
 from ja_report_numbers import (approval_errors, compare_numbers, parent_sum_errors, required_keys, scan_markers)
+from ja_report_payload_check import payload_checks
 from ja_report_public_guard import allowed_repo, findings, html_entries
 from ja_report_text import TextPolicy, approval, canonical_sha256, fmt, short_ref, vi_count
 
 EMBED_RX = re.compile(r'<script id="report-data-ja" type="application/json">(.*?)</script>', re.S)
-ENUM_GROUPS = [("discipline", "primaryDiscipline"), ("workType", "workType"), ("confidence", "confidence"),
-               ("evidenceStatus", "evidenceStatus")]
+SCRIPT_RX = re.compile(r"<script\b([^>]*)>(.*?)</script>", re.S | re.I)
+UNTRANSLATED = "訳のない自由記述 0（日本語でない記述は訳文で置き換え）"
+AXIS = "表示部に Scope × Complexity の表記・軸の値がない（埋め込みデータと折りたたみの「技術的な詳細」を除く）"
+OFFLINE = "外部読み込み・スクリプトなし（固定の表示用スクリプトだけ）"
 
 
-def enum_values(payload: dict) -> Iterator[Tuple[str, object]]:
-    """Every (label group, value) the report shows through the label map (render: ja_report_html*.py)."""
-    run = payload.get("run") or {}
-    yield "processingLevel", run.get("processingLevel", "medium")
-    yield "runCalibration", run.get("calibrationStatus")
-    for i in payload.get("issues", []):
-        yield from ((g, i.get(f)) for g, f in ENUM_GROUPS)
-        yield "issueCalibration", (i.get("calibration") or {}).get("status")
-    for p in payload.get("parents", []):
-        yield "issueType", p.get("issueType")
-        yield "aggregationStatus", p.get("aggregationStatus")
-    for r in payload.get("representatives") or []:
-        yield from (("selectionReason", s) for s in r.get("selectionReasons") or [])
-
-
+def offline_ok(ja_html: str) -> bool:
+    """Only JSON data blocks and the one fixed display script; no handler, external load or foreign link."""
+    scripts = SCRIPT_RX.findall(ja_html)
+    plain = [body for attrs, body in scripts if 'type="application/json"' not in attrs]
+    if any(attrs.strip() and 'type="application/json"' not in attrs for attrs, _ in scripts) or plain not in ([], [SCRIPT]):
+        return False
+    rest = SCRIPT_RX.sub(" ", ja_html)
+    return (not re.search(r"\son\w+\s*=", rest, re.I) and not re.search(r"<(link|img|iframe|object|embed)\b|\ssrc\s*=", rest, re.I)
+            and all(h.startswith("https://github.com/") for h in re.findall(r'href="([^"]*)"', rest)))
 def _detail(items: List[str], label: str) -> str:
     return f"{label} {len(items)}" + (": " + " / ".join(items[:3]) if items else "")
 
@@ -64,6 +65,12 @@ def run_checks(ja_html: str, original_bytes: bytes, payload: dict, labels: dict,
     wrong = translation_errors(translations, payload)
     checks.append(("訳文（原文が埋め込みデータにある・数値が原文と同じ）", not wrong,
                    _detail(wrong, "不一致") if translations else "訳なし"))
+    embedded_checks, payload_omitted = payload_checks(ja_html, payload, translations)
+    missing_tr = policy.omitted + payload_omitted
+    checks.append((UNTRANSLATED, missing_tr == 0, f"{policy.omitted} 件・埋め込みデータ {payload_omitted} 件"
+                   + ("（訳文を --translations で渡す）" if missing_tr else "")))
+    axis = visible_axis_errors(ja_html)
+    checks.append((AXIS, not axis, _detail(axis, "該当")))
     blocked = [s.replace("|", "／") for s in findings(html_entries(ja_html), allowed_repo(payload, repo))
                if s.startswith("BLOCKED")]
     checks.append(("内容検査（公開リポジトリに出せない内容がない）", not blocked, _detail(blocked, "該当")))
@@ -81,11 +88,8 @@ def run_checks(ja_html: str, original_bytes: bytes, payload: dict, labels: dict,
     ok_src = emb.get("sourceSha256") == src_sha
     ok_pay = emb.get("sourcePayloadSha256") == canonical_sha256(payload)
     checks.append(("出所（原本 sha256・データ sha256）", ok_src and ok_pay, f"原本 {'一致' if ok_src else '不一致'} / データ {'一致' if ok_pay else '不一致'}"))
-    scripts = re.findall(r"<script\b[^>]*>", ja_html, re.I)
-    offline = (all('type="application/json"' in s for s in scripts) and not re.search(r"\son\w+\s*=", ja_html, re.I)
-               and not re.search(r"<(link|img|iframe)\b|\ssrc\s*=", ja_html, re.I)
-               and all(h.startswith("https://github.com/") for h in re.findall(r'href="([^"]*)"', ja_html)))
-    checks.append(("外部読み込み・スクリプトなし", offline, ""))
+    checks.append((OFFLINE, offline_ok(ja_html), ""))
+    checks += embedded_checks
     unmapped = sorted({f"{g}:{v}" for g, v in enum_values(payload) if v is not None and v not in labels.get(g, {})})
     checks.append(("列挙値の日本語化", not unmapped, ", ".join(unmapped[:5])))
     cal = (payload.get("run") or {}).get("calibrationStatus")
@@ -94,17 +98,17 @@ def run_checks(ja_html: str, original_bytes: bytes, payload: dict, labels: dict,
     return checks, rows
 
 
-FIELD_JA = {"final": "最終 SWP", "final2": "確定欄の SWP", "initial": "初期 SWP", "children": "子の数",
-            "iscope": "初期 Scope", "icomplexity": "初期 Complexity", "fscope": "確定 Scope",
-            "fcomplexity": "確定 Complexity", "ascope": "担当者確定 Scope", "acomplexity": "担当者確定 Complexity",
-            "count": "件数", "swp": "SWP", "issues": "issue 数", "parents": "親の数", "corrections": "修正数",
-            "rules": "ルール数", "high": "高", "medium": "中", "low": "低"}
+FIELD_JA = {"final": "最終 SWP", "initial": "初期 SWP", "children": "子の数", "count": "件数", "swp": "SWP",
+            "issues": "issue 数", "parents": "親の数", "corrections": "修正数", "rules": "ルール数", "high": "高", "medium": "中", "low": "低"}
 SUM_JA = {"total": "SWP 合計", "count": "", "conf": "確信度", "split": "分割提案", "needs": "分解が必要な親"}
 NOTE_JA = {"omitted": "省略した記述", "translated": "訳文に置換した記述"}
 
 
 def row_name(key: str, labels: dict) -> str:
     kind, ident, field = key.split("|")
+    block = block_row_name(kind, ident, field, labels)
+    if block:
+        return block
     if kind == "sum":
         return f"要約 {SUM_JA.get(ident, ident)} {FIELD_JA.get(field, field)}".replace("  ", " ").strip()
     if kind == "wt":

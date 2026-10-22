@@ -26,6 +26,7 @@ from estimate_swp_payload import extract_payload  # noqa: E402
 from ja_report_check import run_checks, verification_md  # noqa: E402
 from ja_report_html import render  # noqa: E402
 from ja_report_layout_check import translation_errors  # noqa: E402
+from ja_report_payload import embedded_copy  # noqa: E402
 from ja_report_public_guard import allowed_repo, command_line, findings, html_entries  # noqa: E402
 from ja_report_text import TextPolicy, check_payload_shape, load_labels, skill_version, vi_count  # noqa: E402
 
@@ -97,8 +98,9 @@ def cmd_render(ns):
     os.makedirs(os.path.dirname(os.path.abspath(ns.out)), exist_ok=True)
     with open(ns.out, "w", encoding="utf-8") as fh:
         fh.write(doc)
-    print(f"日本語版: {ns.out}（issue {len(payload.get('issues', []))} 件、ベトナム語の記述の省略 {policy.omitted} 件、"
-          f"訳文に置換 {policy.translated} 件）")
+    _, in_payload = embedded_copy(payload, translations)
+    print(f"日本語版: {ns.out}（issue {len(payload.get('issues', []))} 件、訳のない記述の省略 {policy.omitted} 件、"
+          f"訳文に置換 {policy.translated} 件。埋め込みデータ: 省略 {in_payload.omitted} 件、置換 {in_payload.translated} 件）")
     return 0
 
 

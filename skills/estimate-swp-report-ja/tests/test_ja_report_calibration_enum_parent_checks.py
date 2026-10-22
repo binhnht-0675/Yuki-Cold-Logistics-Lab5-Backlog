@@ -7,6 +7,8 @@ import unittest
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import test_ja_report_public_checks as public_checks  # noqa: E402
+from ja_report_block_fixtures import extract_payload  # noqa: E402
+from ja_report_numbers import parent_sum_errors  # noqa: E402
 from test_render_estimate_report_ja import RenderJaBase  # noqa: E402
 
 
@@ -28,7 +30,19 @@ class CalibrationEnumParentChecksTest(RenderJaBase):
             os.remove(self.ja)
 
     def test_calibrated_report_passes(self):
-        r = self.checked(lambda d: d["run"].update(calibrationStatus="calibrated"))
+        def calibrated(d):  # a valid calibrated run: the person moves #5 from 2 x 1 (3 SWP) to 3 x 1 (4 SWP)
+            d["run"]["calibrationStatus"] = "calibrated"
+            five = next(i for i in d["issues"] if i["issueRef"] == public_checks.REP)
+            five.update(finalScope=3, finalSWP=4)
+            five["calibration"].update(approvedScope=3, scopeBandDelta=1)
+            d["corrections"][0]["approvedScope"] = 3
+            moved = {five["issueRef"]}
+            for _ in d["parents"]:
+                for p in d["parents"]:
+                    if p["issueRef"] not in moved and moved & set(p.get("childRefs") or []):
+                        p["finalSWP"] += 1
+                        moved.add(p["issueRef"])
+        r = self.checked(calibrated)
         self.assertEqual(r.returncode, 0, r.stdout)
         self.assertIn("PASS 校正済み", r.stdout)
 
@@ -51,10 +65,13 @@ class CalibrationEnumParentChecksTest(RenderJaBase):
             refs["example-org/sample-repo#8"]["finalSWP"] = None  # sums still hold if a missing SWP counted as 0
             refs["example-org/sample-repo#3"]["finalSWP"] = 8
             refs["example-org/sample-repo#1"]["finalSWP"] = 19
-        r = self.checked(mutate)
+        alt = self.variant(mutate)
+        r = self.render(original=alt)  # the source formulas need every finalSWP: render stops, writes nothing
         self.assertEqual(r.returncode, 1, r.stdout)
-        self.assertIn("FAIL 親 = 子の合計", r.stdout)
-        self.assertIn("#8", next(x for x in r.stdout.splitlines() if "親 = 子の合計" in x))
+        self.assertIn("ERROR 埋め込みデータの形式が想定と違います", r.stdout)
+        self.assertFalse(os.path.exists(self.ja))
+        payload = extract_payload(self.read(alt))
+        self.assertTrue(any("#8" in x for x in parent_sum_errors(payload)), parent_sum_errors(payload))
 
 
 if __name__ == "__main__":

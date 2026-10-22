@@ -4,11 +4,13 @@ Both files go to a public repository, so before writing them every text a reader
 link targets, the embedded provenance JSON, the whole 照合表) is scanned with the same rules as the
 GitHub writers (Vietnamese, control chars, internal paths, secrets, emails, internal terms, internal
 URLs / company names, GitHub URLs to other repositories). Only `--repo` (or, without it, the one
-repository of the payload's issueRefs) may appear as a GitHub URL.
+repository of the payload's issueRefs) may appear as a GitHub URL. A JSON data block is scanned as its
+decoded strings, one per line (the \u003c-style escapes cannot hide anything, line numbers stay short).
 """
 from __future__ import annotations
 
 import html
+import json
 import os
 import re
 import shlex
@@ -26,9 +28,28 @@ def allowed_repo(payload: dict, repo: Optional[str]) -> Optional[str]:
     return repos.pop() if len(repos) == 1 else None
 
 
+def _json_strings(block: str) -> str:
+    """Every string (keys too) of a JSON block, one per line; a block that is not JSON is kept as it is."""
+    try:
+        stack, out = [json.loads(block)], []
+    except ValueError:
+        return block
+    while stack:
+        cur = stack.pop()
+        if isinstance(cur, str):
+            out.append(cur)
+        elif isinstance(cur, dict):
+            out += list(cur)
+            stack += list(cur.values())
+        elif isinstance(cur, list):
+            stack += cur
+    return "\n".join(out)
+
+
 def html_entries(doc: str):
     body = re.sub(r"<style\b.*?</style>", " ", doc, flags=re.S | re.I)
-    embedded = " ".join(re.findall(r"<script\b[^>]*>(.*?)</script>", body, flags=re.S | re.I))
+    embedded = "\n".join(_json_strings(block) for block in re.findall(r"<script\b[^>]*>(.*?)</script>", body,
+                                                                        flags=re.S | re.I))
     body = re.sub(r"<script\b.*?</script>", " ", body, flags=re.S | re.I)
     links = "\n".join(html.unescape(h) for h in re.findall(r'\b(?:href|src)="([^"]*)"', body, flags=re.I))
     return [("日本語版 HTML", "本文", html.unescape(re.sub(r"<[^>]+>", " ", body))),

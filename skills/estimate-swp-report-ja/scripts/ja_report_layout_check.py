@@ -5,7 +5,9 @@ markers (data-v key + number, data-t text, data-x provenance) with the JA HTML. 
 be swapped for a data-t text, a cell cannot be dropped, and a data-t text must be the very text the
 TextPolicy gives for that place (not just "some payload string").
 Translations: every original must be a payload string, and the numbers (digits after NFKC) in a
-translation must be the numbers of its original (same multiset; Japanese word order may differ).
+translation must be the numbers of its original (same multiset; Japanese word order may differ). A
+translation may leave out an axis notation of the original ("S5 × C3", ja_report_axis_guard) together with
+its numbers, because the report must not show axis values; no other number may be dropped or added.
 """
 from __future__ import annotations
 
@@ -15,6 +17,7 @@ import re
 import unicodedata
 from typing import Dict, List, Set, Tuple
 
+from ja_report_axis_guard import without_axis_notation
 from ja_report_text import payload_strings
 
 MARKER_RX = re.compile(r'<span(?: class="[^"]*")? data-(v|t|x)="([^"]*)">([^<]*)</span>')
@@ -55,6 +58,6 @@ def translation_errors(translations: Dict[str, str], payload: dict) -> List[str]
     for original, ja in translations.items():
         if original not in known:
             out.append(f"訳の原文が埋め込みデータにない「{original[:20]}」")
-        elif numbers_in(original) != numbers_in(ja):
+        elif numbers_in(ja) not in (numbers_in(original), numbers_in(without_axis_notation(original))):
             out.append(f"訳文の数値が原文と違う（原文 {numbers_in(original)} / 訳文 {numbers_in(ja)}）「{ja[:20]}」")
     return out

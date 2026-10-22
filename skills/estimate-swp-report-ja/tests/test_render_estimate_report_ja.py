@@ -7,10 +7,12 @@ import sys
 import tempfile
 import unittest
 
+from ja_report_block_fixtures import extract_payload, fixture_translations, valid_original_path
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKILL = os.path.dirname(HERE)
 SCRIPT = os.path.join(SKILL, "scripts", "render-estimate-report-ja.py")
-ORIGINAL = os.path.join(SKILL, "..", "_shared", "tests", "fixtures", "example-estimate-swp-original.html")
+ORIGINAL = valid_original_path()  # the shared fixture with a correction for its representative (a valid source payload)
 
 
 def run(*args):
@@ -30,12 +32,31 @@ class RenderJaBase(unittest.TestCase):
         self.ja = os.path.join(self.dir, "reports", "estimate-swp-sample-ja.html")
         self.md = os.path.join(self.dir, "reports", "estimate-swp-verification-ja.md")
 
+    def with_fixture_translations(self, extra, original):
+        """Add translations for the fixture's Vietnamese texts (an untranslated text fails check).
+
+        A --translations file given by the test is merged in (its entries win); fixture entries whose
+        original is no longer in this variant's payload are left out."""
+        extra = list(extra)
+        mine = {}
+        if "--translations" in extra:
+            at = extra.index("--translations")
+            with open(extra[at + 1], encoding="utf-8") as fh:
+                mine = json.load(fh)
+            del extra[at:at + 2]
+        payload = extract_payload(self.read(original))
+        merged = {**fixture_translations(payload), **mine}
+        self.n_tr = getattr(self, "n_tr", 0) + 1
+        path = os.path.join(self.dir, f"merged-tr-{self.n_tr}.json")
+        self.write(path, json.dumps(merged, ensure_ascii=False))
+        return extra + ["--translations", path]
+
     def render(self, *extra, original=ORIGINAL):
-        return run("render", "--html", original, "--out", self.ja, *extra)
+        return run("render", "--html", original, "--out", self.ja, *self.with_fixture_translations(extra, original))
 
     def check(self, *extra, original=ORIGINAL):
         return run("check", "--html", original, "--ja", self.ja, "--verification-md", self.md,
-                   "--source-skill", "tkm:estimate-swp 9.9.9", *extra)
+                   "--source-skill", "tkm:estimate-swp 9.9.9", *self.with_fixture_translations(extra, original))
 
     def read(self, path):
         with open(path, encoding="utf-8") as fh:
@@ -62,16 +83,16 @@ class RenderJaTest(RenderJaBase):
         md = self.read(self.md)
         self.assertIn("判定: **合格**", md)
         self.assertIn(before, md)
-        self.assertIn("estimate-swp-report-ja 0.4.0", md)
+        self.assertIn("estimate-swp-report-ja 0.6.0", md)
         self.assertIn("tkm:estimate-swp 9.9.9", md)
         self.assertNotIn(self.dir, md, "no absolute local paths in the recorded command")
 
     def test_tampered_number_fails(self):
         self.render()
-        self.write(self.ja, self.read(self.ja).replace('data-v="sum|total|swp">21<', 'data-v="sum|total|swp">22<'))
+        self.write(self.ja, self.read(self.ja).replace('data-v="sum|total|swp">21<', 'data-v="sum|total|swp">22<', 1))
         r = self.check()
         self.assertEqual(r.returncode, 1)
-        self.assertIn("FAIL 数値 = 埋め込みデータ（data-v の印の付いた数値） 照合 62 箇所、不一致 1", r.stdout)
+        self.assertRegex(r.stdout, r"FAIL 数値 = 埋め込みデータ（data-v の印の付いた数値） 照合 \d+ 箇所、不一致 1\n")
         self.assertIn("| 要約 SWP 合計 SWP | 21 | 22 | × |", self.read(self.md))
 
     def test_vietnamese_text_fails(self):
@@ -81,17 +102,21 @@ class RenderJaTest(RenderJaBase):
         self.assertEqual(r.returncode, 1)
         self.assertIn("FAIL ベトナム語の文字", r.stdout)
 
-    def test_translations_replace_omitted_text(self):
+    def test_untranslated_text_is_omitted_and_fails_check(self):
         tr = os.path.join(self.dir, "tr.json")
         self.write(tr, json.dumps({"M\u1ed9t b\u1ea3ng m\u1edbi v\u00e0 hai r\u00e0ng bu\u1ed9c duy nh\u1ea5t.": "新しい表ひとつと一意制約ふたつ。"},
                                   ensure_ascii=False))
-        r = self.render("--translations", tr)
-        self.assertIn("省略 3 件", r.stdout)
+        r = run("render", "--html", ORIGINAL, "--out", self.ja, "--translations", tr)
+        self.assertIn("省略 4 件", r.stdout)  # #7's rationale is shown twice (detail + low-confidence action)
         self.assertIn("置換 1 件", r.stdout)
         self.assertIn("新しい表ひとつと一意制約ふたつ。", self.read(self.ja))
+        r = run("check", "--html", ORIGINAL, "--ja", self.ja, "--translations", tr)
+        self.assertEqual(r.returncode, 1, r.stdout)
+        self.assertIn("FAIL 訳のない自由記述 0（日本語でない記述は訳文で置き換え） 4 件", r.stdout)
+        self.assertEqual(self.render("--translations", tr, "--force").returncode, 0)
         self.assertEqual(self.check("--translations", tr).returncode, 0)
         self.write(tr, json.dumps({"x": "c\u00f2n ti\u1ebfng Vi\u1ec7t"}, ensure_ascii=False))
-        r = self.render("--translations", tr, "--force")
+        r = run("render", "--html", ORIGINAL, "--out", self.ja, "--translations", tr, "--force")
         self.assertEqual(r.returncode, 2)
 
     def test_refuses_to_overwrite(self):

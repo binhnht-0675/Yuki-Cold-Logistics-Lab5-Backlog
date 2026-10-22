@@ -10,19 +10,23 @@ import html
 import re
 from typing import Dict, List, Set, Tuple
 
-from ja_report_html import FIXED_TEXTS, NO_PARENT, group_issues
-from ja_report_text import OMITTED, approval, fmt, payload_strings, short_ref
+from ja_report_block_numbers import NOT_MINE, block_required_keys, expected_block
+from ja_report_html import FIXED_TEXTS, group_issues
+from ja_report_text import OMITTED, OMITTED_FOREIGN, approval, fmt, payload_strings, short_ref
 
 DATA_V_RX = re.compile(r'<span(?: class="[^"]*")? data-v="([^"]+)">([^<]*)</span>')
 DATA_T_RX = re.compile(r'<span data-t="1">([^<]*)</span>')
 DATA_X_RX = re.compile(r'<span data-x="(file|sha)">([^<]*)</span>')
 DIGIT_RX = re.compile(r"[0-9０-９]+")
-ISSUE_FIELDS = {"final": "finalSWP", "final2": "finalSWP", "initial": "initialSWP", "iscope": "initialScope",
-                "icomplexity": "initialComplexity", "fscope": "finalScope", "fcomplexity": "finalComplexity"}
+# SWP only: the axes are not shown (they are checked in the embedded payload, ja_report_payload_check.py).
+ISSUE_FIELDS = {"final": "finalSWP", "initial": "initialSWP"}
 
 
 def expected(payload: dict, key: str, notes: Dict[str, int]):
     kind, ident, field = key.split("|")
+    block = expected_block(payload, kind, ident, field)
+    if block is not NOT_MINE:
+        return block
     issues = {i["issueRef"]: i for i in payload.get("issues", [])}
     parents = {p["issueRef"]: p for p in payload.get("parents", [])}
     if kind == "sum":
@@ -44,8 +48,6 @@ def expected(payload: dict, key: str, notes: Dict[str, int]):
         return len(group_issues(payload)[ident])
     if kind == "note":
         return notes[ident]
-    if kind == "rep" and field in ("ascope", "acomplexity"):
-        return approval(payload, ident)["scope" if field == "ascope" else "complexity"]
     if kind in ("issue", "rep"):
         return issues[ident][ISSUE_FIELDS[field]]
     if kind == "parent":
@@ -59,17 +61,17 @@ def required_keys(payload: dict) -> Set[str]:
             "sum|conf|low", "sum|split|count", "sum|needs|count", "sum|count|corrections", "sum|count|rules",
             "note|omitted|count", "note|translated|count"}
     for i in payload.get("issues", []):
-        need |= {f"issue|{i['issueRef']}|{f}" for f in ISSUE_FIELDS}
+        need.add(f"issue|{i['issueRef']}|final")
         need.add(f"wt|{i.get('workType')}|count")
         need.add(f"wt|{i.get('workType')}|swp")
     need |= {f"parent|{p['issueRef']}|{f}" for p in payload.get("parents", []) for f in ("final", "children")}
     for r in payload.get("representatives") or []:
-        need |= {f"rep|{r['issueRef']}|{f}" for f in ("initial", "iscope", "icomplexity")}
+        need.add(f"rep|{r['issueRef']}|initial")
         a = approval(payload, r["issueRef"])
         if a["scope"] is not None or a["complexity"] is not None:
-            need |= {f"rep|{r['issueRef']}|{f}" for f in ("ascope", "acomplexity", "final")}
+            need.add(f"rep|{r['issueRef']}|final")
     need |= {f"group|{ref}|count" for ref, members in group_issues(payload).items() if members}
-    return need
+    return need | block_required_keys(payload)
 
 
 def compare_numbers(ja_html: str, payload: dict, notes: Dict[str, int]) -> List[tuple]:
@@ -87,7 +89,7 @@ def compare_numbers(ja_html: str, payload: dict, notes: Dict[str, int]) -> List[
 def scan_markers(ja_html: str, payload: dict, translations: Dict[str, str], provenance: Dict[str, str]
                  ) -> Tuple[List[str], List[str]]:
     """Return (unknown free texts / provenance, bare numbers with context)."""
-    allowed = payload_strings(payload) | set(translations.values()) | {OMITTED}
+    allowed = payload_strings(payload) | set(translations.values()) | {OMITTED, OMITTED_FOREIGN}
     allowed |= {short_ref(s) for s in allowed if "#" in s}
     unknown: List[str] = []
     for m in DATA_T_RX.finditer(ja_html):

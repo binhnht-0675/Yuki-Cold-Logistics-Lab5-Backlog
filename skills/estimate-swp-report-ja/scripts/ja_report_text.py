@@ -19,13 +19,41 @@ VI_RX = re.compile("[\u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u
 # A Latin letter still followed by a combining mark after NFC (decomposed text that did not compose).
 COMBINING_RX = re.compile("[A-Za-z][\u0300-\u036f]")
 OMITTED = "（原文がベトナム語のため省略。原本 HTML を参照）"
+OMITTED_FOREIGN = "（訳文がないため省略。原本 HTML を参照）"  # e.g. English prose without a translation
+JA_RX = re.compile("[\u3040-\u30ff\u3400-\u9fff\uff00-\uffef]")
+LATIN_PROSE_RX = re.compile(r"[A-Za-z]{2,}[,.;:)]?\s+[(]?[A-Za-z]{2,}")
+# Labels of enums added for the full report blocks (merged into references/label-map-ja.json at load).
+EXTRA_LABELS = {
+    "agreement": {"identical": "一致", "minor": "軽微な差", "major": "大きな差", "stratum-split": "区分違い"},
+    "unavailableReason": {"harness-no-model-override": "実行環境で評価 B に別のモデルを選べない",
+                          "witness-model-unavailable": "評価 B に使える別のモデルがない",
+                          "witness-invalid": "評価 B の結果が、一度直しても正しい形にならなかった"},
+    "activityType": {"implement": "実装", "fix-bug": "不具合修正", "unit-test": "単体テスト",
+                     "document": "ドキュメント作成", "performance-test": "性能テスト"},
+    "detailStatus": {"full": "全文", "partial": "一部", "metadata-only": "メタデータのみ",
+                     "forbidden": "権限がなく取得できない", "unavailable": "取得できない"},
+    "provenanceField": {"body": "本文", "labels": "ラベル", "parent": "親", "state": "状態", "status": "ステータス",
+                        "title": "タイトル", "url": "URL", "milestone": "マイルストーン", "milestones": "マイルストーン",
+                        "sprint": "スプリント", "sprints": "スプリント", "assignees": "担当者", "comments": "コメント"},
+    "retrievedVia": {"gh": "GitHub CLI（gh）", "mcp": "MCP", "file": "ファイル", "api": "API"},
+    "statusRule": {"issue-state": "issue の状態（オープン / クローズ）で判定", "unavailable": "状態を取得できない（候補に残す）",
+                   "not-applicable": "対象外"},
+    "estimateCheck": {"checked": "既存の見積もりと照合した", "unavailable": "既存の見積もりを取得できない（見積もりは実施）",
+                      "not-applicable": "対象外"},
+    "excludedGate": {"byStatus": "状態で除外", "byExistingEstimate": "既存の見積もりで除外", "bySprint": "スプリントで除外",
+                     "byMilestone": "マイルストーンで除外", "byLabel": "ラベルで除外"},
+    "estimateSource": {"kpi": "KPI", "board": "ボード", "backlog": "Backlog", "file": "ファイル", "other": "その他"},
+}
 GITHUB_ISSUE_RX = re.compile(r"^https://github\.com/[\w.-]+/[\w.-]+/issues/\d+$")
 SCHEMA_VERSION, SCORING_MODEL_VERSION = "2.0", "swp-matrix-v2"
 
 
 def load_labels() -> dict:
     with open(LABEL_MAP_PATH, encoding="utf-8") as fh:
-        return json.load(fh)
+        labels = json.load(fh)
+    for group, values in EXTRA_LABELS.items():
+        labels[group] = {**values, **labels.get(group, {})}
+    return labels
 
 
 def skill_version() -> str:
@@ -38,6 +66,11 @@ def vi_count(text: str) -> int:
     """Vietnamese letters in NFC or NFD form (NFD text is composed first, leftovers counted too)."""
     t = unicodedata.normalize("NFC", text or "")
     return len(VI_RX.findall(t)) + len(COMBINING_RX.findall(t))
+
+
+def needs_translation(text: str) -> bool:
+    """Vietnamese letters, or Latin prose (two words or more) without any Japanese character."""
+    return bool(vi_count(text)) or (not JA_RX.search(text or "") and bool(LATIN_PROSE_RX.search(text or "")))
 
 
 def check_payload_shape(payload: dict) -> None:
@@ -97,8 +130,9 @@ def payload_strings(payload) -> Set[str]:
 class TextPolicy:
     """Pick the Japanese text for a free-text field.
 
-    Order: supplied translation (exact original text -> JA) > original if it has no
-    Vietnamese letters > a fixed omission note. Counts omissions for the caveats.
+    Order: supplied translation (exact original text -> JA) > original if it needs no translation
+    (Japanese, or no Latin prose and no Vietnamese letters) > a fixed omission note. Omissions are
+    counted; `check` fails when any text was omitted (an untranslated sentence is never shown).
     """
 
     def __init__(self, translations: Optional[Dict[str, str]] = None):
@@ -112,9 +146,9 @@ class TextPolicy:
         if text in self.translations:
             self.translated += 1
             return self.translations[text]
-        if vi_count(text):
+        if needs_translation(text):
             self.omitted += 1
-            return OMITTED
+            return OMITTED if vi_count(text) else OMITTED_FOREIGN
         return text
 
 

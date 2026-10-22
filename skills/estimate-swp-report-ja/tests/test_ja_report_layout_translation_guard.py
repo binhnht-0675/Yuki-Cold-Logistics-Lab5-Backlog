@@ -12,6 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "..", "_shared", "tests"))
 from content_guard_samples import SAMPLES  # noqa: E402
+from ja_report_block_fixtures import extract_payload, fixture_translations  # noqa: E402
 from test_render_estimate_report_ja import ORIGINAL, SCRIPT, RenderJaBase  # noqa: E402
 
 PAYLOAD_RX = re.compile(r'(<script id="report-data" type="application/json">)(.*?)(</script>)', re.S)
@@ -66,7 +67,7 @@ class LayoutTranslationGuardTest(RenderJaBase):
     def test_number_cell_swapped_for_free_text_fails(self):
         self.render()
         doc = self.read(self.ja)
-        cell = f'<span data-v="issue|{REF4}|final2">5</span>'
+        cell = f'<span data-v="issue|{REF4}|dfinal">5</span>'
         self.assertIn(cell, doc)
         self.write(self.ja, doc.replace(cell, '<span data-t="1">2.0</span>'))
         self.check_fails("印の並び")
@@ -74,7 +75,7 @@ class LayoutTranslationGuardTest(RenderJaBase):
     def test_dropped_number_cells_fail(self):
         self.render()
         doc = self.read(self.ja)
-        for key in (f"issue|{REF4}|final2", "sum|split|count"):
+        for key in (f"issue|{REF4}|dfinal", "sum|split|count"):
             cut = re.sub(r'<span data-v="%s">[^<]*</span>' % re.escape(key), "", doc)
             self.assertNotEqual(cut, doc, key)
             self.write(self.ja, cut)
@@ -106,8 +107,11 @@ class LayoutTranslationGuardTest(RenderJaBase):
         self.write(orig, self.read(ORIGINAL))
         rel = lambda p: os.path.relpath(p, self.dir)  # noqa: E731
         ja, md = os.path.join(sub, "x-ja.html"), os.path.join(sub, "verification.md")
-        for args in (["render", "--html", rel(orig), "--out", rel(ja)],
-                     ["check", "--html", rel(orig), "--ja", rel(ja), "--verification-md", rel(md)]):
+        tr = os.path.join(sub, "tr.json")
+        self.write(tr, json.dumps(fixture_translations(extract_payload(self.read(orig))), ensure_ascii=False))
+        for args in (["render", "--html", rel(orig), "--out", rel(ja), "--translations", rel(tr)],
+                     ["check", "--html", rel(orig), "--ja", rel(ja), "--verification-md", rel(md),
+                      "--translations", rel(tr)]):
             r = subprocess.run([sys.executable, SCRIPT] + args, capture_output=True, text=True, encoding="utf-8",
                                cwd=self.dir)
             self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
