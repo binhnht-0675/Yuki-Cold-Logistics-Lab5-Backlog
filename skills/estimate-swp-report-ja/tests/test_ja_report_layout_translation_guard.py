@@ -109,7 +109,7 @@ class LayoutTranslationGuardTest(RenderJaBase):
         ja, md = os.path.join(sub, "x-ja.html"), os.path.join(sub, "verification.md")
         tr = os.path.join(sub, "tr.json")
         self.write(tr, json.dumps(fixture_translations(extract_payload(self.read(orig))), ensure_ascii=False))
-        for args in (["render", "--html", rel(orig), "--out", rel(ja), "--translations", rel(tr)],
+        for args in (["render", "--html", rel(orig), "--out", rel(ja), "--translations", rel(tr), "--verification-md", rel(md)],
                      ["check", "--html", rel(orig), "--ja", rel(ja), "--verification-md", rel(md),
                       "--translations", rel(tr)]):
             r = subprocess.run([sys.executable, SCRIPT] + args, capture_output=True, text=True, encoding="utf-8",

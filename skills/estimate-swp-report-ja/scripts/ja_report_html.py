@@ -79,7 +79,12 @@ def _parents_section(payload: dict, L: dict, T: TextPolicy) -> str:
             + table(["親", "タイトル", "種別", "集計", "子", "子の数", "初期 SWP", "SWP"], rows) + "</section>")
 
 
-def render(payload: dict, L: dict, T: TextPolicy, source_name: str, source_sha: str) -> str:
+# the 照合表 the page points to; render / check take the real name from --verification-md (review 22/10, 23/10)
+DEFAULT_VERIFICATION = "estimate-swp-verification-ja.md"
+
+
+def render(payload: dict, L: dict, T: TextPolicy, source_name: str, source_sha: str,
+           verification_name: str = DEFAULT_VERIFICATION) -> str:
     run, issues = payload.get("run") or {}, payload.get("issues", [])
     by_type: Dict[str, List[dict]] = OrderedDict()
     for i in issues:
@@ -103,9 +108,9 @@ def render(payload: dict, L: dict, T: TextPolicy, source_name: str, source_sha: 
     out += ['<section id="caveats"><h2>注意事項</h2><ul>' + "".join(f"<li>{c}</li>" for c in caveats)
             + f"<li>訳のない記述 {v('note|omitted|count', T.omitted)} 件は省略、"
             + f"{v('note|translated|count', T.translated)} 件は日本語訳に置換しました（原本 HTML に原文あり）。</li>"
-            + "<li>数値の照合結果は照合表（estimate-swp-verification-ja.md）を参照してください。</li></ul></section>"]
+            + f"<li>数値の照合結果は照合表（{x('verify', verification_name)}）を参照してください。</li></ul></section>"]
     data = {"sourceFile": source_name, "sourceSha256": source_sha, "sourcePayloadSha256": canonical_sha256(payload),
-            "omittedTexts": T.omitted, "translatedTexts": T.translated}
+            "omittedTexts": T.omitted, "translatedTexts": T.translated, "verificationFile": verification_name}
     embedded = safe_json(data)
     return ('<!doctype html>\n<html lang="ja"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'

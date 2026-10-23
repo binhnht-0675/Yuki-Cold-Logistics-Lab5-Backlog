@@ -23,8 +23,10 @@ from typing import List
 
 TECH_DETAILS_ID = "tech-details"
 # a band value stands alone: punctuation, "×" or the end follows (not "3 new tables" / 「3 セクション」 / 「2個」)
-# (run 261023: "1,000" / "239/240" are counts — "," and "/" end a band value only when no digit follows)
-_BAND_END = r"(?=\s*(?:$|[:;)\]、。」】×]|[.,/](?!\d)))"
+# (run 261023: "1,000" / "239/240" are counts — "," and "/" end a band value only when no digit follows;
+#  review 23/10: an opening bracket ends it too, 「範囲8（42表）」)
+_BAND_END = r"(?=\s*(?:$|[:;)\]、。」】×（(]|[.,/](?!\d)))"
+_VI_LABEL = r"(?:ph\u1ea1m vi|pham vi|\u0111\u1ed9 kh\u00f3|do kho)"  # with or without diacritics (review 23/10)
 AXIS_NOTATION_RX = re.compile(
     r"S\s*\d+\s*[×xX*]\s*C\s*\d+"
     r"|(?<![A-Za-z])S\s*[×xX]\s*C(?![A-Za-z])"
@@ -38,8 +40,10 @@ AXIS_NOTATION_RX = re.compile(
     # run 261023: a level word marks a band value 「難易度は水準2」; Vietnamese reviewer rationales
     # "<scope> 8, <difficulty> 1" / "<difficulty> at level 2" (a count such as "<scope> 3 tables" stays a count)
     r"|(?:スコープ|複雑度|範囲|複雑さ|難易度)\s*(?::|=|を|は|が)?\s*(?:水準|レベル|段階)\s*\d+"
-    r"|(?<!\w)(?:ph\u1ea1m vi|\u0111\u1ed9 kh\u00f3)\s*(?::|=|l\u00e0)?\s*(?:\u1edf\s+)?m\u1ee9c\s*\d+"
-    r"|(?<!\w)(?:ph\u1ea1m vi|\u0111\u1ed9 kh\u00f3)\s*(?::|=|l\u00e0)?\s*\d+" + _BAND_END +
+    # review 23/10: the value in brackets right after the label, 「Scope（3）」「複雑さ(2)」
+    r"|(?:Scope|Complexity|スコープ|複雑度|範囲|複雑さ|難易度)\s*[（(]\s*\d+\s*[）)]"
+    r"|(?<!\w)" + _VI_LABEL + r"\s*(?::|=|l\u00e0|la)?\s*(?:(?:\u1edf|o)\s+)?(?:m\u1ee9c|muc)\s*\d+"
+    r"|(?<!\w)" + _VI_LABEL + r"\s*(?::|=|l\u00e0|la)?\s*\d+" + _BAND_END +
     # a lone "S5" / "C3", but not the product "Amazon S3" / "AWS S3" / "S3 バケット" (22/10 review)
     r"|(?<!Amazon\s)(?<!AWS\s)(?<![\w-])[SC]\d+(?![\w-])(?!\s*(?:buckets?\b|バケット))", re.I)
 FIXED_AXIS_RX = re.compile(r"Scope|Complexity|×", re.I)

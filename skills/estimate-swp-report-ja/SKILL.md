@@ -2,7 +2,7 @@
 name: estimate-swp-report-ja
 description: tkm:estimate-swp が出力した HTML レポート（ベトナム語表示）に埋め込まれた検証済みデータから、同じ数値の日本語版 HTML を作る。原本スキルのレポート契約の内容（要約と不確かさの幅、構成、分布、リスクと対応、チーム別、時間換算〈参考値〉、評価 A・B の一致、校正、検索・絞り込み）をすべて日本語で出し、Scope × Complexity は表示せず、自由記述を日本語にした埋め込みデータ（全項目）を入れる。lang="ja"・ベトナム語の文字 0・印の付いた数値がすべて埋め込みデータと一致・印のない数値 0・訳のない自由記述 0・表示部に Scope × Complexity なし・埋め込みデータが原本スキルの validate_payload に合格し原本と自由記述以外一致・校正済み（accepted / calibrated）を検査して、照合表（estimate-swp-verification-ja.md）を出す。原本 HTML は読むだけで変更・削除しない。「SWP レポートを日本語にして」「見積もりレポートの日本語版」「照合表を作って」と言われたら、このスキルを使うこと。
 metadata:
-  version: "0.6.0"
+  version: "0.7.0"
 ---
 
 # estimate-swp-report-ja
@@ -19,10 +19,9 @@ estimate-swp のレポートは表示がベトナム語固定（`<html lang="vi"
 > **確認の範囲**: テストは架空のレポート（`../_shared/tests/fixtures/`）とその書き換え版（評価 B・分割の提案・分解が必要な親・
 > `team:*` のラベル・既存の見積もり・空の実行を含む）。原本スキルの `validate_payload` に合格するのは基本の架空レポート
 > （代表の修正を足した版）だけで、評価 B などを足した版は合格しない（その項目だけを除いて検査する）。
-> 実データ（issue 397 件・処理レベル max）でも render と check を実行した（0.6.0）。不合格は 2 項目: 「訳のない自由記述」
-> （評価 B の根拠 397 件の訳がまだない）と「表示部の Scope × Complexity」（担当者の修正理由 4 件の訳文に「S5 × C3」などがある）。
-> 埋め込みデータの 5 項目を含むほかの項目は合格。check の合格には、評価 B の根拠を含む英語・ベトナム語の記述すべての
-> 訳文（`--translations`）が要り、訳文には軸の表記を書かない（下の「自由記述」の節）。
+> 実データ（issue 399 件・親 101 件・処理レベル max）で render と check を実行し、全項目合格（2026-10-22・2026-10-23）。
+> check の合格には、評価 B の根拠を含む英語・ベトナム語の記述すべての訳文（`--translations`）が要り、訳文には軸の表記を
+> 書かない（下の「自由記述」の節）。
 >
 > **校正前のレポートは不合格**: `check` は `run.calibrationStatus` が `accepted` / `calibrated`（代表 issue のレビュー済み。
 > `github-project-field-writer` が見積もりの書き込みに求める条件と同じ）でなければ不合格にする。提出版は校正を終えた原本から作る。
@@ -64,8 +63,11 @@ estimate-swp のレポートは表示がベトナム語固定（`<html lang="vi"
 
 1. 日本語版を作る
    ```
-   python3 scripts/render-estimate-report-ja.py render --html <原本.html> --out reports/<名前>-ja.html [--repo owner/name]
+   python3 scripts/render-estimate-report-ja.py render --html <原本.html> --out reports/<名前>-ja.html \
+     [--verification-md reports/<照合表>.md] [--repo owner/name]
    ```
+   - 注意事項の「照合表（…）」には `--verification-md` のファイル名を書く（省略時は `estimate-swp-verification-ja.md`）。
+     check にも同じ `--verification-md` を渡す。名前が違えば check の「照合表の名前」が不合格になる。
    - 既存ファイルは上書きしない（`--force` で上書き）。`--out` に原本と同じパスは指定できない。
    - 書き出す前に、読み手に見える文字列（本文・リンク先・埋め込みデータ）を `../_shared/content_guard.py` で検査する
      （ベトナム語・制御文字・内部パス・秘密情報・メール・公開しない用語・社内 URL / 社名・`--repo` 以外のリポジトリの
@@ -77,7 +79,7 @@ estimate-swp のレポートは表示がベトナム語固定（`<html lang="vi"
      `run.sourceUrl` はそのまま入れ、内容検査を通す（`--repo` の持ち主の `github.com/users|orgs/<owner>/projects/N` だけを許す）。
    - 内容検査は、埋め込みデータを JSON として読み、文字列（キーを含む）を 1 行ずつ検査する。
    - 外部読み込みなし。スクリプトは表示用の固定のもの（`scripts/ja_report_interaction.py` の `SCRIPT`）だけ。表示する数値には照合用の印（`data-v`）、自由記述には `data-t`、
-     出所欄（原本のファイル名・sha256 の先頭）には `data-x` を付ける。
+     出所欄（原本のファイル名・sha256 の先頭・照合表の名前）には `data-x` を付ける。
 2. 検査して照合表を作る
    ```
    python3 scripts/render-estimate-report-ja.py check --html <原本.html> --ja reports/<名前>-ja.html \
@@ -103,10 +105,11 @@ estimate-swp のレポートは表示がベトナム語固定（`<html lang="vi"
      （`data-v` のキーが …scope / …complexity。適用したルールの段 `rule|n|scope` などは除く）がなく、固定文に「Scope」
      「Complexity」「×」がなく、自由記述（`data-t`）に軸の表記（「S5 × C3」「S×C」「Scope × Complexity」「Scope を 2」
      「複雑さが C3」、単独の「S5」「C3」、数字が単独で句読点か末尾が続く「Scope: 3」「スコープ 3」「複雑度 2」「範囲 3」「複雑さ 2」など。
-     NFKC 後に照合するので全角の「Ｓ５ × Ｃ３」も対象。段階の語が付く「難易度は水準2」「範囲はレベル3」も対象。
+     NFKC 後に照合するので全角の「Ｓ５ × Ｃ３」も対象。段階の語が付く「難易度は水準2」「範囲はレベル3」、括弧が続くか括弧で囲む
+     「範囲8（42表）」「Scope（3）」も対象。
      「範囲:3 セクション」のような件数、「複雑さ：1,000 行」「239/240/241 分」のように区切りの後に数字が続く値、
      製品名「Amazon S3」「S3 バケット」は対象外）がない。ベトナム語で書かれた担当者の理由の軸の値（「範囲」「難易度」に
-     当たる語の直後の単独の数字、または「水準 N」）も軸の表記として扱い、訳文で省いてよい（その他の数字は省けない）
+     当たる語の直後の単独の数字、または「水準 N」。声調記号のない書き方も含む）も軸の表記として扱い、訳文で省いてよい（その他の数字は省けない）
    - 内容検査: 日本語版の本文・リンク先・埋め込みデータに、公開リポジトリに出せない内容がない（render と同じ規則）
    - 親の SWP = 子の SWP の合計（集計 `derived` の親だけ。`needs-breakdown` などほかの親は検査しない）。
      子が埋め込みデータにない、または子の SWP が空なら不合格（0 として数えない）。代表の担当者確定 = 最終の Scope × Complexity

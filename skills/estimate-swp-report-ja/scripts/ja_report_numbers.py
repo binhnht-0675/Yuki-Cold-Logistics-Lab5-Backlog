@@ -16,7 +16,7 @@ from ja_report_text import OMITTED, OMITTED_FOREIGN, approval, fmt, payload_stri
 
 DATA_V_RX = re.compile(r'<span(?: class="[^"]*")? data-v="([^"]+)">([^<]*)</span>')
 DATA_T_RX = re.compile(r'<span data-t="1">([^<]*)</span>')
-DATA_X_RX = re.compile(r'<span data-x="(file|sha)">([^<]*)</span>')
+DATA_X_RX = re.compile(r'<span data-x="(file|sha|verify)">([^<]*)</span>')
 DIGIT_RX = re.compile(r"[0-9０-９]+")
 # SWP only: the axes are not shown (they are checked in the embedded payload, ja_report_payload_check.py).
 ISSUE_FIELDS = {"final": "finalSWP", "initial": "initialSWP"}

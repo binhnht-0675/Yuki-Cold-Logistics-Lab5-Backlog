@@ -83,7 +83,7 @@ class RenderJaTest(RenderJaBase):
         md = self.read(self.md)
         self.assertIn("判定: **合格**", md)
         self.assertIn(before, md)
-        self.assertIn("estimate-swp-report-ja 0.6.0", md)
+        self.assertIn("estimate-swp-report-ja 0.7.0", md)
         self.assertIn("tkm:estimate-swp 9.9.9", md)
         self.assertNotIn(self.dir, md, "no absolute local paths in the recorded command")
 
@@ -139,6 +139,20 @@ class RenderJaTest(RenderJaBase):
         r = run("render", "--html", empty, "--out", os.path.join(self.dir, "x.html"))
         self.assertEqual(r.returncode, 1)
         self.assertIn("report-data", r.stdout)
+
+    def test_page_names_the_verification_table_it_was_checked_against(self):
+        """Review 22/10 + 23/10: the page pointed at 「照合表（estimate-swp-verification-ja.md）」 while the real table
+        was estimate-swp-verification-ja-261022.md. render takes the name from --verification-md; check fails when
+        the page names another table."""
+        md = os.path.join(self.dir, "reports", "estimate-swp-verification-ja-261023.md")
+        self.assertEqual(self.render("--verification-md", md).returncode, 0)
+        self.assertIn('照合表（<span data-x="verify">estimate-swp-verification-ja-261023.md</span>）', self.read(self.ja))
+        ok = run("check", "--html", ORIGINAL, "--ja", self.ja, "--verification-md", md,
+                 "--source-skill", "tkm:estimate-swp 9.9.9", *self.with_fixture_translations([], ORIGINAL))
+        self.assertEqual(ok.returncode, 0, ok.stdout[-600:])
+        r = self.check()  # the default table name differs from the one the page names
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("FAIL 照合表の名前", r.stdout)
 
     def test_check_detects_other_source(self):
         self.render()

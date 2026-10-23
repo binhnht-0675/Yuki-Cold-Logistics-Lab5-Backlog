@@ -144,6 +144,22 @@ class VisibleAxisGuardTest(unittest.TestCase):
         self.assertNotEqual(translation_errors({count: "新しいテーブルが対象。"}, p), [],
                             "a count after the label is not a band value")
 
+    def test_review_23_10_bracketed_values_and_unaccented_vietnamese(self):
+        """Review team 23/10: a band value followed or wrapped by a bracket 「範囲8（42表）」「Scope（3）」 and Vietnamese
+        axis labels written without diacritics are axis notation; counts such as 「1,000行」「239/240/241分」 are not."""
+        for bad in ("（範囲8（42表））", "（複雑さ3（移行））", "（難易度2（通常））", "（Scope（3））", "（複雑さ(2)）"):
+            self.assertFalse(self._axis_ok(bad), bad)
+        for ok in ("（複雑さ：1,000行ごとのチャンク分割）", "（複雑さ：239/240/241分の境界）"):
+            self.assertTrue(self._axis_ok(ok), ok)
+        p = rich_payload()
+        for text, ja in (("Giu 10. Ghi truc: pham vi 8, do kho 1.", "10 を維持する。評価軸は記録した。"),
+                         ("Khong backfill nen do kho o muc 2, chua toi muc migration.", "難易度は中程度とする。")):
+            p["corrections"][0]["rationale"] = text
+            self.assertEqual(translation_errors({text: ja}, p), [], text)
+        count = "Pham vi 3 bang moi."
+        p["corrections"][0]["rationale"] = count
+        self.assertNotEqual(translation_errors({count: "新しいテーブルが対象。"}, p), [])
+
     def test_product_names_are_not_lone_band_labels(self):
         """"Amazon S3" is a product, not band S3; a lone S5 / C3 of an assessor rationale stays axis notation."""
         for ok in ("（Amazon S3 に退避）", "（AWS S3 に保存）", "（S3 バケットに保存）", "（S3 bucket）"):

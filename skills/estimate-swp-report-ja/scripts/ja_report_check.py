@@ -11,7 +11,7 @@ from estimate_swp_payload import REVIEWED_CALIBRATION
 from ja_report_axis_guard import visible_axis_errors
 from ja_report_block_numbers import block_row_name
 from ja_report_enum_values import enum_values
-from ja_report_html import render
+from ja_report_html import DEFAULT_VERIFICATION, render
 from ja_report_interaction import SCRIPT
 from ja_report_layout_check import layout_errors, translation_errors, value_keys
 from ja_report_numbers import (approval_errors, compare_numbers, parent_sum_errors, required_keys, scan_markers)
@@ -40,16 +40,20 @@ def _detail(items: List[str], label: str) -> str:
 
 
 def run_checks(ja_html: str, original_bytes: bytes, payload: dict, labels: dict,
-               translations: Optional[Dict[str, str]] = None, repo: Optional[str] = None
-               ) -> Tuple[List[tuple], List[tuple]]:
+               translations: Optional[Dict[str, str]] = None, repo: Optional[str] = None,
+               verification_name: Optional[str] = None) -> Tuple[List[tuple], List[tuple]]:
     """Return (checks, number_rows). checks: (name, ok, detail); number_rows: (key, expected, shown, ok)."""
     translations = translations or {}
     m = EMBED_RX.search(ja_html)
     emb = json.loads(m.group(1)) if m else {}
     src_sha = hashlib.sha256(original_bytes).hexdigest()
     policy = TextPolicy(translations)  # a fresh render: the reference for counts, cells and their order
-    fresh = render(payload, labels, policy, emb.get("sourceFile") or "", src_sha)
+    named = emb.get("verificationFile") or DEFAULT_VERIFICATION
+    fresh = render(payload, labels, policy, emb.get("sourceFile") or "", src_sha, named)
     checks = [("lang=\"ja\"", bool(re.search(r'<html[^>]*\blang="ja"', ja_html)), "")]
+    if verification_name is not None:
+        checks.append(("照合表の名前 = 日本語版 HTML が案内する名前", named == verification_name,
+                       f"HTML: {named} / 照合表: {verification_name}"))
     n_vi = vi_count(ja_html)
     checks.append(("ベトナム語の文字（NFC / NFD とも）", n_vi == 0, f"{n_vi} 文字"))
     rows = compare_numbers(ja_html, payload, {"omitted": policy.omitted, "translated": policy.translated})
@@ -75,7 +79,7 @@ def run_checks(ja_html: str, original_bytes: bytes, payload: dict, labels: dict,
                if s.startswith("BLOCKED")]
     checks.append(("内容検査（公開リポジトリに出せない内容がない）", not blocked, _detail(blocked, "該当")))
     unknown, bare = scan_markers(ja_html, payload, translations,
-                                 {"file": emb.get("sourceFile"), "sha": src_sha[:16]})
+                                 {"file": emb.get("sourceFile"), "sha": src_sha[:16], "verify": named})
     checks.append(("印のない数値 0（固定文・自由記述・出所欄を除く）", not bare,
                    f"{len(bare)} 個" + (": " + " / ".join(bare[:3]) if bare else "")))
     hint = "（訳文を使った版は --translations を指定）" if unknown and emb.get("translatedTexts") else ""
@@ -137,7 +141,7 @@ def rep_lines(payload: dict) -> List[str]:
 
 SCOPE_NOTE = ("- 数値の検査範囲: data-v の印が付いた数値は、すべて原本の埋め込みデータから再計算した値と照合する。"
               "印のない数値は、表示される本文（タグ・属性・style・script を除く）で、固定文（算定方法の難易度の目安、"
-              "語「sha256」）、照合済みの自由記述（data-t: 埋め込みデータの文字列か訳文と完全一致）、出所欄（data-x: 原本のファイル名と sha256 の先頭）を除いて 0 個であることを検査する。")
+              "語「sha256」）、照合済みの自由記述（data-t: 埋め込みデータの文字列か訳文と完全一致）、出所欄（data-x: 原本のファイル名・sha256 の先頭・照合表の名前）を除いて 0 個であることを検査する。")
 
 
 def verification_md(checks, rows, payload, meta: dict, labels: dict) -> str:

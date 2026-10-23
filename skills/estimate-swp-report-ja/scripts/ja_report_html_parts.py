@@ -3,7 +3,7 @@
 Markers the checker reads (ja_report_numbers.py):
   data-v="kind|id|field"  a number recomputed from the payload and compared
   data-t="1"              free text that must be a payload string, a supplied translation or the omission note
-  data-x="file|sha"       the source file name / sha256 prefix (compared with the embedded provenance)
+  data-x="file|sha|verify" the source file name / sha256 prefix / 照合表 name (compared with the embedded provenance)
 """
 from __future__ import annotations
 

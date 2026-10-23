@@ -24,7 +24,7 @@ sys.path.insert(0, HERE)
 
 from estimate_swp_payload import extract_payload  # noqa: E402
 from ja_report_check import run_checks, verification_md  # noqa: E402
-from ja_report_html import render  # noqa: E402
+from ja_report_html import DEFAULT_VERIFICATION, render  # noqa: E402
 from ja_report_layout_check import translation_errors  # noqa: E402
 from ja_report_payload import embedded_copy  # noqa: E402
 from ja_report_public_guard import allowed_repo, command_line, findings, html_entries  # noqa: E402
@@ -38,11 +38,15 @@ def parse_args(argv):
     p.add_argument("--out", help="render の出力（日本語版 HTML）")
     p.add_argument("--ja", help="check の対象（日本語版 HTML）")
     p.add_argument("--translations", help='自由記述の訳: {"原文": "日本語訳"}（render と check で同じファイル）')
-    p.add_argument("--verification-md", help="照合表（Markdown）の出力先")
+    p.add_argument("--verification-md", help="照合表（Markdown）の出力先。render では日本語版 HTML が案内する照合表の名前になる")
     p.add_argument("--source-skill", help="原本を作ったスキルと版（例: tkm:estimate-swp 2.1.0-beta.1）")
     p.add_argument("--repo", help="GitHub の URL を許すリポジトリ（owner/name。省略時は issueRef のリポジトリが 1 つならそれ）")
     p.add_argument("--force", action="store_true", help="既存の出力を上書きする")
     return p.parse_args(argv)
+
+
+def verification_name(ns):
+    return os.path.basename(ns.verification_md) if ns.verification_md else DEFAULT_VERIFICATION
 
 
 def read_bytes(path):
@@ -89,7 +93,8 @@ def cmd_render(ns):
         print("\n".join("ERROR " + w for w in wrong[:20]))
         return 2
     policy = TextPolicy(translations)
-    doc = render(payload, load_labels(), policy, os.path.basename(ns.html), hashlib.sha256(raw).hexdigest())
+    doc = render(payload, load_labels(), policy, os.path.basename(ns.html), hashlib.sha256(raw).hexdigest(),
+                 verification_name(ns))
     blocked = findings(html_entries(doc), allowed_repo(payload, ns.repo))
     if blocked:
         print("\n".join(blocked))
@@ -114,7 +119,8 @@ def cmd_check(ns, argv):
     if translations is None:
         return 2
     labels = load_labels()
-    checks, rows = run_checks(ja_raw.decode("utf-8"), original, payload, labels, translations, ns.repo)
+    checks, rows = run_checks(ja_raw.decode("utf-8"), original, payload, labels, translations, ns.repo,
+                              verification_name(ns) if ns.verification_md else None)
     for name, ok, detail in checks:
         print(f"{'PASS' if ok else 'FAIL'} {name} {detail}")
     ok_all = all(c[1] for c in checks)
