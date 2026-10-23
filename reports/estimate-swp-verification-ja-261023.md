@@ -1,20 +1,21 @@
 # estimate-swp 照合表（日本語版 HTML と原本 HTML）
 
 - 判定: **合格**
-- 原本 HTML: `estimate-swp-yuki-cold-logistics-261023-0716.html`（sha256 `677952e6b7ef6fcf01a77499cea948d0cc5e29e3ff99c59a931b05b37c31fde0`。公開リポジトリには置かず、sha256 で照合）
-- 日本語版 HTML: `estimate-swp-yuki-cold-logistics-261023-0716-ja.html`（sha256 `c359fa5cad71954d14b8b962b4e54b18a8b2f4aed50f1b804550eae17b409518`）
-- 埋め込みデータの sha256（正規化 JSON）: `d0253cfb4461d4670f7702eb5da8ed5f64aa56cd3c93662d83ca89d98d036463`
+- 原本 HTML: `estimate-swp-yuki-cold-logistics-261023-1158.html`（sha256 `170b523301970972f0e36b550a9484504faf594abdb0e72ce525d927d83a2a84`。公開リポジトリには置かず、sha256 で照合）
+- 日本語版 HTML: `estimate-swp-yuki-cold-logistics-261023-1158-ja.html`（sha256 `c2222850d65480c70a0f978babc3f61ee40c9b89686af9b5538c78ee0520c428`）
+- 埋め込みデータの sha256（正規化 JSON）: `3c747b015d35cc4f10cdfc9f72874c86562a61ead44abe2d29562c6106302928`
 - 原本を作ったスキル: tkm:estimate-swp 2.1.0-beta.1
-- 変換スキル: estimate-swp-report-ja 0.6.0
-- 照合日時: 2026-10-23T07:34:23+07:00
-- 実行したコマンド: `python3 scripts/render-estimate-report-ja.py check --html estimate-swp-yuki-cold-logistics-261023-0716.html --ja estimate-swp-yuki-cold-logistics-261023-0716-ja.html --verification-md estimate-swp-verification-ja-261023.md --source-skill 'tkm:estimate-swp 2.1.0-beta.1' --repo binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog --translations translations.ja.json`
-- 数値の検査範囲: data-v の印が付いた数値は、すべて原本の埋め込みデータから再計算した値と照合する。印のない数値は、表示される本文（タグ・属性・style・script を除く）で、固定文（算定方法の難易度の目安、語「sha256」）、照合済みの自由記述（data-t: 埋め込みデータの文字列か訳文と完全一致）、出所欄（data-x: 原本のファイル名と sha256 の先頭）を除いて 0 個であることを検査する。
+- 変換スキル: estimate-swp-report-ja 0.7.0
+- 照合日時: 2026-10-23T12:00:02+07:00
+- 実行したコマンド: `python3 scripts/render-estimate-report-ja.py check --html estimate-swp-yuki-cold-logistics-261023-1158.html --ja estimate-swp-yuki-cold-logistics-261023-1158-ja.html --verification-md estimate-swp-verification-ja-261023.md --source-skill 'tkm:estimate-swp 2.1.0-beta.1' --repo binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog --translations translations.ja.json`
+- 数値の検査範囲: data-v の印が付いた数値は、すべて原本の埋め込みデータから再計算した値と照合する。印のない数値は、表示される本文（タグ・属性・style・script を除く）で、固定文（算定方法の難易度の目安、語「sha256」）、照合済みの自由記述（data-t: 埋め込みデータの文字列か訳文と完全一致）、出所欄（data-x: 原本のファイル名・sha256 の先頭・照合表の名前）を除いて 0 個であることを検査する。
 
 ## 検査項目
 
 | 検査 | 結果 | 詳細 |
 |---|---|---|
 | lang="ja" | 合格 |  |
+| 照合表の名前 = 日本語版 HTML が案内する名前 | 合格 | HTML: estimate-swp-verification-ja-261023.md / 照合表: estimate-swp-verification-ja-261023.md |
 | ベトナム語の文字（NFC / NFD とも） | 合格 | 0 文字 |
 | 数値 = 埋め込みデータ（data-v の印の付いた数値） | 合格 | 照合 2053 箇所、不一致 0 |
 | 網羅（全表の数値の欄: issue・確定・親・合計・分割の提案・作業種別・代表・件数） | 合格 | 不足 0 |
