@@ -94,6 +94,69 @@ class VisibleAxisGuardTest(unittest.TestCase):
         self.assertNotEqual(translation_errors({text: ok.replace("S3-04", "S-04")}, p), [],
                             "S3-04 is a reference, not a band label")
 
+    def _axis_ok(self, bad: str) -> bool:
+        ja = translations_for(self.p)
+        target = next(v for v in ja.values() if v in self.doc)
+        checks, _ = check_doc(self.doc.replace(target, target + bad, 1), self.p)
+        return axis_check(checks)[1][0]
+
+    def test_review_22_10_full_width_colon_and_japanese_band_labels_are_axis_notation(self):
+        """Review team 22/10: full-width 「Ｓ５ × Ｃ３」, "Scope: 3" and Japanese band labels slipped through."""
+        for bad in ("（Ｓ５ × Ｃ３）", "（Ｓ×Ｃ）", "（スコープ 3、複雑度 2）", "（範囲 3 / 複雑さ 2）", "（範囲：３）",
+                    "（スコープは 3）", "（Scope: 3, Complexity: 2）"):
+            self.assertFalse(self._axis_ok(bad), bad)
+        p = rich_payload()
+        text = "Keep 10 SWP (Scope: 3, Complexity: 2)."
+        p["corrections"][0]["rationale"] = text
+        self.assertEqual(translation_errors({text: "10 SWP を維持。"}, p), [])
+        full = "Keep 10 SWP (Ｓ５ × Ｃ３)."
+        p["corrections"][0]["rationale"] = full
+        self.assertEqual(translation_errors({full: "10 SWP を維持。"}, p), [])
+
+    def test_counts_after_a_scope_heading_are_not_band_labels(self):
+        """Assessor rationales open with "Scope: 3 new tables" — the 3 is a count, the translation must keep it."""
+        # run 261023: a thousands separator or a run of values is a count, not a lone band value
+        for ok in ("（範囲:3 セクションを一覧に追加）", "（範囲:2個のエンドポイント）", "（複雑さ:4 ステータス）",
+                   "（複雑さ:4つの表示状態）", "（複雑さ：1,000行ごとのチャンク分割）", "（複雑さ：239/240/241分の境界）"):
+            self.assertTrue(self._axis_ok(ok), ok)
+        p = rich_payload()
+        text = "Scope: 3 new tables. Complexity: 4 statuses."
+        p["issues"][0]["rationale"] = text
+        self.assertEqual(translation_errors({text: "範囲:3 テーブル。複雑さ:4 ステータス。"}, p), [])
+        self.assertNotEqual(translation_errors({text: "範囲:テーブル。複雑さ:ステータス。"}, p), [])
+
+    def test_run_261023_vietnamese_reviewer_band_labels(self):
+        """Run 261023: reviewers write sample rationales in Vietnamese (axes noted as "<scope> 8, <difficulty> 1"
+        or "<difficulty> at level 2"); the translation drops those band values and the page must not show 「範囲8」
+        or 「難易度は水準2」. A count after the label ("<scope> 3 tables") stays mandatory."""
+        for bad in ("（範囲8、複雑さ1）", "（難易度は水準2とする）", "（難易度はレベル2）"):
+            self.assertFalse(self._axis_ok(bad), bad)
+        for ok in ("（難易度は通常水準とする）", "（範囲は変わらない）"):
+            self.assertTrue(self._axis_ok(ok), ok)
+        p = rich_payload()
+        axes = "Gi\u1eef 10. Ghi tr\u1ee5c: ph\u1ea1m vi 8, \u0111\u1ed9 kh\u00f3 1."
+        level = "Kh\u00f4ng backfill n\u00ean \u0111\u1ed9 kh\u00f3 \u1edf m\u1ee9c 2, ch\u01b0a t\u1edbi m\u1ee9c migration."
+        count = "Ph\u1ea1m vi 3 b\u1ea3ng m\u1edbi."
+        for text, ja in ((axes, "10 を維持する。評価軸は記録した。"), (level, "バックフィルがないため難易度は中程度とする。")):
+            p["corrections"][0]["rationale"] = text
+            self.assertEqual(translation_errors({text: ja}, p), [], text)
+        p["corrections"][0]["rationale"] = count
+        self.assertNotEqual(translation_errors({count: "新しいテーブルが対象。"}, p), [],
+                            "a count after the label is not a band value")
+
+    def test_product_names_are_not_lone_band_labels(self):
+        """"Amazon S3" is a product, not band S3; a lone S5 / C3 of an assessor rationale stays axis notation."""
+        for ok in ("（Amazon S3 に退避）", "（AWS S3 に保存）", "（S3 バケットに保存）", "（S3 bucket）"):
+            self.assertTrue(self._axis_ok(ok), ok)
+        for bad in ("（B は S5 と C3）", "（C3）"):
+            self.assertFalse(self._axis_ok(bad), bad)
+        p = rich_payload()
+        text = "Back up to Amazon S3 nightly."
+        p["issues"][0]["rationale"] = text
+        self.assertEqual(translation_errors({text: "毎晩 Amazon S3 にバックアップ。"}, p), [])
+        self.assertNotEqual(translation_errors({text: "毎晩 Amazon にバックアップ。"}, p), [],
+                            "the 3 of S3 is part of the product name and stays mandatory")
+
 
 if __name__ == "__main__":
     unittest.main()
