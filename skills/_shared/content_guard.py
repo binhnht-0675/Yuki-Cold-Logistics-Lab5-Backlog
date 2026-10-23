@@ -11,13 +11,15 @@ company names, GitHub URLs to repos other than the allowed one, with or without 
 Each line is checked on its NFKC view with the invisible characters removed (full-width letters,
 soft hyphens, tag characters ... cannot hide a match); `ctrl` is checked on the original line and
 reported positions are columns of the original line.
-For a GitHub URL to an allowed repo (`--repo`, compared case-insensitively) only the
-`https://github.com/<owner>/<repo>` part is exempt; the path / query after it is still scanned, both as
-written and percent-decoded (all layers), and a `/..` that climbs out of the repo is blocked.
-`github.com/users|orgs/<owner>/projects/N` is allowed for the owner of an allowed repo.
-A bare allowed `owner/name` token (not inside a URL) is exempt too.
-Secrets, emails and internal URLs are never echoed (rule + length only).
-The patterns live in content_guard_rules.py (re-exported here).
+For a GitHub URL to an allowed repo (`--repo`, case-insensitive) only `https://github.com/<owner>/<repo>`
+is exempt. Its tail: the path (up to the first LITERAL `?` / `#`; `%3f` / `%23` do not end it) is decoded
+fully and a `..` segment in it (`\\` counts as `/`) blocks the URL (github-other-repo); the tail is
+scanned as written and, decoded, by every rule and again for GitHub URLs (other repo -> blocked, allowed
+repo -> exempt). Decoding (percent + NFKC per layer) repeats until stable; still changing after
+DECODE_LAYERS (16) layers -> internal / deep-percent-encoding (nesting that deep is itself suspicious).
+`github.com/users|orgs/<owner>/projects/N` is allowed for the owner of an allowed repo; a bare allowed
+`owner/name` token (not inside a URL) is exempt too. Secrets, emails and internal URLs are never echoed
+(rule + length only). The patterns live in content_guard_rules.py (re-exported here).
 """
 from __future__ import annotations
 
@@ -28,22 +30,15 @@ from collections import Counter
 from typing import Callable, Iterable, List, NamedTuple, Optional, Sequence, Tuple, Union
 
 from content_guard_rules import (  # noqa: F401  (public names kept for callers)
-    CATEGORY_JA, CO1, CO2, COMPANY_RX, CTRL_RX, EMAIL_OK_RX, EMAIL_RX, GITHUB_URL_RX, INTERNAL_LINK_RX,
+    CATEGORY_JA, CO1, CO2, COMPANY_RX, CTRL_RX, DECODE_LAYERS, EMAIL_OK_RX, EMAIL_RX, GITHUB_URL_RX, INTERNAL_LINK_RX,
     KEY_RXS, MASKED, NO_SCHEME, PROJECT_OWNER_SEGMENTS, RULES, TRAVERSAL_RX, VI_RX)
 
 EXIT_CONTENT_BLOCKED = 3
 AllowRepo = Union[None, str, Sequence[str]]
 
 
-class Finding(NamedTuple):
-    key: str
-    field: str
-    category: str
-    rule: str
-    line: int
-    col: int
-    section: str
-    excerpt: str
+Finding = NamedTuple("Finding", [("key", str), ("field", str), ("category", str), ("rule", str),
+                                 ("line", int), ("col", int), ("section", str), ("excerpt", str)])
 
 
 def normalized_view(line: str) -> Tuple[str, Optional[List[int]]]:
@@ -79,35 +74,40 @@ def _allowed(allow_repo: AllowRepo) -> Tuple[set, set]:
     return repos, {r.split("/", 1)[0] for r in repos}
 
 
-def _fully_unquoted(text: str) -> str:
-    """Percent-decode until stable (at most 4 layers, so %252f cannot hide a slash)."""
-    for _ in range(4):
-        decoded = urllib.parse.unquote(text)
+def _decoded(text: str) -> Tuple[str, bool]:
+    """(text percent-decoded + NFKC-normalized until stable, True if still changing after DECODE_LAYERS layers)."""
+    for _ in range(DECODE_LAYERS):
+        decoded = normalized_view(urllib.parse.unquote(text))[0]
         if decoded == text:
-            break
+            return text, False
         text = decoded
-    return text
+    return text, normalized_view(urllib.parse.unquote(text))[0] != text
 
 
 def _github_urls(view: str, repos: set, owners: set) -> Tuple[str, list, list]:
-    """Blank the exempt part of allowed GitHub URLs.
+    """Blank the exempt part of allowed GitHub URLs (tail rules: see the module docstring).
 
-    -> (cleaned view, [(start, label)] of other repos, [(start, decoded tail)] of allowed URLs whose tail
-    changes when percent-decoded: the rules scan that decoded form too)."""
-    clean, other, decoded = view, [], []
+    -> (cleaned view, [(start, rule, label)] findings, [(start, cleaned decoded tail)]: the rules scan it too).
+    A decoded tail is stable, so the recursive call on it never decodes again."""
+    clean, found, decoded = view, [], []
     for m in GITHUB_URL_RX.finditer(view):
         first, second = m.group(1).lower(), m.group(2).lower()
         ok = (first in PROJECT_OWNER_SEGMENTS and second in owners) or f"{first}/{second}" in repos
         raw = re.match(r"\S*", view[m.end():]).group(0)  # the rest of this URL
-        tail = _fully_unquoted(raw)
-        if ok and not TRAVERSAL_RX.search(tail.split("#", 1)[0].split("?", 1)[0]):
-            clean = clean[:m.start()] + " " * (m.end() - m.start()) + clean[m.end():]
-            if tail != raw:
-                decoded.append((m.end(), normalized_view(tail)[0]))
-        else:
+        path = _decoded(re.split(r"[?#]", raw, maxsplit=1)[0])[0].replace("\\", "/")
+        if not ok or TRAVERSAL_RX.search(path):
             owner = m.group(2) if first in PROJECT_OWNER_SEGMENTS else m.group(1)
-            other.append((m.start(), f"（{owner}/… 許可リポジトリ外）"))
-    return clean, other, decoded
+            found.append((m.start(), "github-other-repo", f"（{owner}/… 許可リポジトリ外）"))
+            continue
+        clean = clean[:m.start()] + " " * (m.end() - m.start()) + clean[m.end():]
+        tail, too_deep = _decoded(raw)
+        if too_deep:
+            found.append((m.end(), "deep-percent-encoding", f"（{DECODE_LAYERS} 層を超える URL 符号化）"))
+        elif tail != raw:
+            t_clean, t_found, t_decoded = _github_urls(tail, repos, owners)
+            found += [(m.end(), rule, label) for _, rule, label in t_found]
+            decoded += [(m.end(), _blank_repo_names(t_clean, repos))] + [(m.end(), t) for _, t in t_decoded]
+    return clean, found, decoded
 
 
 def _blank_repo_names(view: str, repos: set) -> str:
@@ -140,9 +140,9 @@ def scan_text(text: str, allow_repo: AllowRepo = None) -> List[Tuple[str, str, i
             section = line[3:].strip()
         view, idx = normalized_view(line)
         col = (lambda p: p + 1) if idx is None else (lambda p: idx[p] + 1)
-        clean, other, decoded = _github_urls(view, repos, owners)
+        clean, found, decoded = _github_urls(view, repos, owners)
         clean = _blank_repo_names(clean, repos)
-        out += [("internal", "github-other-repo", n, col(s), section, label) for s, label in other]
+        out += [("internal", rule, n, col(s), section, label) for s, rule, label in found]
         for category, rule, rx in RULES:
             if category == "ctrl":
                 targets = [(line, None)]

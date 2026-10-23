@@ -92,3 +92,4 @@ GITHUB_URL_RX = re.compile(
     r"/([\w.-]+)/([\w-]+(?:\.(?!git\b)[\w-]+)*)(?:\.git)?", re.I)
 PROJECT_OWNER_SEGMENTS = {"users", "orgs"}
 TRAVERSAL_RX = re.compile(r"(?:^|/)\.\.(?:/|$|[?#])")
+DECODE_LAYERS = 16  # percent-decoding beyond this many layers is itself a finding (deep-percent-encoding)
