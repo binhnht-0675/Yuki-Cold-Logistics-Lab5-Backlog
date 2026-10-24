@@ -67,6 +67,24 @@ class WriteFieldsTest(FieldWriterBase):
         self.assertEqual(ch["E01"]["fields"], {"SWP": 21, "見積時間(h)": 31.5})
         self.assertEqual(ch["E01"]["derived"], "sum-of-children")
 
+    def test_fixed_hours_override_the_formula_for_listed_leaves(self):
+        with open(self.rule, "w", encoding="utf-8") as fh:
+            json.dump({"k": 1.5, "f": 1.0, "round": 0.5, "fixedHours": {"E01-I01-S01": 2}}, fh)
+        ch, out = self.build()
+        self.assertNotIn("WARN", out)
+        self.assertEqual(ch["E01-I01-S01"]["fields"], {"SWP": 5, "見積時間(h)": 2})
+        self.assertEqual(ch["E01-I01"]["fields"], {"SWP": 11, "見積時間(h)": 11})
+        self.assertEqual(ch["E01"]["fields"], {"SWP": 21, "見積時間(h)": 26})
+
+    def test_fixed_hours_for_a_key_that_is_not_a_leaf_blocks(self):
+        with open(self.rule, "w", encoding="utf-8") as fh:
+            json.dump({"k": 1.5, "f": 1.0, "fixedHours": {"E01-I01": 2, "E99-I01-S01": 2}}, fh)
+        self.build()
+        with open(self.cs, encoding="utf-8") as fh:
+            errors = json.load(fh)["blockingErrors"]
+        self.assertTrue(any("E01-I01" in e and "fixedHours" in e for e in errors), errors)
+        self.assertTrue(any("E99-I01-S01" in e and "fixedHours" in e for e in errors), errors)
+
     def test_diff_offline_apply_idempotent_and_revert(self):
         self.build()
         snap = self.gh.path("snap.json")

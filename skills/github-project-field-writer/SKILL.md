@@ -2,7 +2,7 @@
 name: github-project-field-writer
 description: GitHub Project のフィールド（SWP・見積時間・Status・イテレーション）、issue のクローズ、ラベル、コメントを「変更セット（change-set）」として宣言し、旧 → 新の差分表を人が確認してから書き込む。estimate-swp の HTML レポートから SWP と時間（親 = 子の合計）を作る機能と、スプリント計画から Status / イテレーション / クローズ / 持ち越しラベルを作る機能を持つ。ログから元に戻せる。「SWP を Project に書いて」「見積時間を入れて」「スプリントの状態を反映して」「さっきの書き込みを戻して」と言われたら、このスキルを使うこと。
 metadata:
-  version: "0.6.0"
+  version: "0.7.0"
 ---
 
 # github-project-field-writer
@@ -39,7 +39,8 @@ change-set の形式は `references/change-set-schema.md`、例は `assets/examp
 3. 承認後 `apply --change-set cs.json --apply`。もう一度 `apply` しても「変更 0」になることを確認。
 4. 照合は `github-project-progress-report` のスナップショットで行う。
 
-`hour-rule.json`: `{"k": 時間/SWP, "f": 状況係数, "round": 0.5}`（k と f の根拠は別資料に書く）。
+`hour-rule.json`: `{"k": 時間/SWP, "f": 状況係数, "round": 0.5, "fixedHours": {"<末端のキー>": 時間}}`（k と f の根拠は別資料に書く）。
+`fixedHours`（省略可）に挙げた末端は、式ではなくその時間をそのまま使う（SWP で量を測らない作業、例: 顧客への確認の打合せ）。親は同じく子の合計。挙げたキーがレポートにある末端でなければ `blockingErrors` に入る。
 
 ## apply の停止条件（書き込み 0 件で exit 2）
 `apply` と `revert-from-log` は、GitHub を読む前に次を確認し、1 つでも当たれば何も書かない。`diff` は `blockingErrors` と見積もりの検査

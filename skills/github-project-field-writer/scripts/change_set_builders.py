@@ -20,9 +20,12 @@ def round_to(value: float, step: float) -> float:
     return math.floor(value / step + 0.5 + 1e-9) * step
 
 
-def hours_for(swp: float, rule: Optional[dict]) -> Optional[float]:
+def hours_for(swp: float, rule: Optional[dict], key: str = "") -> Optional[float]:
+    """Leaf hours: rule["fixedHours"][key] when listed (work not measured by SWP), else rounded SWP × k × f."""
     if not rule:
         return None
+    if key in (rule.get("fixedHours") or {}):
+        return float(rule["fixedHours"][key])
     return round_to(swp * float(rule["k"]) * float(rule.get("f", 1)), float(rule.get("round", 0.5)))
 
 
@@ -54,8 +57,11 @@ def build_from_estimate(payload: dict, key_map: Dict[str, dict], backlog: List[d
         if swp is None:
             warns.append(f"{key}: finalSWP がない")
             continue
-        leaf[key] = (float(swp), hours_for(float(swp), rule))
+        leaf[key] = (float(swp), hours_for(float(swp), rule, key))
     kids = children_index(backlog)
+    for key in sorted((rule or {}).get("fixedHours") or {}):
+        if key not in leaf or key in kids:
+            errors.append(f"fixedHours の {key} は、レポートにある末端（タスク）ではない")
     values: Dict[str, Tuple[float, Optional[float]]] = {k: v for k, v in leaf.items() if k not in kids}
     for item in backlog:  # every backlog leaf (task) must have a value
         if item["key"] not in kids and item["key"] not in values:
