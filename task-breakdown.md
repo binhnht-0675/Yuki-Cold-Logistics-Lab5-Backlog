@@ -5,15 +5,19 @@
 ### 1.1 階層
 - **epic（15 件）**: 業務領域または横断の関心事ごと。10 は feature（認証、入荷・在庫、受注・引当、出荷、配送、温度管理、トレーサビリティ、マスター、クレーム、レポート・監査）、4 は横断（基盤、外部連携、データ移行、非機能・横断 UI）、1 は 2024 年運転時間規制の専用 epic。
 - **issue（86 件）**: 利用者が 1 つの機能として見るまとまり。1 つの画面、または 1 つの画面の中の連続した FT の組。画面に FT が多いときは 2〜3 件に分ける。必ず対象の FT 番号を持つ。
-- **sub-issue（399 件）**: 1 人が 2 日以内に終えられる、1 つの層の作業。層は DB・API・UI・テスト・移行・インフラ・ドキュメントのいずれか。
+- **sub-issue（399 件）**: 1 つの層の作業。分けるときは、1 人が 2 日（16 時間）以内に終えられると見込める大きさを目安にした。層は DB・API・UI・テスト・移行・インフラ・ドキュメントのいずれか。
 - 親子は GitHub のサブ issue の機能で表す。種別（エピック・ストーリー・タスク）と層、2024 年規制はラベルで補う。
 
 ### 1.2 粒度
-- 次の 4 つが揃ったら分けるのをやめる。1 人が 2 日以内で終わる。層が 1 つ。単独でマージできる。完了の定義を検証できる形で書ける。
+- 次の 4 つが揃ったら分けるのをやめる。分けた時点の見込みで 1 人が 2 日以内に終わる。層が 1 つ。単独でマージできる。完了の定義を検証できる形で書ける。
 - 次のどれかに当たったら分ける。層が違う。担当が違う。API が 3 本以上。画面の部分が 2 つ以上。状態を変える RPC が 2 つ以上。
+- 状態を変える API は 1 件 1 本にする（issue の備考では「状態を変える API を 1 件 1 本にする分割の規則」と書く）。下の例外に当たるときだけ 1 件にまとめる。
 - 例外として、2 つの RPC が同じトランザクションで動き分けると単独でマージ・検証できないとき、または同じ検査を複数の RPC に足すだけで新しい状態の変化を作らないときは 1 件にまとめる。その場合は備考に「分割の規則の例外」と理由を書く。
-- 逆に、同じ画面の小さな参照 API（GET）は合計 2 日以内なら 1 つにまとめる。
-- 件数を先に決めることはせず、1 件ずつ進み具合を追える小ささ（1 人・2 日以内・1 層）を優先した。FT の多い画面は issue を 2〜3 件に分けている。
+- 逆に、同じ画面の小さな参照 API（GET）は、合計が 2 日以内と見込めるなら 1 つにまとめる。
+- 件数を先に決めることはせず、1 件ずつ進み具合を追える小ささ（1 人・2 日以内の見込み・1 層）を目安にした。FT の多い画面は issue を 2〜3 件に分けている。
+- このバックログは計画のためのもので、task の時間は SWP から換算した初期の見積もりである（換算の方法は estimate.md 第 3 節）。上の「2 日以内」は分けたときの見込みで、換算後の時間で全 task が 16 時間以内に収まったことを示すものではない。issue の備考の「1 人・2 日の規則」と「2 日以内に収まる」も、分けるときに使った目安を指す。
+- 換算後の時間が 16 時間を超える task は、スプリントに入れる前のリファインメントで見直す。分けることを優先し、分けない場合は task ごとに具体的な理由を書く。対象の一覧は estimate.md 第 3 節にある。
+- Sprint 1 には換算後の時間が 16 時間以下の task だけを入れ、スクリプトで確かめる。直接の見積もりがある task はその値も、依存する task も同じ上限で確かめる。
 - sub-issue が 1 件だけの issue は、作業が本当に 1 つのときに限る。その場合は理由を issue の備考に書く。
 - 着手の順序の制約は本文の「依存」にだけ書く。「備考」に出てくるキーは役割の分担や関連を示す参照で、着手の順序は縛らない。
 - LAB-4（2026-10-12 提出）に対する講師講評（2026-10-19）に基づく変更は、この文書と PREMISE では出典をこの言い方で書く。issue の本文では「講評（2026-10-19）」と短く書き、全文は対応する PREMISE の行（P-xx）に置く。issue は外部の利用者も読む作業票のため、講評の出典の詳細は PREMISE にまとめる。
@@ -33,6 +37,7 @@
 
 ### 1.6 担当（仮）
 - GitHub の Assignees は協力者のみ割当可能なため、担当（仮）フィールドで管理する。値は役割名（BE-1、BE-2、FE-1、FE-2、QA-1、QA-2、Infra-1、PM、BrSE）で、実在の個人ではなく計画上の割当を表す。
+- エピック（15 件）は PM、ストーリー（86 件）は BrSE（受入れ確認の調整窓口）、task（399 件）は実作業を担当する役割を設定する。
 
 ### 1.7 抜け・矛盾の扱い
 - 設計書の抜けや矛盾を見つけたら、§4 の表に 1 行で残し、扱いを次の 4 つのどれか 1 つに決める。
@@ -425,7 +430,7 @@ backlog から機械的に生成する。表の 1 行が 1 つの issue で、Ep
 |---|---|---|---|---|
 | data-migration-design.md §2 FT ごとの設計（FT-105） | [#28](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/28)（E14） | [#100](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/100)（E14-I01） レガシーデータのプロファイリング | FT-105 | [#469](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/469)（E14-I01-S02）（1 件） |
 | data-migration-design.md §2 FT ごとの設計（FT-106） | [#28](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/28)（E14） | [#101](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/101)（E14-I02） レガシーデータ構造のマッピングと変換 | FT-106 | [#470](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/470)（E14-I02-S02）、[#471](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/471)（E14-I02-S04）（2 件） |
-| data-migration-design.md §2 FT ごとの設計（FT-107） | [#28](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/28)（E14） | [#102](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/102)（E14-I03） 移行演習の実行（ドライラン・リハーサル2回・最終ロード） | FT-107 | [#472](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/472)（E14-I03-S01）、[#473](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/473)（E14-I03-S02）（2 件） |
+| data-migration-design.md §2 FT ごとの設計（FT-107） | [#28](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/28)（E14） | [#102](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/102)（E14-I03） 移行演習の実行の仕組み（ドライラン・リハーサル2回・最終ロードを同じ手順で回す） | FT-107 | [#472](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/472)（E14-I03-S01）、[#473](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/473)（E14-I03-S02）（2 件） |
 | data-migration-design.md §2 FT ごとの設計（FT-108） | [#28](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/28)（E14） | [#103](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/103)（E14-I04） 移行行の判定結果とソースの照合 | FT-108 | [#474](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/474)（E14-I04-S01）、[#475](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/475)（E14-I04-S02）、[#476](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/476)（E14-I04-S03）（3 件） |
 | data-migration-design.md §2 FT ごとの設計（FT-109） | [#28](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/28)（E14） | [#104](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/104)（E14-I05） マスター・注文の凍結 | FT-109 | [#477](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/477)（E14-I05-S01）、[#478](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/478)（E14-I05-S02）（2 件） |
 | data-migration-design.md §2 FT ごとの設計（FT-110） | [#28](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/28)（E14） | [#105](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/105)（E14-I06） 重大エラー時のロールバック | FT-110 | [#479](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/479)（E14-I06-S01）、[#480](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/480)（E14-I06-S02）（2 件） |
@@ -446,6 +451,7 @@ backlog から機械的に生成する。表の 1 行が 1 つの issue で、Ep
 | Spec の箇所 | 理由 |
 |---|---|
 | _common/data-migration-design.md §1 移行の流れ（ワークショップ以外の顧客作業） | 顧客側の旧システムからのデータ抽出（ファイル出力）は顧客の作業で、開発チームのタスクにしない。 |
+| _common/data-migration-design.md §2 FT ごとの設計（FT-107）のうち、ドライランとリハーサル 2 回の各回の実施 | 各回の実施（環境の準備、実行、結果の確認、事業責任者の承認）は移行の運用作業で、開発の issue にしない。このバックログの時間の見積にも入っていない（提案時の見積では EN-07 の「ドライラン 1」と「リハーサル 2」の 2 行、AI 適用前で計 15 人日）。実施の仕組みは [#102](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/102)（E14-I03）、最終ロードの実行と照合は [#483](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/483)（E14-I08-S02） にあり、こちらは見積に入っている。 |
 | _common/data-migration-design.md §6 出典 | 出典一覧は文書情報で、開発タスクにならない。 |
 | change-requests/CR-202610-tech-stack-nextjs-supabase.md §3.4 工程と費用 | 移行の工数見積・費用は提案書の成果物で、バックログに載せない。 |
 
@@ -699,7 +705,7 @@ backlog を切るときに見つけたもの、設計書が自分で書いてい
 | GR-047 | SCR28_OPERATIONAL_REPORT_SPEC.md 6.2 RP-02・RP-12 / 6.5 未確認事項 | レポートの既定の付与と、12 種類ごとの主管部門・使える条件・主な列は 当社の設計で、顧客の確認が無い。変更履歴レポートの主管部門も ADMIN とした仮定。 | 確認用の issue を作成（[#393](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/393) E10-I01-S06） | 詳細のみ | 運用管理者（ROLE-009） | [#388](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/388)（E10-I01-S01）、[#393](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/393)（E10-I01-S06） |
 | GR-048 | SCR28_OPERATIONAL_REPORT_SPEC.md 6.5（CSV を画面の要求の中で作る範囲 100,000 行） | 運用レポートの CSV は画面の要求内で作る前提だが、行数が増えると SCR-29 の非同期方式が要る。切り替えの基準が無い。 | 確認用の issue を作成（[#393](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/393) E10-I01-S06） | 詳細のみ | 運用管理者（ROLE-009） | [#390](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/390)（E10-I01-S03）、[#393](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/393)（E10-I01-S06） |
 | GR-049 | SCR29_AUDIT_EXPORT_SPEC.md 6.2 AX-13（ワーカーの Route Handler と audit_export_dispatch） | 証拠パッケージの作成ワーカー（POST /api/internal/worker/audit-export）と pg_cron の起動関数は、[#24](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/24)（E10） の API 一覧に無い共通の仕組みで、[#26](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/26)（E12）・[#27](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/27)（E13） のタスクとの重複・抜けが起きうる。 | 仮定（PREMISE P-A15） | 詳細のみ | —（チームが設計で決定） | [#395](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/395)（E10-I02-S02）、[#397](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/397)（E10-I02-S06）、[#98](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/98)（E13-I05） |
-| GR-050 | SCR29_AUDIT_EXPORT_SPEC.md 6.2 AX-11（定期アーカイブの内容・PDF の要約） | 月次アーカイブに CSV と PDF の要約を入れるとあるが、PDF の作り方（ライブラリ・様式）が決まっていない。 | 仮定（PREMISE P-A16） | 詳細のみ | 監査者（ROLE-008） | [#394](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/394)（E10-I02-S01） |
+| GR-050 | SCR29_AUDIT_EXPORT_SPEC.md 6.2 AX-11（定期アーカイブの内容・PDF の要約） | 月次アーカイブに CSV と PDF の要約を入れるとあるが、PDF の作り方（ライブラリ・様式）が決まっていない。 | 仮定（PREMISE P-A16） | 詳細のみ | 監査者（ROLE-008） | [#394](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/394)（E10-I02-S01）、[#395](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/395)（E10-I02-S02） |
 | GR-051 | SCR36_RETENTION_LEGAL_HOLD_SPEC.md 5 Event（パージの実行中）/ API-D-103 | パージは 1,000 行ずつ削除するが、途中で失敗したときの再開と、実行中のまま止まったパージの扱いが書かれていない。 | 確認用の issue を作成（[#412](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/412) E10-I04-S06） | 詳細のみ | システム管理者（ROLE-007） | [#409](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/409)（E10-I04-S09）、[#412](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/412)（E10-I04-S06） |
 | GR-052 | SCR30_AUDIT_LOG_SPEC.md 3.2 関連 FT（FT-092 は画面なし） | FT-092（監査イベントの追記専用の記録）は画面がなく、試作版で動作済み。backlog 上の担当が SCR-30 だけで、記録側の本番確認の置き場が曖昧。 | 仮定（PREMISE P-A17） | 詳細のみ | —（チームが設計で決定） | [#402](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/402)（E10-I03-S01） |
 | GR-053 | SCR19_ROUTE_PLANNING_SPEC.md §6.7 仕様との差異 S5 | 見積のない区間を0分で進めるため、ブロックされても後続の到着予定・連続運転・拘束が短く出る。 | 設計を修正（PREMISE P-S09） | 詳細のみ | —（チームが設計で決定） | [#415](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/415)（E11-I01-S05） |
