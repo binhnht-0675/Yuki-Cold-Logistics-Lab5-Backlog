@@ -14,6 +14,7 @@ estimate-swp のレポートは表示がベトナム語固定（`<html lang="vi"
 描画は自作だが、派生する数値の式（不確かさの幅・構築／テスト／不具合の区分・チーム別・時間の換算率の既定値・
 評価 A・B の「分かれた」判定・修正の SWP）は、原本スキルの関数をそのまま import して使う
 （インストール済みの tkm:estimate-swp スキルの `scripts/core/` の `render_html.py`・`schema.py`・`render_assessor.py`。`scripts/ja_report_metrics.py`）。
+スキルの場所は、環境変数 `ESTIMATE_SWP_SCRIPTS` → ホームの `.claude/skills/estimate-swp/scripts` → ホームの `.claude/skills/tkm/skills/estimate-swp/scripts`（キットの入れ直し後の配置）の順に探し、見つからなければ探した場所をすべて示して止まる（`scripts/ja_report_source_location.py`）。
 原本スキルが入っていない環境では動かない（render・check とも exit 1）。
 
 > **確認の範囲**: テストは架空のレポート（`../_shared/tests/fixtures/`）とその書き換え版（評価 B・分割の提案・分解が必要な親・

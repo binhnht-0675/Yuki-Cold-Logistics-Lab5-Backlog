@@ -15,7 +15,9 @@ import sys
 from collections import Counter
 from typing import Dict
 
-SOURCE_SCRIPTS = os.path.expanduser(os.path.join("~", ".claude", "skills", "estimate-swp", "scripts"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ja_report_source_location import find_source_scripts  # noqa: E402
+
 NO_PARENT = "-"
 NO_TEAM = "-"
 
@@ -23,9 +25,7 @@ NO_TEAM = "-"
 def _load_source():
     name = "estimate_swp_core"
     if name not in sys.modules:
-        init = os.path.join(SOURCE_SCRIPTS, "core", "__init__.py")
-        if not os.path.exists(init):
-            raise ImportError(f"tkm:estimate-swp のスクリプトが見つかりません（{init}）")
+        init = os.path.join(find_source_scripts(os.path.expanduser("~"), os.environ), "core", "__init__.py")
         spec = importlib.util.spec_from_file_location(name, init, submodule_search_locations=[os.path.dirname(init)])
         module = importlib.util.module_from_spec(spec)
         sys.modules[name] = module
