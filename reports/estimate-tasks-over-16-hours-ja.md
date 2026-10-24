@@ -1,9 +1,9 @@
-# 換算後に 16 時間を超える task（149 件）
+# 換算後に 16 時間を超える task（160 件）
 
 時間 = SWP × 3.80（1 SWP あたりの時間。直接見積もった 10 件の task から較正した値。estimate.md 第 3 節）。上限の判定は丸める前の時間で行う。Project には 0.5 時間刻みに丸めた値を記録する。この換算では 5 SWP 以上の task がすべて対象になる。
-- 6 SWP 以上の 70 件は、感度のどの置き方（estimate.md 第 3 節）でも 16 時間を超える。
-- 5 SWP の 79 件は境目にある。1 SWP あたりの時間を、6 件を別のレビュー担当（AI のセッション）が独立に見積もった値（3.10 時間）にすると、16 時間以下になる。
-- 時間の見積は AI 利用の前提を置いていない。提案時と同じ AI の効果（×0.8）を掛けると 1 SWP あたり 3.04 時間で、上限を超えるのは 6 SWP 以上の 70 件になる。Project に記録する時間と、この一覧の判定には ×0.8 を掛けない。
+- 6 SWP 以上の 75 件は、感度のどの置き方（estimate.md 第 3 節）でも 16 時間を超える。
+- 5 SWP の 85 件は境目にある。1 SWP あたりの時間を、6 件を別のレビュー担当（AI のセッション）が独立に見積もった値（3.10 時間）にすると、16 時間以下になる。
+- 時間の見積は AI 利用の前提を置いていない。提案時と同じ AI の効果（×0.8）を掛けると 1 SWP あたり 3.04 時間で、上限を超えるのは 6 SWP 以上の 75 件になる。Project に記録する時間と、この一覧の判定には ×0.8 を掛けない。
 - 直接の見積もりが規則から大きく離れる、または 16 時間を超える task は、リファインメントで見積もり直す: [#148](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/148)、[#472](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/472)、[#6](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/6)。#6 と #472 は直接の見積もりが 24 時間で、規則では 16 時間以下でも上限を超える。
 
 どの task もまだ分割していない。スプリントに入れる前のリファインメントで、分けることを優先して見直す。分けない task は、見直したうえで task ごとに理由を書く（この表にはまだ理由を書かない）。
@@ -11,10 +11,12 @@
 | issue | キー | 層 | SWP | 換算（丸め前、時間） | Project の記録（時間） | タイトル |
 |---|---|---|---|---|---|---|
 | [#500](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/500) | E10-I04-S10 | DB | 16 | 60.80 | 61 | パージの削除の関門（D-RA-1: 対象 42 表の削除を承認済みのパージに限る） |
+| [#239](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/239) | E05-I01-S03 | API | 10 | 38.00 | 38 | 出発確定 API の本番化（POST …/dispatch） |
 | [#367](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/367) | E08-I02-S01 | DB | 10 | 38.00 | 38 | 版管理の DB（仕入先・ロケーション・機器の版表・既存の版表の maker-checker・温度ポリシーの適用範囲） |
 | [#394](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/394) | E10-I02-S01 | DB | 10 | 38.00 | 38 | 監査エクスポートの DB（audit_export・作成関数・マニフェストの固定・検証関数・ワーカーの起動） |
 | [#485](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/485) | E15-I03-S03 | テスト | 10 | 38.00 | 38 | 80同時ユーザーの負荷試験の実施と結果報告 |
 | [#497](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/497) | E15-I08-S03 | ドキュメント | 10 | 38.00 | 38 | API 契約の一元化（API 設計書を正とし、画面補遺と API 一覧（設計）は番号とリンクだけにする） |
+| [#507](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/507) | E13-I05-S06 | API | 10 | 38.00 | 38 | 取込ワーカーの Route Handler（`POST /api/internal/worker/ingest`）（.sha256 と見出しの検査・塊ごとの RPC の呼出し・再試行と dead） |
 | [#330](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/330) | E06-I09-S01 | DB | 9 | 34.20 | 34 | リーディング評価・アラーム生成・影響ロットの隔離の本番化（有効な版の選択・グループ化・重大度・確認期限） |
 | [#349](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/349) | E07-I04-S04 | API | 9 | 34.20 | 34 | API-057 POST 範囲の確定（3 つの脚の写し・自動隔離・安全網） |
 | [#409](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/409) | E10-I04-S09 | API | 9 | 34.20 | 34 | API-D-103 POST パージの承認と実行（保留の再確認・1,000 行ずつの削除） |
@@ -36,7 +38,6 @@
 | [#222](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/222) | E04-I01-S03 | API | 6 | 22.80 | 23 | ピッキング・積込の作業一覧 API とピック API の本番化 |
 | [#231](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/231) | E04-I02-S04 | DB | 6 | 22.80 | 23 | 出荷前確認の判定 RPC（温度・封印・逸脱・全隔離）の本番化 |
 | [#234](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/234) | E04-I03-S02 | API | 6 | 22.80 | 23 | ピッキングのグループ一覧 API と並び保存 API（GET pick-groups・PUT pick-order） |
-| [#239](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/239) | E05-I01-S03 | API | 6 | 22.80 | 23 | 出発確定 API の本番化（POST …/dispatch） |
 | [#243](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/243) | E05-I02-S03 | API | 6 | 22.80 | 23 | 配送詳細・受領記録 API の本番化（GET と POST pod） |
 | [#247](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/247) | E05-I05-S01 | UI | 6 | 22.80 | 23 | 端末内の暗号化キュー（PWA）の実装 |
 | [#267](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/267) | E05-I03-S06 | DB | 6 | 22.80 | 23 | ルート作成 RPC の受注の絞り込み（引当・納品日・温度帯・地図の地点）の本番化と地図の表の列追加 |
@@ -49,11 +50,13 @@
 | [#305](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/305) | E06-I04-S03 | DB | 6 | 22.80 | 23 | ロガー予定枠の同期の本番化（15 分の格子・待ち 30 時間・同期済みの印） |
 | [#313](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/313) | E06-I06-S05 | DB | 6 | 22.80 | 23 | 5 分ごとの判定期限ジョブと通知の依頼（出箱への書き込み） |
 | [#322](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/322) | E06-I07-S04 | テスト | 6 | 22.80 | 23 | リズム拡張のテスト（リズム別の枠・期限・不足に戻す・ロガー枠の回帰） |
+| [#323](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/323) | E06-I07-S08 | ドキュメント | 6 | 22.80 | 23 | HACCP 義務の水準（法令上の義務と Yuki の方針の区別、小規模事業者等向けの衛生管理の適用条件）を設計補遺に反映する |
 | [#334](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/334) | E07-I01-S03 | DB | 6 | 22.80 | 23 | トレース検索 RPC（3 レーン・家系の根・終点・切り詰め）の本番化と最大規模の性能確認 |
 | [#341](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/341) | E07-I03-S05 | DB | 6 | 22.80 | 23 | 社内管理レーンのトレース検索と範囲確定の RPC 変更 |
 | [#355](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/355) | E07-I04-S11 | テスト | 6 | 22.80 | 23 | 回収の同時実行テスト（2 セッション・4 つの組み合わせ・ロック順） |
 | [#356](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/356) | E07-I04-S12 | テスト | 6 | 22.80 | 23 | 回収の E2E テスト（起票からクローズまで・クローズを止める 4 項目・確認の対話・PC と 390px・本番は読み取りだけ） |
 | [#362](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/362) | E07-I05-S06 | API | 6 | 22.80 | 23 | API-D-147 POST 通知の送付（宛先ごとの出箱・ケースを通知済みに） |
+| [#371](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/371) | E08-I02-S04 | API | 6 | 22.80 | 23 | API-D-149 POST マスターの新規提案 |
 | [#374](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/374) | E08-I02-S12 | API | 6 | 22.80 | 23 | API-D-152 POST 承認・差戻し（旧い版の終了日・現在の表への反映） |
 | [#383](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/383) | E08-I03-S07 | API | 6 | 22.80 | 23 | API-D-067 POST 契約の版の承認・差戻し |
 | [#388](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/388) | E10-I01-S01 | DB | 6 | 22.80 | 23 | レポートの付与表・カタログ・部門の範囲の関数とレポート 1〜6（在庫・期限・隔離・HACCP・逸脱・アラーム SLA） |
@@ -80,6 +83,8 @@
 | [#492](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/492) | E15-I06-S02 | UI | 6 | 22.80 | 23 | 必須マークの共通部品と適用（受入検査・受注登録ほか） |
 | [#496](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/496) | E15-I08-S02 | ドキュメント | 6 | 22.80 | 23 | 残り 27 画面のワイヤーフレームを照合の結果に合わせて直す |
 | [#498](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/498) | E15-I08-S04 | ドキュメント | 6 | 22.80 | 23 | 作り直した 8 画面のワイヤーフレームを UI 担当がレビューし、各 UI タスクの参照を差し替える |
+| [#503](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/503) | E08-I02-S15 | API | 6 | 22.80 | 23 | 端末マスターの失効の API と RPC（status を revoked に・続いているセッションを閉じる） |
+| [#506](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/506) | E13-I05-S05 | DB | 6 | 22.80 | 23 | 読込の RPC（staging への塊ごとの投入・同じ行番号は入れ直さない・ファイル内の冪等キーの重複で拒否） |
 | [#4](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/4) | E09-I01-S01 | DB | 5 | 19.00 | 19 | クレームの表と制約（claim・クレームの行・状況のイベント） |
 | [#5](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/5) | E09-I02-S01 | DB | 5 | 19.00 | 19 | 証拠の版・保管イベント・処分の表と、ロット状態イベントの発生元の拡張 |
 | [#12](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/12) | E09-I01-S06 | UI | 5 | 19.00 | 19 | SCR-18 一覧・受付・詳細・状況の進行・判定（A〜C 区画） |
@@ -108,8 +113,10 @@
 | [#253](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/253) | E05-I05-S06 | テスト | 5 | 19.00 | 19 | オフライン保存・同期の結合・E2E テスト |
 | [#256](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/256) | E05-I06-S02 | API | 5 | 19.00 | 19 | 運転手の POD 修正 API と配送詳細の拡張 |
 | [#258](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/258) | E05-I06-S04 | API | 5 | 19.00 | 19 | 承認・却下 API と修正一覧 API（POST と GET） |
+| [#260](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/260) | E05-I06-S06 | UI | 5 | 19.00 | 19 | 職員向け「配送証拠の履歴」画面と承認操作（区画 G・H） |
 | [#269](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/269) | E05-I03-S09 | テスト | 5 | 19.00 | 19 | SCR-19 ルート作成の結合・E2E テスト |
 | [#275](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/275) | E05-I07-S06 | テスト | 5 | 19.00 | 19 | SCR-19 公開・変更・取消の結合・E2E テスト |
+| [#282](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/282) | E06-I01-S07 | UI | 5 | 19.00 | 19 | SCR-21 取込結果パネルと取込履歴の本番化（行番号つきの却下行・予定枠の増減・起点未設定の警告） |
 | [#288](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/288) | E06-I01-S06 | テスト | 5 | 19.00 | 19 | SCR-21 E2E テスト（成功・ハッシュ不一致・重複・形式エラー・上限超過）PC と 390px・本番は読み取りだけ |
 | [#289](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/289) | E06-I02-S01 | UI | 5 | 19.00 | 19 | SCR-23 確認待ち一覧・詳細の本番化（残り時間表示・確認ボタン・ページ送り・ロットの業務コード表示） |
 | [#290](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/290) | E06-I02-S02 | API | 5 | 19.00 | 19 | API-043 GET 確認待ち一覧 と API-046 POST アラームの確認 |
@@ -129,7 +136,6 @@
 | [#363](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/363) | E07-I05-S04 | UI | 5 | 19.00 | 19 | SCR-27 通知パネル（作成・版の履歴・承認・送付・結果の表示） |
 | [#364](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/364) | E07-I05-S05 | テスト | 5 | 19.00 | 19 | 回収通知のテスト（承認者の分離・期限・出箱・再送・状態遷移） |
 | [#370](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/370) | E08-I02-S03 | API | 5 | 19.00 | 19 | API-D-148 / 153 / 154 GET マスターの一覧・承認待ち（差分つき）・版の履歴と利用状況 |
-| [#371](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/371) | E08-I02-S04 | API | 5 | 19.00 | 19 | API-D-149 POST マスターの新規提案 |
 | [#376](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/376) | E08-I02-S06 | UI | 5 | 19.00 | 19 | SCR-31 種類のタブ・一覧・承認・版の履歴（E・H・J 区画） |
 | [#377](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/377) | E08-I02-S07 | UI | 5 | 19.00 | 19 | SCR-31 提案フォーム（共通項目と 8 種類の欄・期限種別・温度ポリシー） |
 | [#378](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/378) | E08-I02-S08 | テスト | 5 | 19.00 | 19 | マスター版管理の DB テスト（遷移・重複期間・承認者の分離・温度ポリシーの優先） |
@@ -143,6 +149,7 @@
 | [#410](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/410) | E10-I04-S04 | UI | 5 | 19.00 | 19 | SCR-36 保持スケジュール・法的保留・パージ・履歴のエクスポート（A〜D 区画） |
 | [#414](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/414) | E11-I01-S03 | テスト | 5 | 19.00 | 19 | 拘束時間・平均運転時間・時間外・納品日・デポ営業時間の境界単体テスト |
 | [#415](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/415) | E11-I01-S05 | API | 5 | 19.00 | 19 | 見積のない区間の到着予定計算を是正（0分扱いをやめる） |
+| [#418](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/418) | E11-I01-S08 | ドキュメント | 5 | 19.00 | 19 | 休憩解釈の法令出典による再検証と規則セット改訂要否の判断 |
 | [#419](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/419) | E11-I01-S09 | API | 5 | 19.00 | 19 | 判定関数の本番モジュール化（勤務の時系列・地図の見積・連続運転・休憩の取り方・休息期間 — 規則 5 種） |
 | [#420](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/420) | E11-I01-S10 | API | 5 | 19.00 | 19 | 判定関数の本番モジュール化（拘束・運転時間の平均・年間の時間外・納品日・デポの営業時間 — 規則 8 種） |
 | [#428](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/428) | E11-I03-S04 | API | 5 | 19.00 | 19 | 下書き保存 API（API-D-124）に休止の挿入・再計算を追加 |
@@ -152,6 +159,7 @@
 | [#451](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/451) | E12-I05-S04 | DB | 5 | 19.00 | 19 | Storage バケットの非公開化・署名 URL の期限・パス規約 |
 | [#454](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/454) | E12-I06-S01 | DB | 5 | 19.00 | 19 | pg_cron / pg_net の有効化とジョブ登録マイグレーション |
 | [#456](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/456) | E12-I07-S01 | DB | 5 | 19.00 | 19 | 日本語の架空デモデータ（シード） |
+| [#462](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/462) | E13-I02-S02 | DB | 5 | 19.00 | 19 | 検査段の冪等キー重複・スキーマ版の検査と、拒否の記録（理由・最初の行番号） |
 | [#464](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/464) | E13-I04-S01 | DB | 5 | 19.00 | 19 | 出箱への書込みを業務 RPC に組み込む（同一トランザクション） |
 | [#470](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/470) | E14-I02-S02 | 移行 | 5 | 19.00 | 19 | マスター（SKU・顧客・仕入先・拠点・機器）の変換 |
 | [#478](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/478) | E14-I05-S02 | API | 5 | 19.00 | 19 | 注文の凍結と制御された手動キュー |
@@ -159,3 +167,6 @@
 | [#493](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/493) | E15-I06-S03 | UI | 5 | 19.00 | 19 | 390px 幅の共通レイアウト（操作ボタンの折返し・固定領域） |
 | [#495](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/495) | E15-I08-S01 | テスト | 5 | 19.00 | 19 | ワイヤーフレームと画面仕様 §4.1 の自動照合（CI・設計書の変更ごと） |
 | [#499](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/499) | E06-I03-S12 | テスト | 5 | 19.00 | 19 | 逸脱ケースの E2E（一連の流れ・クローズ禁止 3 条件・取込者本人・390px・本番は読み取りだけ） |
+| [#502](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/502) | E08-I02-S14 | API | 5 | 19.00 | 19 | 端末マスターの登録の API と RPC（device_enrollment の作成・mdm_ref の形・handheld のみ・1 台 1 件） |
+| [#504](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/504) | E13-I01-S07 | API | 5 | 19.00 | 19 | inbound CSV の行の検査（API-D-003 の規則・同じ参照コードの揃い・既存予約との重複） |
+| [#505](https://github.com/binhnht-0675/Yuki-Cold-Logistics-Lab5-Backlog/issues/505) | E13-I01-S08 | API | 5 | 19.00 | 19 | inbound の適用（予約と明細の作成・同じ参照コードの行のまとめ・塊の境目） |
